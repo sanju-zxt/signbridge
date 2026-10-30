@@ -1,0 +1,1577 @@
+{
+  "totalSamples": 510,
+  "accuracy": 0.9373,
+  "macroF1": 0.9351,
+  "weightedF1": 0.9351,
+  "p50InferenceLatencyMs": 0.01,
+  "p95InferenceLatencyMs": 0.02,
+  "classMetrics": [
+    {
+      "sign": "HELLO",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "THANK_YOU",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "PLEASE",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "GOODBYE",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "HELP",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "WATER",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "FOOD",
+      "precision": 0.566,
+      "recall": 1,
+      "f1Score": 0.7229,
+      "support": 30
+    },
+    {
+      "sign": "HOSPITAL",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "BATHROOM",
+      "precision": 1,
+      "recall": 0.4,
+      "f1Score": 0.5714,
+      "support": 30
+    },
+    {
+      "sign": "WHERE",
+      "precision": 1,
+      "recall": 0.7,
+      "f1Score": 0.8235,
+      "support": 30
+    },
+    {
+      "sign": "HERE",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "LEFT",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "RIGHT",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "YES",
+      "precision": 1,
+      "recall": 0.8333,
+      "f1Score": 0.9091,
+      "support": 30
+    },
+    {
+      "sign": "NO",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "DONT_UNDERSTAND",
+      "precision": 1,
+      "recall": 1,
+      "f1Score": 1,
+      "support": 30
+    },
+    {
+      "sign": "REPEAT",
+      "precision": 0.7692,
+      "recall": 1,
+      "f1Score": 0.8696,
+      "support": 30
+    }
+  ],
+  "confusionMatrix": [
+    {
+      "actual": "HELLO",
+      "predicted": "HELLO",
+      "count": 30
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "HELLO",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "THANK_YOU",
+      "count": 30
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "THANK_YOU",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "PLEASE",
+      "count": 30
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "PLEASE",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "GOODBYE",
+      "count": 30
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "GOODBYE",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "HELP",
+      "count": 30
+    },
+    {
+      "actual": "HELP",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "HELP",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "WATER",
+      "count": 30
+    },
+    {
+      "actual": "WATER",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "WATER",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "FOOD",
+      "count": 30
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "FOOD",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "HOSPITAL",
+      "count": 30
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "HOSPITAL",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "FOOD",
+      "count": 18
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "BATHROOM",
+      "count": 12
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "BATHROOM",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "WHERE",
+      "count": 21
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "WHERE",
+      "predicted": "REPEAT",
+      "count": 9
+    },
+    {
+      "actual": "HERE",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "HERE",
+      "count": 30
+    },
+    {
+      "actual": "HERE",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "HERE",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "LEFT",
+      "count": 30
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "LEFT",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "RIGHT",
+      "count": 30
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "RIGHT",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "FOOD",
+      "count": 5
+    },
+    {
+      "actual": "YES",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "YES",
+      "count": 25
+    },
+    {
+      "actual": "YES",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "YES",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "NO",
+      "count": 30
+    },
+    {
+      "actual": "NO",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "NO",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 30
+    },
+    {
+      "actual": "DONT_UNDERSTAND",
+      "predicted": "REPEAT",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "HELLO",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "THANK_YOU",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "PLEASE",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "GOODBYE",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "HELP",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "WATER",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "FOOD",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "HOSPITAL",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "BATHROOM",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "WHERE",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "HERE",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "LEFT",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "RIGHT",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "YES",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "NO",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "DONT_UNDERSTAND",
+      "count": 0
+    },
+    {
+      "actual": "REPEAT",
+      "predicted": "REPEAT",
+      "count": 30
+    }
+  ],
+  "evaluatedAt": "2026-10-29T16:21:17.086Z"
+}

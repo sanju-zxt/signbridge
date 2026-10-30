@@ -1,0 +1,28 @@
+{
+  "name": "signbridge2vision-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SignBridge2Vision: Real-Time Multimodal AI Communication Platform",
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "apps/*",
+    "ml"
+  ],
+  "scripts": {
+    "dev:gateway": "npm --workspace=services/gateway run dev",
+    "dev:web": "npm --workspace=apps/web run dev",
+    "dev": "concurrently \"npm run dev:gateway\" \"npm run dev:web\"",
+    "build": "npm run build --workspaces --if-present",
+    "eval:ml": "npm --workspace=ml run eval",
+    "train": "npm --workspace=ml run train",
+    "train:prototype": "npm --workspace=ml run train:prototype",
+    "collect:data": "npm --workspace=ml run collect:data",
+    "generate:bootstrap": "npm --workspace=ml run generate:bootstrap",
+    "test:gateway": "npm --workspace=services/gateway run test"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.7.3"
+  }
+}

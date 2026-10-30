@@ -1,0 +1,31 @@
+{
+  "id": "sbv-gru-v1",
+  "version": "1.0.0-bootstrap",
+  "featureDim": 126,
+  "windowSize": 30,
+  "numClasses": 17,
+  "classes": [
+    "HELLO",
+    "THANK_YOU",
+    "PLEASE",
+    "GOODBYE",
+    "HELP",
+    "WATER",
+    "FOOD",
+    "HOSPITAL",
+    "BATHROOM",
+    "WHERE",
+    "HERE",
+    "LEFT",
+    "RIGHT",
+    "YES",
+    "NO",
+    "DONT_UNDERSTAND",
+    "REPEAT"
+  ],
+  "accuracy": 0.125,
+  "f1Score": null,
+  "trainedAt": "2026-08-30T02:47:30.512Z",
+  "isBootstrap": true,
+  "description": "Bootstrap GRU — synthetic data only. Run npm run collect:data then npm run train for real accuracy."
+}

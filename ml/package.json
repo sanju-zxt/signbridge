@@ -1,0 +1,27 @@
+{
+  "name": "@signbridge2vision/ml",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "eval": "ts-node src/evaluator.ts",
+    "train": "ts-node --max-old-space-size=4096 src/train.ts",
+    "train:prototype": "ts-node src/train_prototype.ts",
+    "collect:data": "ts-node src/collectData.ts",
+    "generate:bootstrap": "ts-node src/generateBootstrap.ts"
+  },
+  "dependencies": {
+    "@signbridge2vision/types": "*",
+    "@tensorflow/tfjs": "^4.22.0",
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "@types/ws": "^8.5.13",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

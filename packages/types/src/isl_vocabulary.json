@@ -1,0 +1,118 @@
+{
+  "name": "SignBridge2Vision ISL MVP Vocabulary",
+  "version": "1.0.0",
+  "targetLanguage": "Indian Sign Language (ISL)",
+  "numClasses": 10,
+  "classes": [
+    {
+      "id": 0,
+      "sign": "HELLO",
+      "displayName": "HELLO",
+      "category": "greetings",
+      "hands": "single_or_both",
+      "dominantHand": "right",
+      "location": "head_temple",
+      "description": "Right open palm touches temple/forehead and extends outward in a greeting gesture, or palms pressed in Namaste.",
+      "canonicalSentence": "Hello, nice to meet you."
+    },
+    {
+      "id": 1,
+      "sign": "THANK_YOU",
+      "displayName": "THANK YOU",
+      "category": "greetings",
+      "hands": "single",
+      "dominantHand": "right",
+      "location": "chin",
+      "description": "Flat dominant hand touches chin with fingertips and extends smoothly forward toward the viewer.",
+      "canonicalSentence": "Thank you very much."
+    },
+    {
+      "id": 2,
+      "sign": "PLEASE",
+      "displayName": "PLEASE",
+      "category": "polite",
+      "hands": "single",
+      "dominantHand": "right",
+      "location": "chest",
+      "description": "Flat palm placed on chest and rotated in a gentle clockwise rubbing circular motion.",
+      "canonicalSentence": "Please assist me."
+    },
+    {
+      "id": 3,
+      "sign": "HELP",
+      "displayName": "HELP",
+      "category": "emergency",
+      "hands": "both",
+      "dominantHand": "right",
+      "location": "neutral_torso",
+      "description": "Left hand forms a flat palm-up base; right hand forms a thumbs-up fist placed on left palm and lifted upward.",
+      "canonicalSentence": "I need help or assistance."
+    },
+    {
+      "id": 4,
+      "sign": "WATER",
+      "displayName": "WATER",
+      "category": "needs",
+      "hands": "single",
+      "dominantHand": "right",
+      "location": "chin_mouth",
+      "description": "Index, middle, and ring fingers form a W-shape held near the mouth/chin and tapped repeatedly.",
+      "canonicalSentence": "Please give me water to drink."
+    },
+    {
+      "id": 5,
+      "sign": "FOOD",
+      "displayName": "FOOD",
+      "category": "needs",
+      "hands": "single",
+      "dominantHand": "right",
+      "location": "mouth",
+      "description": "Fingertips clustered together brought to the mouth repeatedly in an eating gesture.",
+      "canonicalSentence": "I want food to eat."
+    },
+    {
+      "id": 6,
+      "sign": "WHERE",
+      "displayName": "WHERE",
+      "category": "questions",
+      "hands": "both",
+      "dominantHand": "both",
+      "location": "neutral_chest",
+      "description": "Both open palms held facing upward in neutral space, swaying slightly with questioning facial expression.",
+      "canonicalSentence": "Where is this location?"
+    },
+    {
+      "id": 7,
+      "sign": "YES",
+      "displayName": "YES",
+      "category": "responses",
+      "hands": "single",
+      "dominantHand": "right",
+      "location": "neutral_space",
+      "description": "Dominant fist nodding vertically up and down imitating a head nod.",
+      "canonicalSentence": "Yes, that is correct."
+    },
+    {
+      "id": 8,
+      "sign": "NO",
+      "displayName": "NO",
+      "category": "responses",
+      "hands": "single",
+      "dominantHand": "right",
+      "location": "neutral_space",
+      "description": "Index and middle fingers snapping down against the thumb repeatedly with slight head shake.",
+      "canonicalSentence": "No, that is not correct."
+    },
+    {
+      "id": 9,
+      "sign": "DONT_UNDERSTAND",
+      "displayName": "DONT UNDERSTAND",
+      "category": "clarification",
+      "hands": "single",
+      "dominantHand": "right",
+      "location": "forehead",
+      "description": "Fingertips touch forehead and pull away with a questioning palm-out rotation.",
+      "canonicalSentence": "I did not understand, please clarify."
+    }
+  ]
+}
