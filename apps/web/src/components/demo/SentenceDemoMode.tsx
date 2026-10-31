@@ -34,6 +34,7 @@ import {
   Check,
   RefreshCw,
   Info,
+  Send,
 } from 'lucide-react';
 import {
   parseEnglishToISLSentenceIR,
@@ -41,6 +42,7 @@ import {
   ISLSentenceIR,
 } from '@signbridge/types';
 import { ttsPlayer } from '../../lib/speech/tts';
+import { StreamingSTTClient } from '../../lib/speech/stt';
 
 export interface DemoSentence {
   id: number;
@@ -122,12 +124,15 @@ export const SentenceDemoMode: React.FC<SentenceDemoModeProps> = ({
   const [selectedSentenceId, setSelectedSentenceId] = useState<number>(1);
   const [direction, setDirection] = useState<'speech_to_isl' | 'isl_to_speech'>('speech_to_isl');
   const [isMicListening, setIsMicListening] = useState<boolean>(false);
+  const [interimTranscript, setInterimTranscript] = useState<string>('');
+  const [typedSentence, setTypedSentence] = useState<string>('');
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [parsedIR, setParsedIR] = useState<ISLSentenceIR | null>(null);
   const [isSpeakingTTS, setIsSpeakingTTS] = useState<boolean>(false);
   const [ttsEnabled, setTtsEnabled] = useState<boolean>(true);
   const [unsupportedNotice, setUnsupportedNotice] = useState<string | null>(null);
   const [executionMessage, setExecutionMessage] = useState<string>('Ready to run demo pipeline.');
+  const sttClientRef = useRef<StreamingSTTClient | null>(null);
 
   const selectedSentence = DEMO_SENTENCES.find((s) => s.id === selectedSentenceId) || DEMO_SENTENCES[0];
 
@@ -212,52 +217,54 @@ export const SentenceDemoMode: React.FC<SentenceDemoModeProps> = ({
     [selectedSentence, ttsEnabled]
   );
 
-  // Handle physical mic input (Web Speech API)
+  // Cleanup STT client on unmount
+  useEffect(() => {
+    return () => {
+      sttClientRef.current?.stop();
+    };
+  }, []);
+
+  // Handle physical mic input (Continuous Web Speech API with Live Interim Feedback)
   const handleToggleMic = () => {
     if (typeof window === 'undefined') return;
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert('Speech Recognition is not supported in this browser. Running text pipeline.');
-      runSpeechToISLDemo();
-      return;
-    }
 
     if (isMicListening) {
+      sttClientRef.current?.stop();
       setIsMicListening(false);
+      setInterimTranscript('');
+      setExecutionMessage('Microphone stopped.');
       return;
     }
 
-    try {
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
+    setInterimTranscript('');
+    setIsMicListening(true);
+    setExecutionMessage('Listening... Speak a sentence into your microphone.');
 
-      setIsMicListening(true);
-      setExecutionMessage('Listening... Speak one of the 4 demo sentences now.');
+    const client = new StreamingSTTClient({
+      language: 'en',
+      onStateChange: (listening) => {
+        setIsMicListening(listening);
+      },
+      onStatusChange: (status, message) => {
+        if (message) setExecutionMessage(message);
+      },
+      onPartial: (partial) => {
+        setInterimTranscript(partial);
+        setExecutionMessage(`Speech detected: "${partial}"...`);
+      },
+      onFinal: (finalText) => {
+        setInterimTranscript('');
+        setExecutionMessage(`Microphone transcribed: "${finalText}"`);
+        runSpeechToISLDemo(finalText);
+      },
+      onError: (err) => {
+        console.warn('[SentenceDemoMode] STT error:', err);
+        setExecutionMessage(`Microphone notice: ${err}`);
+      },
+    });
 
-      recognition.onresult = (event: any) => {
-        setIsMicListening(false);
-        const transcript = event.results[0][0].transcript;
-        setExecutionMessage(`Microphone transcribed: "${transcript}"`);
-        runSpeechToISLDemo(transcript);
-      };
-
-      recognition.onerror = (event: any) => {
-        setIsMicListening(false);
-        console.warn('[SentenceDemoMode] Mic recognition error:', event.error);
-        setExecutionMessage(`Microphone input: ${event.error}. Using preset sentence.`);
-      };
-
-      recognition.onend = () => {
-        setIsMicListening(false);
-      };
-
-      recognition.start();
-    } catch (err) {
-      setIsMicListening(false);
-      console.warn('SpeechRecognition failed:', err);
-    }
+    sttClientRef.current = client;
+    client.start();
   };
 
   // Step 5: Reset Demo
@@ -416,8 +423,15 @@ export const SentenceDemoMode: React.FC<SentenceDemoModeProps> = ({
             <span className="text-[10px] text-[#71809A] font-medium">Spoken / Text Format</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-[#F7F9FC] border border-[#DCE5EF] text-sm font-semibold text-[#14264F]">
-            &ldquo;{selectedSentence.english}&rdquo;
+          <div className="p-3 rounded-lg bg-[#F7F9FC] border border-[#DCE5EF] text-sm font-semibold text-[#14264F] min-h-[46px] flex items-center">
+            {interimTranscript ? (
+              <span className="text-[#12B8C2] flex items-center gap-1 animate-pulse">
+                &ldquo;{interimTranscript}&rdquo;
+                <span className="w-1.5 h-3.5 bg-[#12B8C2] inline-block" />
+              </span>
+            ) : (
+              <span>&ldquo;{selectedSentence.english}&rdquo;</span>
+            )}
           </div>
 
           <div className="text-[11px] text-[#71809A] space-y-1">
@@ -573,6 +587,35 @@ export const SentenceDemoMode: React.FC<SentenceDemoModeProps> = ({
           </button>
         </div>
       </div>
+
+      {/* ── 7. Manual Text Input Fallback (Same Pipeline) ──────────────────── */}
+      {direction === 'speech_to_isl' && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (typedSentence.trim()) {
+              runSpeechToISLDemo(typedSentence.trim());
+              setTypedSentence('');
+            }
+          }}
+          className="flex items-center gap-2 pt-2 border-t border-[#DCE5EF]"
+        >
+          <input
+            type="text"
+            value={typedSentence}
+            onChange={(e) => setTypedSentence(e.target.value)}
+            placeholder="Type any English sentence to translate into ISL avatar gestures..."
+            className="flex-1 bg-white border border-[#DCE5EF] rounded-xl px-3.5 py-2 text-xs sm:text-sm text-[#14264F] placeholder-[#71809A] focus:outline-none focus:ring-2 focus:ring-[#12B8C2]/40 focus:border-[#12B8C2] transition-all"
+          />
+          <button
+            type="submit"
+            className="bg-[#14264F] hover:bg-[#1e3875] text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all shadow-sm shrink-0"
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Translate &amp; Sign</span>
+          </button>
+        </form>
+      )}
     </div>
   );
 };

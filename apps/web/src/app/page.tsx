@@ -15,6 +15,7 @@ import { StreamingSTTClient } from '../lib/speech/stt';
 import { ttsPlayer } from '../lib/speech/tts';
 import { matchSpeechSequence } from '../lib/speech/phraseMatcher';
 import { SentenceDemoMode } from '../components/demo/SentenceDemoMode';
+import { SpeechToISLPanel } from '../components/speech/SpeechToISLPanel';
 import {
   ISL_VOCABULARY,
   translateISLGlossSequenceToEnglish,
@@ -233,7 +234,7 @@ export default function SignBridgeDashboard() {
 
   // Control Toggles
   const [isCameraOn, setIsCameraOn] = useState<boolean>(true);
-  const [isMicOn, setIsMicOn] = useState<boolean>(true);
+  const [isMicOn, setIsMicOn] = useState<boolean>(false);
   const [isSignToVoiceEnabled, setIsSignToVoiceEnabled] = useState<boolean>(true);
   const [isSubtitlesOn, setIsSubtitlesOn] = useState<boolean>(true);
   const [translationDirection, setTranslationDirection] = useState<'isl_to_speech' | 'speech_to_isl'>('isl_to_speech');
@@ -1076,6 +1077,21 @@ export default function SignBridgeDashboard() {
                 onClearCameraSequence={clearCurrentSentence}
                 isCameraActive={isCameraActive && isCameraOn}
                 onToggleCamera={() => setIsCameraOn((prev) => !prev)}
+              />
+
+              {/* ── CARD 5.8: V17 COMPLETE SPEECH INPUT & LIVE TRANSCRIPTION PANEL ─── */}
+              <SpeechToISLPanel
+                onDispatchSequenceToAvatar={(signIds) => {
+                  if (avatarPerformSequenceRef.current) {
+                    avatarPerformSequenceRef.current(signIds);
+                  } else if (avatarPerformSignRef.current && signIds.length > 0) {
+                    avatarPerformSignRef.current(signIds[0]);
+                  }
+                  if (signIds.length > 0) setAvatarSign(signIds[0]);
+                }}
+                avatarActiveAction={avatarStatus.activeAction}
+                avatarQueuedActions={avatarStatus.queuedActions || []}
+                activeLanguage={activeLanguage}
               />
 
               {/* ── CARD 6: VOICE & ACCESSIBILITY FULL-WIDTH PANEL ──────────── */}

@@ -235,7 +235,7 @@ const PHRASE_RULES: PhraseRule[] = [
   {
     canonicalAction: 'POLICE',
     pattern: /\b(police|cop|police\s+station|thana|rakshakudu)\b/i,
-    priority: 80,
+    priority: 85,
     isEmotional: false,
     category: 'urgent',
   },
