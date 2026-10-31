@@ -6,7 +6,7 @@
   "p50InferenceLatencyMs": 0.01,
   "p95InferenceLatencyMs": 0.02,
   "classMetrics": [
-    {
+    { 
       "sign": "HELLO",
       "precision": 1,
       "recall": 1,
