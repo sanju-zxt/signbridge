@@ -14,7 +14,7 @@ save('services/gateway/src/agent.ts', `import {
   AgentResponseEvent,
   SupportedLanguage,
   ISL_VOCABULARY
-} from '@signbridge2vision/types';
+} from '@signbridge/types';
 
 export interface AgentInput {
   sessionId: string;
@@ -228,7 +228,7 @@ export const conversationalAgent = new ConversationalAgent();
 `);
 
 // 2. services/gateway/src/speech.ts
-save('services/gateway/src/speech.ts', `import { SupportedLanguage } from '@signbridge2vision/types';
+save('services/gateway/src/speech.ts', `import { SupportedLanguage } from '@signbridge/types';
 
 export interface SpeechProcessingResult {
   transcript: string;
@@ -268,7 +268,7 @@ import {
   LatencyMetricRecord,
   ISL_VOCABULARY,
   DEMO_SCENARIO_PRESETS
-} from '@signbridge2vision/types';
+} from '@signbridge/types';
 import { sessionStore } from './store';
 import { conversationalAgent } from './agent';
 import { speechService } from './speech';

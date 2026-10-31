@@ -30,7 +30,7 @@ import {
   jitterLandmarks,
   timeWarp,
 } from './features/landmarkFeatures';
-import { CollectionSequence } from '@signbridge2vision/types';
+import { CollectionSequence } from '@signbridge/types';
 import {
   validateSequence,
   partitionBySession,

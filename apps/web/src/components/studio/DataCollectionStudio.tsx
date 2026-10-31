@@ -13,7 +13,7 @@
  */
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { RawLandmarkFrame, CollectionSequence, ISL_VOCABULARY } from '@signbridge2vision/types';
+import { RawLandmarkFrame, CollectionSequence, ISL_VOCABULARY, ASL_VOCABULARY } from '@signbridge/types';
 import {
   PROTOTYPE_VOCABULARY,
   PrototypeSignInfo,
@@ -51,6 +51,8 @@ export default function DataCollectionStudio({
 }: DataCollectionStudioProps) {
   const [selectedSign, setSelectedSign] = useState<string>('HELLO');
   const [customSignInput, setCustomSignInput] = useState<string>('');
+  const [activeSigner, setActiveSigner] = useState<string>('studio_signer_01');
+  const [recordingLighting, setRecordingLighting] = useState<string>('Webcam Natural');
   const [recordingState, setRecordingState] = useState<'idle' | 'countdown' | 'recording' | 'review'>('idle');
   const [countdown, setCountdown] = useState<number>(3);
   const [recordedFrames, setRecordedFrames] = useState<RawLandmarkFrame[]>([]);
@@ -86,8 +88,24 @@ export default function DataCollectionStudio({
     const found = PROTOTYPE_VOCABULARY.find((v) => v.sign === selectedSign);
     if (found) return found;
 
-    // Check full ISL vocabulary as fallback
-    const fullVocab = ISL_VOCABULARY.find((v) => v.sign === selectedSign);
+    // Check full ISL vocabulary first
+    const islVocab = ISL_VOCABULARY.find((v) => v.sign === selectedSign);
+    if (islVocab) {
+      return {
+        sign: islVocab.sign,
+        label: islVocab.label,
+        category: (islVocab.category as any) || 'needs',
+        islrtcDescription: islVocab.description,
+        handsRequired: islVocab.keyFeatures.hands,
+        dominantHand: islVocab.keyFeatures.dominantHand as any,
+        location: (islVocab.keyFeatures.location as any) || 'chest',
+        movement: (islVocab.keyFeatures.primaryMotion as any) || 'linear',
+        tips: islVocab.nonManualMarkers || `Perform canonical ISL gesture: ${islVocab.canonicalSentence}`,
+      };
+    }
+
+    // Check legacy ASL vocabulary as fallback
+    const fullVocab = ASL_VOCABULARY.find((v) => v.sign === selectedSign);
     if (fullVocab) {
       return {
         sign: fullVocab.sign,
@@ -188,7 +206,14 @@ export default function DataCollectionStudio({
       const res = await fetch('/api/dataset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sequence: pendingSequence }),
+        body: JSON.stringify({
+          sequence: pendingSequence,
+          signerId: activeSigner,
+          recordingConditions: {
+            lighting: recordingLighting,
+            background: 'indoor_ergonomic',
+          },
+        }),
       });
       const data = await res.json();
 
@@ -332,6 +357,40 @@ export default function DataCollectionStudio({
               <span>Target Sign Vocabulary</span>
               <span className="text-slate-500 font-normal">7 Target Classes</span>
             </label>
+
+            {/* V5 Authentic Signer & Lighting Metadata */}
+            <div className="grid grid-cols-2 gap-2 p-2 rounded-lg bg-slate-900/60 border border-slate-800">
+              <div>
+                <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Authentic Signer</label>
+                <select
+                  value={activeSigner}
+                  onChange={(e) => setActiveSigner(e.target.value)}
+                  disabled={recordingState !== 'idle'}
+                  className="w-full bg-slate-900 border border-slate-700/80 rounded-md text-xs text-slate-200 px-2 py-1 focus:border-amber-400 outline-none"
+                >
+                  <option value="studio_signer_01">Signer 01 (Deaf Contributor A)</option>
+                  <option value="studio_signer_02">Signer 02 (Fluent Signer B)</option>
+                  <option value="studio_signer_03">Signer 03 (Fluent Signer C)</option>
+                  <option value="studio_signer_04">Signer 04 (Val Held-out D)</option>
+                  <option value="studio_signer_05">Signer 05 (Test Held-out E)</option>
+                  <option value="studio_signer_06">Signer 06 (Test Held-out F)</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Lighting</label>
+                <select
+                  value={recordingLighting}
+                  onChange={(e) => setRecordingLighting(e.target.value)}
+                  disabled={recordingState !== 'idle'}
+                  className="w-full bg-slate-900 border border-slate-700/80 rounded-md text-xs text-slate-200 px-2 py-1 focus:border-amber-400 outline-none"
+                >
+                  <option value="Webcam Natural">Webcam Natural</option>
+                  <option value="Warm Indoor">Warm Indoor</option>
+                  <option value="Low Contrast">Low Contrast</option>
+                  <option value="Studio Direct">Studio Direct</option>
+                </select>
+              </div>
+            </div>
 
             {/* Quick Chips */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">

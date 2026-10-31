@@ -1,4 +1,4 @@
-import { SupportedLanguage } from '@signbridge2vision/types';
+import { SupportedLanguage } from '@signbridge/types';
 
 export interface SpeechProcessingResult {
   transcript: string;

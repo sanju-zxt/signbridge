@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-10-30T20:30:59.686Z",
+  "system": "SignBridge V6 Multimodal ISL Architecture",
+  "modelLoadingDurationMs": 8.7,
+  "stages": {
+    "landmarkNormalization": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0.01,
+      "min": 0,
+      "max": 2.02,
+      "sampleCount": 1000
+    },
+    "modelInference": {
+      "mean": 379.89,
+      "p50": 275.12,
+      "p95": 634.03,
+      "p99": 653.23,
+      "min": 258.5,
+      "max": 679.03,
+      "sampleCount": 500
+    },
+    "speechToISLParsing": {
+      "mean": 0.01,
+      "p50": 0,
+      "p95": 0.01,
+      "p99": 0.22,
+      "min": 0,
+      "max": 1.56,
+      "sampleCount": 500
+    },
+    "islToSpeechGrammar": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0.01,
+      "min": 0,
+      "max": 0.5,
+      "sampleCount": 500
+    },
+    "avatarActionDispatch": {
+      "mean": 0.01,
+      "p50": 0.01,
+      "p95": 0.02,
+      "p99": 0.06,
+      "min": 0.01,
+      "max": 1.36,
+      "sampleCount": 500
+    }
+  },
+  "endToEndLatency": {
+    "directionA_ISLToSpeech": {
+      "p50": 287.12,
+      "p95": 658.03,
+      "p99": 688.54
+    },
+    "directionB_SpeechToISL": {
+      "p50": 15.01,
+      "p95": 28.03,
+      "p99": 42.28
+    }
+  },
+  "targetFramesPerSecond": 2.6
+}

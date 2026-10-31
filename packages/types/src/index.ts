@@ -1,6 +1,6 @@
-export type Modality = 'isl' | 'speech' | 'text';
+export type Modality = 'asl' | 'isl' | 'speech' | 'text';
 
-export type SpeakerRole = 'isl_signer' | 'speech_speaker' | 'assistant' | 'observer';
+export type SpeakerRole = 'asl_signer' | 'isl_signer' | 'speech_speaker' | 'assistant' | 'observer';
 
 export type MessageStatus = 'partial' | 'final' | 'low_confidence';
 
@@ -59,21 +59,87 @@ export interface NormalizedFrame {
   features: number[];
 }
 
-export interface ISLSignDefinition {
+export type ASLCategory =
+  | 'personal_introduction'
+  | 'daily_conversation'
+  | 'greetings'
+  | 'emergency_communication'
+  | 'medical_assistance'
+  | 'food_and_shopping'
+  | 'travel_and_navigation'
+  | 'workplace_communication'
+  | 'education'
+  | 'questions_and_responses'
+  | 'emotions'
+  | 'numbers_and_time'
+  | 'family_and_relationships'
+  | 'common_instructions'
+  // Legacy alias categories for backward compatibility
+  | 'emergency'
+  | 'medical'
+  | 'food_shopping'
+  | 'travel_navigation'
+  | 'workplace_education'
+  | 'responses_emotions'
+  | 'needs'
+  | 'navigation'
+  | 'clarification';
+
+export type ISLCategory =
+  | 'greetings_and_introductions'
+  | 'personal_information'
+  | 'everyday_conversations'
+  | 'questions_and_responses'
+  | 'assistance_and_requests'
+  | 'medical_emergencies'
+  | 'emergency_services'
+  | 'education_and_workplace'
+  | 'directions_and_locations'
+  | 'common_actions_and_expressions'
+  | 'greetings'
+  | 'polite'
+  | 'needs'
+  | 'responses'
+  | 'clarification';
+
+export interface ASLSignDefinition {
   id: string;
   sign: string;
   label: string;
-  category: 'greetings' | 'needs' | 'navigation' | 'clarification';
+  category: ASLCategory | ISLCategory;
   gloss: string;
+  aslGrammarType?: 'topic_comment' | 'time_topic_comment' | 'wh_question' | 'yes_no_question' | 'standard';
   canonicalSentence: string;
   translations: Record<SupportedLanguage, string>;
   description: string;
+  nonManualMarkers?: string;
   keyFeatures: {
     hands: 'single' | 'both';
     dominantHand: 'left' | 'right' | 'either';
     primaryMotion: 'linear' | 'circular' | 'static' | 'repetitive';
     location: 'chest' | 'head' | 'neutral_space' | 'chin';
   };
+}
+
+export type ISLSignDefinition = ASLSignDefinition;
+
+export type ContinuousSigningState =
+  | 'IDLE'
+  | 'DETECTING'
+  | 'ACTIVE_SIGNING'
+  | 'SIGN_HOLD'
+  | 'COARTICULATION'
+  | 'END_OF_SIGNING';
+
+export interface ASLSentenceEvent {
+  sentenceId: string;
+  sessionId: string;
+  timestamp: number;
+  glosses: string[];
+  englishTranslation: string;
+  confidence: number;
+  durationMs: number;
+  isFinal: boolean;
 }
 
 export interface RecognitionEvent {
@@ -192,7 +258,55 @@ export * from './vocabulary';
 // Real-Time ML Recognition Pipeline Types
 // ──────────────────────────────────────────────────────────────────────────────
 
-/** Raw landmark frame as received from MediaPipe HandLandmarker */
+/** Gaze direction extracted from pupil centers and eye contour landmarks */
+export interface GazeDirection {
+  horizontal: number; // -1.0 (far left) to +1.0 (far right)
+  vertical: number; // -1.0 (down) to +1.0 (up)
+  target: 'center' | 'left' | 'right' | 'up' | 'down';
+  confidence: number;
+}
+
+/** Head orientation (yaw, pitch, roll in degrees) relative to camera plane */
+export interface HeadOrientation {
+  yaw: number; // Head rotation left (-) to right (+)
+  pitch: number; // Head tilt forward/down (-) to back/up (+)
+  roll: number; // Lateral head tilt left (-) to right (+)
+}
+
+/** Eyebrow state for grammatical ASL inflection */
+export interface EyebrowState {
+  leftHeight: number;
+  rightHeight: number;
+  furrow: number; // 0.0 to 1.0 (knitted/furrowed for Wh-questions)
+  raised: boolean; // Yes/No question marker
+  lowered: boolean; // Wh-question marker
+}
+
+/** Mouth shape state for ASL adverbial/adjectival morphemes */
+export interface MouthState {
+  aperture: number; // Vertical lip separation (0.0 closed to 1.0 open)
+  width: number; // Horizontal lip stretch
+  shape: 'neutral' | 'open' | 'flat' | 'puckered';
+}
+
+/**
+ * 24-dimensional normalized non-manual feature vector:
+ * - [0..3]   Gaze vectors: left eye (h, v), right eye (h, v)
+ * - [4..9]   Head pose: yaw, pitch, roll, and angular derivatives (dyaw, dpitch, droll)
+ * - [10..13] Eyebrows: left elevation, right elevation, brow furrow, asymmetry
+ * - [14..17] Mouth: aperture, spread, jaw drop, lip roundness
+ * - [18..23] Head motion derivatives: nod intensity, shake intensity, tilt intensity, velocities
+ */
+export interface NonManualFeatures {
+  vector: Float32Array; // Exactly 24 dimensions
+  gaze: GazeDirection;
+  headPose: HeadOrientation;
+  eyebrows: EyebrowState;
+  mouth: MouthState;
+  hasFace: boolean;
+}
+
+/** Raw landmark frame as received from MediaPipe HandLandmarker with optional face landmarks */
 export interface RawLandmarkFrame {
   timestamp: number;
   /** 21 landmarks for right hand, null if not detected */
@@ -202,6 +316,27 @@ export interface RawLandmarkFrame {
   /** Handedness confidence scores */
   rightHandConfidence: number;
   leftHandConfidence: number;
+  /** Optional face landmarks from MediaPipe FaceLandmarker */
+  faceLandmarks?: Landmark3D[] | null;
+  /** Extracted 24-dim non-manual grammatical signals */
+  nonManualFeatures?: NonManualFeatures | null;
+}
+
+/**
+ * Multimodal feature frame containing both:
+ * - 126-dim hand features (backward-compatible default)
+ * - 24-dim non-manual facial/gaze features (extension branch)
+ * - 150-dim combined vector for multimodal architectures
+ */
+export interface MultimodalFeatureFrame {
+  timestamp: number;
+  handFeatures: Float32Array; // 126 dims
+  nonManualFeatures: Float32Array; // 24 dims
+  combinedFeatures: Float32Array; // 150 dims
+  hasHand: boolean;
+  hasFace: boolean;
+  rightHandPresent: boolean;
+  leftHandPresent: boolean;
 }
 
 /**
@@ -319,5 +454,36 @@ export const DEFAULT_PIPELINE_CONFIG: PipelineConfig = {
   featureDim: 126,
 };
 
+// ──────────────────────────────────────────────────────────────────────────────
+// Event-Driven Action Execution Types (Loop Elimination & Idempotency)
+// ──────────────────────────────────────────────────────────────────────────────
+
+export type ActionLifecycleState =
+  | 'IDLE'
+  | 'DETECTED'
+  | 'VALIDATED'
+  | 'QUEUED'
+  | 'EXECUTING'
+  | 'COMPLETED'
+  | 'FAILED'
+  | 'CANCELLED';
+
+export interface ActionEvent {
+  eventId: string;
+  actionId: string;
+  displayName?: string;
+  timestamp: number;
+  confidence: number;
+  source: 'vision' | 'speech' | 'ui' | 'system';
+  state: ActionLifecycleState;
+  durationMs?: number;
+  startedAt?: number;
+  completedAt?: number;
+  metadata?: Record<string, any>;
+}
+
 export * from './vocabulary';
+export * from './islVocabulary';
+export * from './islGrammar';
+
 

@@ -1,0 +1,200 @@
+{
+  "timestamp": "2026-10-31T01:58:17.844Z",
+  "version": "V15",
+  "passedTests": 9,
+  "totalTests": 9,
+  "allPassed": true,
+  "driftPass": true,
+  "quatDriftRad": 0,
+  "results": [
+    {
+      "poseName": "Neutral Standing Pose",
+      "signId": "IDLE",
+      "clipName": "SBV_IDLE",
+      "source": "IDLE",
+      "elbowFlexionDeg": 162.4,
+      "wristRollDeg": 20.4,
+      "rightWristPos": [
+        -0.24,
+        0.9,
+        -0.04
+      ],
+      "leftWristPos": [
+        0.26,
+        0.92,
+        0.01
+      ],
+      "chestDistance": 0.48,
+      "isNatural": true,
+      "passed": true
+    },
+    {
+      "poseName": "I_ME (First Person Singular)",
+      "signId": "I_ME",
+      "clipName": "PROC_I_ME",
+      "source": "PROCEDURAL",
+      "elbowFlexionDeg": 87.6,
+      "wristRollDeg": 16.2,
+      "rightWristPos": [
+        -0.23,
+        1.18,
+        0.19
+      ],
+      "leftWristPos": [
+        0.37,
+        0.98,
+        0.01
+      ],
+      "chestDistance": 0.34,
+      "isNatural": true,
+      "passed": true
+    },
+    {
+      "poseName": "MY (First Person Possessive)",
+      "signId": "MY",
+      "clipName": "PROC_MY",
+      "source": "PROCEDURAL",
+      "elbowFlexionDeg": 94.3,
+      "wristRollDeg": 21.5,
+      "rightWristPos": [
+        -0.23,
+        1.18,
+        0.22
+      ],
+      "leftWristPos": [
+        0.37,
+        0.98,
+        0.01
+      ],
+      "chestDistance": 0.35,
+      "isNatural": true,
+      "passed": true
+    },
+    {
+      "poseName": "YOU (Second Person Pronoun)",
+      "signId": "YOU",
+      "clipName": "PROC_YOU",
+      "source": "PROCEDURAL",
+      "elbowFlexionDeg": 126.2,
+      "wristRollDeg": 2.3,
+      "rightWristPos": [
+        -0.39,
+        1.1,
+        0.18
+      ],
+      "leftWristPos": [
+        0.37,
+        0.98,
+        0.01
+      ],
+      "chestDistance": 0.48,
+      "isNatural": true,
+      "passed": true
+    },
+    {
+      "poseName": "YOUR (Second Person Possessive)",
+      "signId": "YOUR",
+      "clipName": "PROC_YOUR",
+      "source": "PROCEDURAL",
+      "elbowFlexionDeg": 126.2,
+      "wristRollDeg": -18.1,
+      "rightWristPos": [
+        -0.39,
+        1.1,
+        0.18
+      ],
+      "leftWristPos": [
+        0.37,
+        0.98,
+        0.01
+      ],
+      "chestDistance": 0.48,
+      "isNatural": true,
+      "passed": true
+    },
+    {
+      "poseName": "HELP (Assistance / Help Gesture)",
+      "signId": "HELP",
+      "clipName": "PROC_HELP",
+      "source": "PROCEDURAL",
+      "elbowFlexionDeg": 93.9,
+      "wristRollDeg": 5.1,
+      "rightWristPos": [
+        -0.31,
+        1.16,
+        0.17
+      ],
+      "leftWristPos": [
+        0.29,
+        1.18,
+        0.2
+      ],
+      "chestDistance": 0.39,
+      "isNatural": true,
+      "passed": true
+    },
+    {
+      "poseName": "WHAT (Question Gesture)",
+      "signId": "WHAT",
+      "clipName": "PROC_WHAT",
+      "source": "PROCEDURAL",
+      "elbowFlexionDeg": 108.5,
+      "wristRollDeg": -19.2,
+      "rightWristPos": [
+        -0.33,
+        1.08,
+        0.09
+      ],
+      "leftWristPos": [
+        0.33,
+        1.08,
+        0.09
+      ],
+      "chestDistance": 0.42,
+      "isNatural": true,
+      "passed": true
+    },
+    {
+      "poseName": "HELLO (Greeting Gesture)",
+      "signId": "HELLO",
+      "clipName": "SBV_HELLO",
+      "source": "GLB",
+      "elbowFlexionDeg": 57,
+      "wristRollDeg": 20.1,
+      "rightWristPos": [
+        -0.31,
+        1.57,
+        0.07
+      ],
+      "leftWristPos": [
+        0.29,
+        0.93,
+        0.04
+      ],
+      "chestDistance": 0.41,
+      "isNatural": true,
+      "passed": true
+    },
+    {
+      "poseName": "5-Sign Continuous Sequence",
+      "signId": "HELLO -> I_ME -> HELP -> YOU -> THANK_YOU",
+      "clipName": "MULTI_ACTION_SEQUENCE",
+      "source": "PROCEDURAL",
+      "elbowFlexionDeg": 93.9,
+      "wristRollDeg": 5.1,
+      "rightWristPos": [
+        -0.31,
+        1.16,
+        0.17
+      ],
+      "leftWristPos": [
+        0.29,
+        1.18,
+        0.2
+      ],
+      "chestDistance": 0.25,
+      "isNatural": true,
+      "passed": true
+    }
+  ]
+}

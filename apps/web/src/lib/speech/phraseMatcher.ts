@@ -1,16 +1,31 @@
 /**
  * phraseMatcher.ts
  * ─────────────────────────────────────────────────────────────────────────────
- * Multi-lingual Speech-to-Sign phrase matcher with word boundaries,
- * longer-phrase priority, and sequential sentence extraction.
+ * Multi-lingual Speech-to-Sign phrase matcher and English-to-ISL grammar translator.
  *
- * Covers the full 25-concept Indian Sign Language (ISL) vocabulary:
- *   HELLO, THANK_YOU, PLEASE, SORRY, YES, NO, GOOD, HELP, WATER, FOOD,
- *   HOME, SCHOOL, HOSPITAL, NEED, EMERGENCY, POLICE, STOP, GO, WAIT, COME,
- *   UNDERSTAND, DONT_UNDERSTAND, NAME, WHERE, BATHROOM
- * Plus:
- *   CRYING, REPEAT, LEFT, RIGHT, HERE, GOING
+ * Adheres to Indian Sign Language (ISL) grammatical structure:
+ *   - Subject-Object-Verb (SOV) order (e.g. ME WATER WANT, POLICE CALL)
+ *   - Topic-Comment & Wh-questions at sentence end (e.g. YOUR NAME WHAT, BATHROOM WHERE)
+ *   - Time-Topic-Comment structure
+ *   - Word boundaries, longer-phrase priority, and sequential sentence extraction
+ *
+ * Covers all 10 ISL communication categories:
+ *   1. Greetings & Introductions (HELLO, NAME, YOU, I_ME, MY)
+ *   2. Politeness & Conversation (PLEASE, THANK_YOU, YES, NO, HOW_ARE_YOU, GOOD, BAD)
+ *   3. Medical & Emergency (HOSPITAL, DOCTOR, SICK, PAIN, MEDICINE, AMBULANCE, HELP, EMERGENCY, POLICE, DANGER, STOP)
+ *   4. Food & Sustenance (WATER, FOOD, WANT, BUY, HOW_MUCH)
+ *   5. Navigation & Movement (WHERE, BATHROOM, GO, COME, HERE, THERE, HOME)
+ *   6. Education & Workplace (WORK, LEARN, SCHOOL, UNDERSTAND, DONT_UNDERSTAND)
+ *   7. Clarification & Actions (WAIT, REPEAT, AGAIN, SORRY, FINE, GOODBYE)
  */
+
+import {
+  translateEnglishToISLGloss,
+  translateEnglishToASLGloss,
+  ASL_GRAMMAR_RULES,
+  parseEnglishToISLSentenceIR,
+  ISLSentenceIR,
+} from '@signbridge/types';
 
 export interface MatchedPhrase {
   canonicalAction: string;
@@ -63,27 +78,20 @@ const PHRASE_RULES: PhraseRule[] = [
   },
   {
     canonicalAction: 'EMERGENCY',
-    pattern: /\b(medical\s+emergency|urgent\s+help|emergency\s+situation|aapaatkaal)\b/i,
+    pattern: /\b(medical\s+emergency|urgent\s+help|emergency\s+situation|call\s+911|aapaatkaal)\b/i,
     priority: 95,
     isEmotional: true,
     category: 'urgent',
   },
   {
-    canonicalAction: 'GOING',
-    pattern: /\b(i('m| am)?\s+(going|leaving|heading\s+out|taking\s+off)|see\s+you\s+(later|soon)|good\s+bye|have\s+to\s+go|gotta\s+go)\b/i,
+    canonicalAction: 'HOW_ARE_YOU',
+    pattern: /\b(how\s+are\s+you(\s+doing)?|how('s| is)\s+it\s+going|how\s+do\s+you\s+feel|aap\s+kaise\s+hain|neevu\s+hegiddiri)\b/i,
     priority: 95,
     isEmotional: false,
-    category: 'direction',
+    category: 'greeting',
   },
   {
-    canonicalAction: 'CRYING',
-    pattern: /\b(i('m| am)?\s+crying|bursting\s+into\s+tears|feeling\s+like\s+crying|tears\s+in\s+my\s+eyes|crying\s+so\s+hard)\b/i,
-    priority: 95,
-    isEmotional: true,
-    category: 'emotion',
-  },
-  {
-    canonicalAction: 'HI',
+    canonicalAction: 'HELLO',
     pattern: /\b(good\s+(morning|afternoon|evening|day)|hi\s+there|hey\s+there|nice\s+to\s+meet\s+you)\b/i,
     priority: 90,
     isEmotional: false,
@@ -98,27 +106,34 @@ const PHRASE_RULES: PhraseRule[] = [
   },
   {
     canonicalAction: 'WATER',
-    pattern: /\b(drinking\s+water|glass\s+of\s+water|peene\s+ka\s+paani|kudiyuva\s+neeru)\b/i,
+    pattern: /\b(drinking\s+water|glass\s+of\s+water|bottle\s+of\s+water|peene\s+ka\s+paani|kudiyuva\s+neeru)\b/i,
     priority: 90,
     isEmotional: false,
     category: 'need',
   },
   {
     canonicalAction: 'FOOD',
-    pattern: /\b(something\s+to\s+eat|having\s+lunch|having\s+dinner|khana\s+chahiye)\b/i,
+    pattern: /\b(something\s+to\s+eat|having\s+lunch|having\s+dinner|meal\s+time|khana\s+chahiye)\b/i,
     priority: 90,
     isEmotional: false,
     category: 'need',
   },
   {
-    canonicalAction: 'REPEAT',
+    canonicalAction: 'AGAIN',
     pattern: /\b(please\s+repeat|repeat\s+that|say\s+again|once\s+more|phir\s+se\s+bolein)\b/i,
     priority: 90,
     isEmotional: false,
     category: 'clarification',
   },
+  {
+    canonicalAction: 'HOW_MUCH',
+    pattern: /\b(how\s+much\s+(is\s+it|does\s+it\s+cost)|what\s+is\s+the\s+price|kitna\s+hua|eshtu\s+bele)\b/i,
+    priority: 90,
+    isEmotional: false,
+    category: 'need',
+  },
 
-  // ── Standard 25-Concept Words & Multilingual Variations (Priority 70 - 85)
+  // ── Standard Core ASL Words (Priority 70 - 85) ───────────────────────────
   {
     canonicalAction: 'THANK_YOU',
     pattern: /\b(thank\s+you|thanks|dhanyavaad|dhanyavada|shukriya|dhanyavaada|nandri)\b/i,
@@ -135,15 +150,8 @@ const PHRASE_RULES: PhraseRule[] = [
   },
   {
     canonicalAction: 'HELLO',
-    pattern: /\b(hello|namaste|namaskara|namaskar|vanakkam|namaskaram)\b/i,
+    pattern: /\b(hello|namaste|namaskara|namaskar|vanakkam|namaskaram|hi|hey)\b/i,
     priority: 80,
-    isEmotional: false,
-    category: 'greeting',
-  },
-  {
-    canonicalAction: 'HI',
-    pattern: /\b(hi|hey)\b/i,
-    priority: 78,
     isEmotional: false,
     category: 'greeting',
   },
@@ -176,8 +184,43 @@ const PHRASE_RULES: PhraseRule[] = [
     category: 'need',
   },
   {
+    canonicalAction: 'AMBULANCE',
+    pattern: /\b(ambulance|emergency\s+van|rogi\s+vahan)\b/i,
+    priority: 85,
+    isEmotional: true,
+    category: 'urgent',
+  },
+  {
+    canonicalAction: 'CALL',
+    pattern: /\b(call|phone|ring|dial|bulao|kareyeri)\b/i,
+    priority: 82,
+    isEmotional: false,
+    category: 'need',
+  },
+  {
+    canonicalAction: 'DOCTOR',
+    pattern: /\b(doctor|physician|dr|vaidya|daktar)\b/i,
+    priority: 82,
+    isEmotional: false,
+    category: 'need',
+  },
+  {
+    canonicalAction: 'MEDICINE',
+    pattern: /\b(medicine|medication|pill|tablet|drug|dawai|aushadhi|mandhu)\b/i,
+    priority: 82,
+    isEmotional: false,
+    category: 'need',
+  },
+  {
+    canonicalAction: 'PAIN',
+    pattern: /\b(pain|hurt|hurting|ache|injury|injured|dard|novvu|noppi)\b/i,
+    priority: 82,
+    isEmotional: true,
+    category: 'emotion',
+  },
+  {
     canonicalAction: 'HOSPITAL',
-    pattern: /\b(hospital|clinic|doctor|aspitre|vaidhyashala|maruthuvamanai)\b/i,
+    pattern: /\b(hospital|clinic|emergency\s+room|aspitre|vaidhyashala|maruthuvamanai)\b/i,
     priority: 80,
     isEmotional: false,
     category: 'location',
@@ -198,31 +241,38 @@ const PHRASE_RULES: PhraseRule[] = [
   },
   {
     canonicalAction: 'EMERGENCY',
-    pattern: /\b(emergency|urgent)\b/i,
+    pattern: /\b(emergency|urgent|aapaatkaal)\b/i,
     priority: 80,
     isEmotional: true,
     category: 'urgent',
   },
   {
     canonicalAction: 'SCHOOL',
-    pattern: /\b(school|college|classroom|vidyalaya|shale|patashala|pallikkutam)\b/i,
+    pattern: /\b(school|college|classroom|university|vidyalaya|shale|patashala)\b/i,
     priority: 80,
     isEmotional: false,
     category: 'location',
   },
   {
-    canonicalAction: 'HOME',
-    pattern: /\b(home|house|residence|ghar|mane|illu|veedu)\b/i,
+    canonicalAction: 'WORK',
+    pattern: /\b(work|working|job|office|kaam|kelasa|pani)\b/i,
     priority: 80,
     isEmotional: false,
     category: 'location',
   },
   {
     canonicalAction: 'GOOD',
-    pattern: /\b(good|great|fine|nice|well|accha|badhiya|chennagide|manchidi|nalladhu)\b/i,
+    pattern: /\b(good|great|fine|nice|well|accha|badhiya|chennagide|manchidi)\b/i,
     priority: 78,
     isEmotional: false,
     category: 'politeness',
+  },
+  {
+    canonicalAction: 'BAD',
+    pattern: /\b(bad|poor|awful|unwell|bura|chettadi|kettadhu)\b/i,
+    priority: 78,
+    isEmotional: false,
+    category: 'emotion',
   },
   {
     canonicalAction: 'STOP',
@@ -253,8 +303,8 @@ const PHRASE_RULES: PhraseRule[] = [
     category: 'direction',
   },
   {
-    canonicalAction: 'NEED',
-    pattern: /\b(need|require|want|zaroorat|beku|kavali|thevai)\b/i,
+    canonicalAction: 'WANT',
+    pattern: /\b(want|desire|need|require|zaroorat|beku|kavali|thevai)\b/i,
     priority: 75,
     isEmotional: false,
     category: 'need',
@@ -288,20 +338,6 @@ const PHRASE_RULES: PhraseRule[] = [
     category: 'clarification',
   },
   {
-    canonicalAction: 'CRYING',
-    pattern: /\b(crying|cried|shedding\s+tears|weeping|sobbing|rona|alu)\b/i,
-    priority: 70,
-    isEmotional: true,
-    category: 'emotion',
-  },
-  {
-    canonicalAction: 'GOING',
-    pattern: /\b(going|leaving|departing|goodbye|bye(\s+bye)?|alvida|ja\s+raha\s+hoon)\b/i,
-    priority: 70,
-    isEmotional: false,
-    category: 'direction',
-  },
-  {
     canonicalAction: 'HERE',
     pattern: /\b(here|yahan|illi|ikkada|inge)\b/i,
     priority: 70,
@@ -309,18 +345,25 @@ const PHRASE_RULES: PhraseRule[] = [
     category: 'direction',
   },
   {
-    canonicalAction: 'LEFT',
-    pattern: /\b(left|turn\s+left|baayein|edagade|edama)\b/i,
+    canonicalAction: 'THERE',
+    pattern: /\b(there|vahan|alli|akkada|ange)\b/i,
     priority: 70,
     isEmotional: false,
     category: 'direction',
   },
   {
-    canonicalAction: 'RIGHT',
-    pattern: /\b(right|turn\s+right|daayein|balagade|kudi)\b/i,
+    canonicalAction: 'HAPPY',
+    pattern: /\b(happy|glad|joyful|cheerful|khush|santhosha|anandam)\b/i,
+    priority: 70,
+    isEmotional: true,
+    category: 'emotion',
+  },
+  {
+    canonicalAction: 'FINE',
+    pattern: /\b(fine|okay|all\s+right|theek|sari)\b/i,
     priority: 70,
     isEmotional: false,
-    category: 'direction',
+    category: 'politeness',
   },
 ];
 
@@ -367,12 +410,35 @@ export function getPrimaryActionFromSpeech(text: string): string | null {
 }
 
 /**
- * Extracts all matched ISL sign gestures in chronological sentence sequence order.
- * E.g.: "Hello, thank you for your help" -> ["HELLO", "THANK_YOU", "HELP"]
+ * Extracts and returns an ordered sequence of ISL actions for 3D avatar animation.
+ * Evaluates ISL grammatical structure (SOV / Wh-questions at sentence end) first,
+ * followed by ASL fallback, and chronological appearance.
+ * E.g.: "Hello, how are you?" -> ["HELLO", "YOU", "HOW"]
+ *       "Where is the bathroom?" -> ["BATHROOM", "WHERE"]
+ *       "Can you help me?" -> ["YOU", "HELP", "NEED"]
+ *       "Please call an ambulance" -> ["PLEASE", "AMBULANCE", "CALL"]
  */
 export function matchSpeechSequence(text: string): string[] {
+  if (!text || !text.trim()) return [];
+
+  // 1. Full ISL Linguistic Transformation Engine (ISL-IR)
+  const islIR = parseEnglishToISLSentenceIR(text);
+  if (islIR.glossSequence.length > 0) {
+    return islIR.glossSequence;
+  }
+
+  // 2. Legacy / rule-based fallback
+  const islTranslation = translateEnglishToISLGloss(text);
+  if (islTranslation.glosses.length > 0) {
+    return islTranslation.glosses;
+  }
+
+  // 3. Fallback to chronological appearance of matched concepts
   const matches = matchSpeechPhrases(text);
-  // Sort chronologically by their appearance in the spoken utterance
   const ordered = [...matches].sort((a, b) => a.index - b.index);
   return ordered.map((m) => m.canonicalAction);
+}
+
+export function matchSpeechISLIR(text: string): ISLSentenceIR {
+  return parseEnglishToISLSentenceIR(text);
 }

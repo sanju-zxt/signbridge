@@ -11,8 +11,8 @@
  */
 
 import { useState, useCallback } from 'react';
-import type { RecognitionResult, RecognitionState, CanonicalMessage } from '@signbridge2vision/types';
-import { ISL_VOCABULARY } from '@signbridge2vision/types';
+import type { RecognitionResult, RecognitionState, CanonicalMessage } from '@signbridge/types';
+import { ISL_VOCABULARY } from '@signbridge/types';
 
 export interface ISLPerceptionState {
   lastRecognition: RecognitionResult | null;

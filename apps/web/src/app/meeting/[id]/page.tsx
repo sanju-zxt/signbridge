@@ -8,7 +8,7 @@ import { useISLPerception } from '../../../hooks/useISLPerception';
 import { useRealtimeSession } from '../../../hooks/useRealtimeSession';
 import { StreamingSTTClient } from '../../../lib/speech/stt';
 import { ttsPlayer } from '../../../lib/speech/tts';
-import { ISL_VOCABULARY, RecognitionResult, CanonicalMessage } from '@signbridge2vision/types';
+import { ISL_VOCABULARY, RecognitionResult, CanonicalMessage } from '@signbridge/types';
 import { Mic, MicOff, Hand, Volume2, Camera, CameraOff, Send, Sparkles, AlertCircle } from 'lucide-react';
 
 export default function MeetingPage() {
@@ -26,7 +26,8 @@ export default function MeetingPage() {
   const [typedText, setTypedText] = useState<string>('');
   const [sttError, setSttError] = useState<string | null>(null);
   const [isListeningActive, setIsListeningActive] = useState<boolean>(false);
-  const [avatarSign, setAvatarSign] = useState<string | null>('HELLO');
+  const [avatarSign, setAvatarSign] = useState<string | null>(null);
+  const [speechTranscriptForAvatar, setSpeechTranscriptForAvatar] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -49,10 +50,11 @@ export default function MeetingPage() {
   // Broadcast spoken sentence / subtitle
   const triggerSpeechTranscript = useCallback((text: string) => {
     if (!text.trim()) return;
-    setLiveSubtitle(text);
+    const cleanText = text.trim();
+    setLiveSubtitle(cleanText);
     setSttError(null);
-    sendFinalSpeech(text, 0.95);
-    setAvatarSign(text);
+    sendFinalSpeech(cleanText, 0.95);
+    setSpeechTranscriptForAvatar(cleanText);
   }, [sendFinalSpeech]);
 
   const handleRecognizedSign = useCallback((result: RecognitionResult) => {
@@ -220,7 +222,7 @@ export default function MeetingPage() {
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans p-6 sm:p-10 flex flex-col">
       <header className="mb-6">
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">SignBridge2Vision</h1>
+        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">SignBridge</h1>
         <p className="text-base text-slate-600 font-medium mt-1">Meeting ID : {meetingId}</p>
       </header>
 
@@ -378,7 +380,7 @@ export default function MeetingPage() {
         {/* Right Column */}
         <section className="flex flex-col gap-4">
           <h2 className="text-xl font-bold text-slate-900">Sign Avatar</h2>
-          <SignAvatar currentSign={avatarSign} textToSign={liveSubtitle} className="w-full" />
+          <SignAvatar currentSign={avatarSign} textToSign={speechTranscriptForAvatar} className="w-full" />
         </section>
       </main>
     </div>

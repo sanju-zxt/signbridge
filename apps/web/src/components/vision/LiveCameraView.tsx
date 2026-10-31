@@ -20,8 +20,9 @@ import React, {
   useState,
   useMemo,
 } from 'react';
-import { RecognitionResult, RawLandmarkFrame, DEFAULT_PIPELINE_CONFIG } from '@signbridge2vision/types';
-import { ISL_VOCABULARY } from '@signbridge2vision/types';
+import { RecognitionResult, RawLandmarkFrame, DEFAULT_PIPELINE_CONFIG } from '@signbridge/types';
+import { ISL_VOCABULARY, translateISLGlossSequenceToEnglish } from '@signbridge/types';
+import { extractNonManualFeatures } from '../../lib/ml/featureExtractor';
 import LandmarkOverlay from './LandmarkOverlay';
 import RecognitionHUD from './RecognitionHUD';
 import ActionTimeline from './ActionTimeline';
@@ -46,7 +47,7 @@ interface LiveCameraViewProps {
 // ── Landmark connection pairs (MediaPipe hand topology) ────────────────────
 const WINDOW_SIZE = DEFAULT_PIPELINE_CONFIG.windowSize;
 const FEATURE_DIM = DEFAULT_PIPELINE_CONFIG.featureDim;
-const CONFIDENCE_THRESHOLD = 0.60;
+const CONFIDENCE_THRESHOLD = 0.50;
 const STABLE_FRAMES = 2;
 
 // ── Vocabulary lookup ──────────────────────────────────────────────────────
@@ -63,37 +64,135 @@ class FrameBuffer {
   }
 
   get length() { return this.frames.length; }
-  get isReady() { return this.frames.length >= 5; }
+  get isReady() { return this.frames.length >= 10; }
   get isFull() { return this.frames.length >= this.size; }
   getFrames() { return this.frames; }
   clear() { this.frames = []; }
 }
 
-// ── Feature extraction (inline, avoids dynamic import lag) ────────────────
-function normHand(lms: Array<{x:number;y:number;z:number}> | null): Float32Array {
-  const out = new Float32Array(63);
-  if (!lms || lms.length < 21) return out;
-  const wx = lms[0].x, wy = lms[0].y, wz = lms[0].z;
-  const dx = lms[9].x - wx, dy = lms[9].y - wy, dz = lms[9].z - wz;
-  const scale = Math.sqrt(dx*dx + dy*dy + dz*dz) || 1.0;
+// ── Motion-Preserving Feature Extraction ──────────────────────────────────
+function interpolateHand(
+  h0: Array<{ x: number; y: number; z: number }> | null | undefined,
+  h1: Array<{ x: number; y: number; z: number }> | null | undefined,
+  t: number
+): Array<{ x: number; y: number; z: number }> | null {
+  if (!h0 && !h1) return null;
+  if (!h0) return h1 || null;
+  if (!h1) return h0;
+  const out: Array<{ x: number; y: number; z: number }> = [];
   for (let i = 0; i < 21; i++) {
-    out[i*3]   = (lms[i].x - wx) / scale;
-    out[i*3+1] = (lms[i].y - wy) / scale;
-    out[i*3+2] = (lms[i].z - wz) / scale;
+    const p0 = h0[i] || { x: 0, y: 0, z: 0 };
+    const p1 = h1[i] || { x: 0, y: 0, z: 0 };
+    out.push({
+      x: p0.x + (p1.x - p0.x) * t,
+      y: p0.y + (p1.y - p0.y) * t,
+      z: p0.z + (p1.z - p0.z) * t,
+    });
   }
   return out;
 }
 
-function buildMatrix(frames: Array<{ rightHand: Array<{x:number;y:number;z:number}> | null; leftHand: Array<{x:number;y:number;z:number}> | null }>): Float32Array {
+function buildNormalizedMatrix(
+  frames: Array<{
+    rightHand: Array<{ x: number; y: number; z: number }> | null;
+    leftHand: Array<{ x: number; y: number; z: number }> | null;
+  }>
+): Float32Array {
   const matrix = new Float32Array(WINDOW_SIZE * FEATURE_DIM);
-  const offset = Math.max(0, WINDOW_SIZE - frames.length);
-  for (let i = 0; i < frames.length && i < WINDOW_SIZE; i++) {
-    const rh = normHand(frames[i].rightHand);
-    const lh = normHand(frames[i].leftHand);
-    const base = (offset + i) * FEATURE_DIM;
-    matrix.set(rh, base);
-    matrix.set(lh, base + 63);
+  if (!frames || frames.length === 0) return matrix;
+
+  const N = frames.length;
+  const resampled: Array<{
+    rightHand: Array<{ x: number; y: number; z: number }> | null;
+    leftHand: Array<{ x: number; y: number; z: number }> | null;
+  }> = [];
+
+  for (let k = 0; k < WINDOW_SIZE; k++) {
+    const progress = k / (WINDOW_SIZE - 1);
+    const srcIndex = progress * (N - 1);
+    const i0 = Math.floor(srcIndex);
+    const i1 = Math.min(N - 1, Math.ceil(srcIndex));
+    const t = srcIndex - i0;
+    const f0 = frames[i0];
+    const f1 = frames[i1];
+
+    resampled.push({
+      rightHand: interpolateHand(f0?.rightHand, f1?.rightHand, t),
+      leftHand: interpolateHand(f0?.leftHand, f1?.leftHand, t),
+    });
   }
+
+  // Find reference right hand wrist & palm scale
+  let refRh0: { x: number; y: number; z: number } | null = null;
+  let refRhScale = 1.0;
+  for (const f of resampled) {
+    if (f.rightHand && f.rightHand.length >= 21) {
+      refRh0 = f.rightHand[0];
+      const dx = f.rightHand[9].x - refRh0.x;
+      const dy = f.rightHand[9].y - refRh0.y;
+      const dz = f.rightHand[9].z - refRh0.z;
+      refRhScale = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1.0;
+      break;
+    }
+  }
+
+  // Find reference left hand wrist & palm scale
+  let refLh0: { x: number; y: number; z: number } | null = null;
+  let refLhScale = 1.0;
+  for (const f of resampled) {
+    if (f.leftHand && f.leftHand.length >= 21) {
+      refLh0 = f.leftHand[0];
+      const dx = f.leftHand[9].x - refLh0.x;
+      const dy = f.leftHand[9].y - refLh0.y;
+      const dz = f.leftHand[9].z - refLh0.z;
+      refLhScale = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1.0;
+      break;
+    }
+  }
+
+  for (let step = 0; step < WINDOW_SIZE; step++) {
+    const f = resampled[step];
+    const base = step * FEATURE_DIM;
+
+    // Right hand (dims 0..62)
+    if (f.rightHand && f.rightHand.length >= 21 && refRh0) {
+      const wt = f.rightHand[0];
+      const dxt = f.rightHand[9].x - wt.x;
+      const dyt = f.rightHand[9].y - wt.y;
+      const dzt = f.rightHand[9].z - wt.z;
+      const curScale = Math.sqrt(dxt * dxt + dyt * dyt + dzt * dzt) || refRhScale;
+
+      matrix[base + 0] = (wt.x - refRh0.x) / refRhScale;
+      matrix[base + 1] = (wt.y - refRh0.y) / refRhScale;
+      matrix[base + 2] = (wt.z - refRh0.z) / refRhScale;
+
+      for (let i = 1; i < 21; i++) {
+        matrix[base + i * 3 + 0] = (f.rightHand[i].x - wt.x) / curScale;
+        matrix[base + i * 3 + 1] = (f.rightHand[i].y - wt.y) / curScale;
+        matrix[base + i * 3 + 2] = (f.rightHand[i].z - wt.z) / curScale;
+      }
+    }
+
+    // Left hand (dims 63..125)
+    if (f.leftHand && f.leftHand.length >= 21 && refLh0) {
+      const wt = f.leftHand[0];
+      const dxt = f.leftHand[9].x - wt.x;
+      const dyt = f.leftHand[9].y - wt.y;
+      const dzt = f.leftHand[9].z - wt.z;
+      const curScale = Math.sqrt(dxt * dxt + dyt * dyt + dzt * dzt) || refLhScale;
+
+      matrix[base + 63 + 0] = (wt.x - refLh0.x) / refLhScale;
+      matrix[base + 63 + 1] = (wt.y - refLh0.y) / refLhScale;
+      matrix[base + 63 + 2] = (wt.z - refLh0.z) / refLhScale;
+
+      for (let i = 1; i < 21; i++) {
+        matrix[base + 63 + i * 3 + 0] = (f.leftHand[i].x - wt.x) / curScale;
+        matrix[base + 63 + i * 3 + 1] = (f.leftHand[i].y - wt.y) / curScale;
+        matrix[base + 63 + i * 3 + 2] = (f.leftHand[i].z - wt.z) / curScale;
+      }
+    }
+  }
+
   return matrix;
 }
 
@@ -181,8 +280,20 @@ export default function LiveCameraView({
   const [inferenceMs, setInferenceMs]     = useState(0);
   const [workerReady, setWorkerReady]     = useState(false);
   const [modelId, setModelId]             = useState('Loading…');
+  const [activeBackend, setActiveBackend] = useState<string>('Detecting...');
   const [debugOpen, setDebugOpen]         = useState(false);
   const [probabilities, setProbabilities] = useState<Array<{sign:string;confidence:number;label:string}>>([]);
+  const [rhConfidence, setRhConfidence]   = useState(0);
+  const [lhConfidence, setLhConfidence]   = useState(0);
+  const [lastTriggeredSign, setLastTriggeredSign] = useState<string | null>(null);
+  const droppedFramesCountRef = useRef(0);
+
+  // Continuous ISL Grammar & Emergency Safety Gate State
+  const [accumulatedGlosses, setAccumulatedGlosses] = useState<string[]>([]);
+  const [continuousSentence, setContinuousSentence] = useState<string>('');
+  const [pendingEmergency, setPendingEmergency] = useState<{ sign: string; displayName: string; timestamp: number } | null>(null);
+  const lastSignTimeRef = useRef<number>(0);
+  const EMERGENCY_SIGNS = useMemo(() => ['EMERGENCY', 'POLICE', 'HOSPITAL', 'HELP', 'DANGER'], []);
 
   // ── Initialise Web Worker ────────────────────────────────────────────────
   useEffect(() => {
@@ -203,41 +314,26 @@ export default function LiveCameraView({
       } else if (msg.type === 'MODEL_LOADED') {
         setWorkerReady(true);
         setModelId(msg.modelMetadata?.id ?? 'SBV-KINEMATIC-v1');
+        if (msg.activeBackend || msg.modelMetadata?.activeBackend) {
+          setActiveBackend(String(msg.activeBackend || msg.modelMetadata?.activeBackend).toUpperCase());
+        }
         console.log('[LiveCamera] Model loaded:', msg.modelMetadata);
       } else if (msg.type === 'RESULT') {
         inferenceRunning.current = false;
         const result: RecognitionResult = msg.result;
         setInferenceMs(result.latencyMs);
         setProbabilities(result.probabilities.slice(0, 5));
-
-        // EMA smoothing
-        const rawProbs = result.probabilities.map(p => p.confidence);
-        const smoothed = emaRef.current.update(rawProbs);
-
-        // Find top after smoothing
-        let topIdx = 0;
-        for (let i = 1; i < smoothed.length; i++) {
-          if (smoothed[i] > smoothed[topIdx]) topIdx = i;
+        if (msg.activeBackend) {
+          setActiveBackend(String(msg.activeBackend).toUpperCase());
         }
-        const topSign = ISL_VOCABULARY[topIdx]?.sign ?? result.gesture;
-        const topConf = smoothed[topIdx];
 
-        // Update current result with smoothed confidence
-        const smoothedResult: RecognitionResult = {
-          ...result,
-          gesture: topSign,
-          displayName: VOCAB_MAP.get(topSign) ?? topSign,
-          confidence: topConf,
-          probabilities: Array.from(smoothed).map((c, i) => ({
-            sign: ISL_VOCABULARY[i]?.sign ?? `CLASS_${i}`,
-            confidence: c,
-            label: ISL_VOCABULARY[i]?.label ?? `Class ${i}`,
-          })).sort((a, b) => b.confidence - a.confidence),
-        };
+        // Direct Neural Model Recognition (Uncorrupted by sorted index mismatch)
+        const topSign = result.gesture;
+        const topConf = result.confidence;
 
-        setCurrentResult(smoothedResult);
+        setCurrentResult(result);
 
-        if (topConf >= CONFIDENCE_THRESHOLD) {
+        if (topSign && topSign !== 'NONE' && topConf >= CONFIDENCE_THRESHOLD) {
           setPipelineState('RECOGNIZED');
 
           if (topSign === stableSign.current) {
@@ -249,26 +345,52 @@ export default function LiveCameraView({
 
           if (stableCount.current >= STABLE_FRAMES) {
             const now = Date.now();
-            const isDuplicate = lastEmit.current?.sign === topSign && now - (lastEmit.current?.at ?? 0) < 2500;
+            // Suppress continuous redundant events during the same physical hold, while allowing transitions
+            const isHoldingCurrentSign = lastEmit.current?.sign === topSign && now - (lastEmit.current?.at ?? 0) < 1200;
 
-            if (!isDuplicate) {
+            if (!isHoldingCurrentSign) {
               lastEmit.current = { sign: topSign, at: now };
               setRecognizedAt(now);
+              lastSignTimeRef.current = now;
 
-              const finalResult: RecognitionResult = { ...smoothedResult };
+              // Continuous ISL Sentence Accumulation & Grammar Translation
+              setAccumulatedGlosses(prev => {
+                if (prev.length > 0 && prev[prev.length - 1] === topSign) return prev;
+                const next = [...prev, topSign];
+                const eng = translateISLGlossSequenceToEnglish(next);
+                setContinuousSentence(eng);
+                return next;
+              });
+
+              const finalResult: RecognitionResult = { ...result };
 
               setTimeline(prev => [
-                { gesture: topSign, displayName: smoothedResult.displayName, confidence: topConf, timestamp: now },
+                { gesture: topSign, displayName: result.displayName, confidence: topConf, timestamp: now },
                 ...prev.slice(0, 7),
               ]);
 
-              onSignRecognised?.(finalResult);
+              // Priority 4: Emergency Safety Gate — requires explicit human confirmation
+              if (EMERGENCY_SIGNS.includes(topSign)) {
+                setPendingEmergency({
+                  sign: topSign,
+                  displayName: result.displayName,
+                  timestamp: now,
+                });
+              } else {
+                setLastTriggeredSign(topSign);
+                onSignRecognised?.(finalResult);
+              }
             }
           }
         } else {
           setPipelineState('LOW_CONFIDENCE');
           stableCount.current = 0;
           stableSign.current = null;
+          // Boundary detection (>= 900ms rest pause)
+          const now = Date.now();
+          if (lastEmit.current && now - lastEmit.current.at >= 900) {
+            lastEmit.current = null;
+          }
         }
       } else if (msg.type === 'ERROR') {
         console.error('[InferenceWorker]', msg.error);
@@ -281,18 +403,53 @@ export default function LiveCameraView({
     worker.postMessage({ type: 'PING' });
 
     return () => { worker.terminate(); };
-  }, [onSignRecognised]);
+  }, [onSignRecognised, EMERGENCY_SIGNS]);
 
-  // ── Initialise MediaPipe ─────────────────────────────────────────────────
+  const handleConfirmEmergency = useCallback(() => {
+    if (!pendingEmergency) return;
+    const finalResult: RecognitionResult = {
+      gesture: pendingEmergency.sign,
+      displayName: pendingEmergency.displayName,
+      confidence: 0.98,
+      probabilities: [{ sign: pendingEmergency.sign, label: pendingEmergency.displayName, confidence: 0.98 }],
+      latencyMs: 8,
+      timestamp: Date.now(),
+      sequenceLength: WINDOW_SIZE,
+      modelId,
+    };
+    setLastTriggeredSign(pendingEmergency.sign);
+    onSignRecognised?.(finalResult);
+    setPendingEmergency(null);
+  }, [pendingEmergency, onSignRecognised, modelId]);
+
+  const handleDismissEmergency = useCallback(() => {
+    setPendingEmergency(null);
+  }, []);
+
+  const handleClearContinuousSentence = useCallback(() => {
+    setAccumulatedGlosses([]);
+    setContinuousSentence('');
+    lastSignTimeRef.current = 0;
+  }, []);
+
+  // ── Initialise MediaPipe (Hands + Face Multimodal) ─────────────────────────
   const initMediaPipe = useCallback(async () => {
     try {
-      const { createHandLandmarker } = await import('../../lib/vision/handLandmarker');
-      const hl = await createHandLandmarker();
-      mpRef.current = hl;
-      console.log('[LiveCamera] MediaPipe HandLandmarker initialised successfully');
+      const { initMediaPipe: initMp, mediaPipeVision } = await import('../../lib/vision/mediapipe');
+      await initMp();
+      mpRef.current = mediaPipeVision;
+      console.log('[LiveCamera] MediaPipe multimodal vision (Hands + Face) initialised successfully');
     } catch (err) {
-      console.error('[LiveCamera] MediaPipe init failed:', err);
-      setCameraError('MediaPipe failed to initialise. Check browser console.');
+      console.warn('[LiveCamera] Multimodal MediaPipe failed, trying hand fallback:', err);
+      try {
+        const { createHandLandmarker } = await import('../../lib/vision/handLandmarker');
+        const hl = await createHandLandmarker();
+        mpRef.current = hl;
+        console.log('[LiveCamera] MediaPipe HandLandmarker initialised (fallback)');
+      } catch (fallbackErr) {
+        console.error('[LiveCamera] MediaPipe init failed:', fallbackErr);
+        setCameraError('MediaPipe failed to initialise. Check browser console.');
+      }
     }
   }, []);
 
@@ -374,21 +531,33 @@ export default function LiveCameraView({
 
     try {
       const tPrepStart = performance.now();
-      const result = mp.detectForVideo(video, now);
-
-      // Extract right/left hand landmarks
+      // Extract right/left hand landmarks and optional facial non-manual features
       let rh: Array<{x:number;y:number;z:number}> | null = null;
       let lh: Array<{x:number;y:number;z:number}> | null = null;
       let rhConf = 0, lhConf = 0;
+      let nonManualVec: Float32Array | null = null;
 
-      if (result?.landmarks && result.landmarks.length > 0) {
-        for (let i = 0; i < result.landmarks.length; i++) {
-          const handedness = result.handedness?.[i]?.[0];
-          const isRight = handedness?.categoryName === 'Right';
-          const lms = result.landmarks[i].map((lm: any) => ({ x: lm.x, y: lm.y, z: lm.z }));
-          const conf = handedness?.score ?? 0;
-          if (isRight) { rh = lms; rhConf = conf; }
-          else         { lh = lms; lhConf = conf; }
+      if (typeof mp.detectMultimodal === 'function') {
+        const mmRes = mp.detectMultimodal(video, now);
+        rh = mmRes.rightHand;
+        lh = mmRes.leftHand;
+        rhConf = mmRes.rightHandConfidence;
+        lhConf = mmRes.leftHandConfidence;
+        if (mmRes.faceLandmarks && mmRes.faceLandmarks.length > 0) {
+          const nmRes = extractNonManualFeatures(mmRes.faceLandmarks);
+          nonManualVec = nmRes.vector;
+        }
+      } else if (typeof mp.detectForVideo === 'function') {
+        const result = mp.detectForVideo(video, now);
+        if (result?.landmarks && result.landmarks.length > 0) {
+          for (let i = 0; i < result.landmarks.length; i++) {
+            const handedness = result.handedness?.[i]?.[0];
+            const isRight = handedness?.categoryName === 'Right';
+            const lms = result.landmarks[i].map((lm: any) => ({ x: lm.x, y: lm.y, z: lm.z }));
+            const conf = handedness?.score ?? 0;
+            if (isRight) { rh = lms; rhConf = conf; }
+            else         { lh = lms; lhConf = conf; }
+          }
         }
       }
 
@@ -396,6 +565,9 @@ export default function LiveCameraView({
       setHandsDetected(hasHand ? (rh && lh ? 2 : 1) : 0);
       setRightLandmarks(rh);
       setLeftLandmarks(lh);
+
+      setRhConfidence(rhConf);
+      setLhConfidence(lhConf);
 
       // Emit raw frame for recording and external consumers
       onRawFrame?.({
@@ -407,13 +579,18 @@ export default function LiveCameraView({
       });
 
       if (!hasHand) {
-        bufferRef.current.clear();
-        emaRef.current.reset();
-        stableCount.current = 0;
-        stableSign.current = null;
-        setPipelineState('IDLE');
-        setCurrentResult(null);
+        droppedFramesCountRef.current++;
+        // Allow up to 4 dropped frames (~130ms) before clearing temporal buffer
+        if (droppedFramesCountRef.current > 4) {
+          bufferRef.current.clear();
+          emaRef.current.reset();
+          stableCount.current = 0;
+          stableSign.current = null;
+          setPipelineState('IDLE');
+          setCurrentResult(null);
+        }
       } else {
+        droppedFramesCountRef.current = 0;
         bufferRef.current.push(rh, lh);
 
         if (bufferRef.current.isReady) {
@@ -426,7 +603,7 @@ export default function LiveCameraView({
         if (bufferRef.current.isReady && workerReady && !inferenceRunning.current) {
           inferenceRunning.current = true;
           const frames = bufferRef.current.getFrames();
-          const matrix = buildMatrix(frames);
+          const matrix = buildNormalizedMatrix(frames);
           const motionVector = computeMotionVector(frames);
           const tPrep = performance.now() - tPrepStart;
           workerRef.current?.postMessage(
@@ -434,6 +611,7 @@ export default function LiveCameraView({
               type: 'INFER',
               features: matrix,
               motionVector,
+              nonManualFeatures: nonManualVec ?? undefined,
               windowSize: WINDOW_SIZE,
               featureDim: FEATURE_DIM,
               sentAt: performance.now(),
@@ -552,7 +730,7 @@ export default function LiveCameraView({
         {/* Pipeline status bar */}
         {cameraState === 'active' && (
           <div className="absolute bottom-0 left-0 right-0 bg-black/60 px-3 py-1.5 flex items-center justify-between text-xs">
-            <span className="text-gray-400 font-mono">{fps} FPS · {handsDetected} hand{handsDetected !== 1 ? 's' : ''}</span>
+            <span className="text-gray-400 font-mono">{activeBackend} · {fps} FPS · {handsDetected} hand{handsDetected !== 1 ? 's' : ''}</span>
             <span className={`font-mono font-semibold ${
               pipelineState === 'RECOGNIZED' ? 'text-green-400' :
               pipelineState === 'LOW_CONFIDENCE' ? 'text-yellow-400' :
@@ -568,6 +746,66 @@ export default function LiveCameraView({
           </div>
         )}
       </div>
+
+      {/* Priority 4: Emergency Safety Gate Banner */}
+      {pendingEmergency && (
+        <div className="p-3.5 bg-red-950/90 border-2 border-red-500 rounded-xl text-white flex flex-col gap-2 shadow-lg animate-pulse">
+          <div className="flex items-center gap-2.5">
+            <span className="text-2xl">🚨</span>
+            <div className="flex-1">
+              <div className="font-bold text-red-300 text-sm tracking-wide">
+                EMERGENCY SAFETY GATE ACTIVATED
+              </div>
+              <div className="text-xs text-gray-200">
+                Recognized emergency sign: <strong className="text-red-200">{pendingEmergency.displayName}</strong> ({pendingEmergency.sign}).
+                Automated external dispatch is blocked until you explicitly confirm.
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2 justify-end mt-1">
+            <button
+              onClick={handleDismissEmergency}
+              className="px-3.5 py-1.5 text-xs bg-gray-700 hover:bg-gray-600 rounded-md font-medium transition-colors"
+            >
+              Dismiss / False Trigger
+            </button>
+            <button
+              onClick={handleConfirmEmergency}
+              className="px-4 py-1.5 text-xs bg-red-600 hover:bg-red-500 font-bold rounded-md shadow transition-colors"
+            >
+              Confirm Emergency Alert
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Priority 4: Continuous ISL Sentence HUD */}
+      {accumulatedGlosses.length > 0 && (
+        <div className="p-3 bg-gray-800/90 border border-sky-500/40 rounded-xl text-white flex flex-col gap-1.5 shadow">
+          <div className="flex items-center justify-between text-xs font-mono">
+            <span className="text-sky-400 font-semibold">CONTINUOUS ISL SENTENCE (SOV / Grammar)</span>
+            <button
+              onClick={handleClearContinuousSentence}
+              className="text-gray-400 hover:text-gray-200 text-[11px]"
+            >
+              Clear
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-1 items-center">
+            <span className="text-xs text-gray-400 font-mono mr-1">Gloss sequence:</span>
+            {accumulatedGlosses.map((g, idx) => (
+              <span key={idx} className="px-2 py-0.5 bg-sky-950/80 border border-sky-500/50 text-sky-300 rounded font-mono text-xs">
+                {g}
+              </span>
+            ))}
+          </div>
+          {continuousSentence && (
+            <div className="text-sm font-medium text-emerald-300 mt-0.5 bg-black/40 px-2.5 py-1.5 rounded-lg border border-emerald-500/30">
+              "{continuousSentence}"
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Controls row */}
       {cameraState !== 'idle' && (
@@ -593,11 +831,15 @@ export default function LiveCameraView({
       <DebugPanel
         fps={fps}
         handsDetected={handsDetected}
+        rightConfidence={rhConfidence}
+        leftConfidence={lhConfidence}
         sequenceFill={bufferFill}
         windowSize={WINDOW_SIZE}
         inferenceLatencyMs={inferenceMs}
         probabilities={probabilities}
         state={pipelineState}
+        triggeredSign={lastTriggeredSign}
+        avatarActionStatus={pipelineState === 'RECOGNIZED' ? 'PLAYING' : 'IDLE'}
         isOpen={debugOpen}
         onToggle={() => setDebugOpen(o => !o)}
       />

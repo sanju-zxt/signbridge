@@ -32,3 +32,16 @@ Desktop.ini
 # Blender backups
 *.blend1
 *.blend2
+
+# Local Backups and Scratch Files
+backups/
+latest_user_request.txt
+request_10_prompt.md
+*.tmp
+*.log
+
+# Large Raw Training Dumps (Offline datasets)
+ml/data/
+ml/datasets/asl/
+ml/datasets/isl/
+ml/models/sbv-gru-v1-asl/

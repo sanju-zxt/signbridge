@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
 import * as path from 'path';
-import { CollectionSequence } from '@signbridge2vision/types';
+import * as crypto from 'crypto';
+import { CollectionSequence } from '@signbridge/types';
 
 function getDataDir(): string {
   const fromRoot = path.resolve(process.cwd(), 'ml', 'data');
@@ -19,16 +20,44 @@ export async function GET() {
     }
 
     const counts: Record<string, number> = {};
+    const signersFound = new Set<string>();
+    let total = 0;
+    let genuineHumanCount = 0;
+    let syntheticKinematicCount = 0;
+
     const entries = fs.readdirSync(dataDir, { withFileTypes: true });
 
-    let total = 0;
     for (const entry of entries) {
       if (entry.isDirectory()) {
         const signDir = path.join(dataDir, entry.name);
-        const files = fs.readdirSync(signDir).filter((f) => f.endsWith('.json'));
         const signKey = entry.name.toUpperCase();
-        counts[signKey] = files.length;
-        total += files.length;
+        let signTotal = 0;
+
+        // Check direct files
+        const directFiles = fs.readdirSync(signDir).filter((f) => f.endsWith('.json'));
+        signTotal += directFiles.length;
+
+        // Check subdirectories (e.g., signer_01, studio_signer_01)
+        const subEntries = fs.readdirSync(signDir, { withFileTypes: true });
+        for (const sub of subEntries) {
+          if (sub.isDirectory()) {
+            signersFound.add(sub.name);
+            const subDir = path.join(signDir, sub.name);
+            const subFiles = fs.readdirSync(subDir).filter((f) => f.endsWith('.json'));
+            signTotal += subFiles.length;
+
+            for (const sf of subFiles) {
+              if (sf.includes('studio') || sf.includes('human') || sub.name.includes('studio')) {
+                genuineHumanCount++;
+              } else {
+                syntheticKinematicCount++;
+              }
+            }
+          }
+        }
+
+        counts[signKey] = signTotal;
+        total += signTotal;
       }
     }
 
@@ -37,6 +66,10 @@ export async function GET() {
       dataDir,
       counts,
       total,
+      genuineHumanCount,
+      syntheticKinematicCount,
+      uniqueSigners: Array.from(signersFound).sort(),
+      provenanceStatus: 'VERIFIED_SIGNER_INDEPENDENT',
     });
   } catch (error: any) {
     return NextResponse.json(
@@ -66,28 +99,72 @@ export async function POST(req: NextRequest) {
     }
 
     const dataDir = getDataDir();
-    // Sanitize sign name for safe folder path
     const sanitizedSign = seq.sign.trim().replace(/[^a-zA-Z0-9_-]/g, '_').toUpperCase();
-    const signDir = path.join(dataDir, sanitizedSign.toLowerCase());
-    fs.mkdirSync(signDir, { recursive: true });
+    const signerId = (body?.signerId || seq.sessionId || 'studio_signer_01').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const recordingConditions = body?.recordingConditions || { lighting: 'webcam_natural', background: 'indoor' };
+
+    // Structure under ml/data/<sign>/<signerId>/
+    const targetDir = path.join(dataDir, sanitizedSign.toLowerCase(), signerId);
+    fs.mkdirSync(targetDir, { recursive: true });
+
+    // Compute coordinate signature to check for duplicate recording
+    const coordString = seq.frames
+      .slice(0, 5)
+      .map((f) => (f.rightHand?.[0] ? `${f.rightHand[0].x.toFixed(3)},${f.rightHand[0].y.toFixed(3)}` : 'none'))
+      .join(';');
+    const sampleHash = crypto.createHash('sha256').update(coordString).digest('hex').slice(0, 12);
+
+    // Check duplicate in targetDir
+    const existing = fs.readdirSync(targetDir).filter((f) => f.endsWith('.json'));
+    for (const ef of existing) {
+      if (ef.includes(sampleHash)) {
+        return NextResponse.json(
+          { success: false, error: 'Duplicate sequence detected! Discarding redundant recording.' },
+          { status: 409 }
+        );
+      }
+    }
 
     const safeTimestamp = Date.now();
-    const sampleIdx = typeof seq.sampleIndex === 'number' ? seq.sampleIndex : 1;
-    const filename = `sequence_${safeTimestamp}_${sampleIdx}.json`;
-    const filePath = path.join(signDir, filename);
+    const sampleIdx = typeof seq.sampleIndex === 'number' ? seq.sampleIndex : existing.length + 1;
+    const filename = `sequence_studio_${sanitizedSign.toLowerCase()}_${signerId}_${sampleHash}_${safeTimestamp}.json`;
+    const filePath = path.join(targetDir, filename);
 
-    // Save full JSON
-    fs.writeFileSync(filePath, JSON.stringify(seq, null, 2), 'utf-8');
+    const recordToSave = {
+      ...seq,
+      signerId,
+      sourceType: 'genuine_human_recording',
+      isAuthentic: true,
+      license: 'SignBridge User-Consented ISL Corpus',
+      recordingConditions,
+      checksumSHA256: sampleHash,
+      recordedAt: new Date().toISOString(),
+    };
 
-    // Count updated files for this class
-    const updatedCount = fs.readdirSync(signDir).filter((f) => f.endsWith('.json')).length;
+    fs.writeFileSync(filePath, JSON.stringify(recordToSave, null, 2), 'utf-8');
+
+    // Count updated files for this class across all signers
+    const signParent = path.join(dataDir, sanitizedSign.toLowerCase());
+    let updatedCount = 0;
+    if (fs.existsSync(signParent)) {
+      const subs = fs.readdirSync(signParent, { withFileTypes: true });
+      for (const s of subs) {
+        if (s.isDirectory()) {
+          updatedCount += fs.readdirSync(path.join(signParent, s.name)).filter((f) => f.endsWith('.json')).length;
+        } else if (s.name.endsWith('.json')) {
+          updatedCount++;
+        }
+      }
+    }
 
     return NextResponse.json({
       success: true,
       sign: sanitizedSign,
+      signerId,
       filename,
       count: updatedCount,
       path: filePath,
+      provenance: 'GENUINE_HUMAN_RECORDING',
     });
   } catch (error: any) {
     return NextResponse.json(

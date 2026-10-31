@@ -13,7 +13,7 @@ save('apps/web/src/components/MetricsDashboard.tsx', `'use client';
 
 import React from 'react';
 import { X, Activity } from 'lucide-react';
-import { LatencySummary } from '@signbridge2vision/types';
+import { LatencySummary } from '@signbridge/types';
 
 interface MetricsDashboardProps {
   isOpen: boolean;
@@ -121,7 +121,7 @@ save('apps/web/src/components/DemoControls.tsx', `'use client';
 
 import React from 'react';
 import { X, Sparkles, Play, HeartPulse, GraduationCap, Users } from 'lucide-react';
-import { DEMO_SCENARIO_PRESETS } from '@signbridge2vision/types';
+import { DEMO_SCENARIO_PRESETS } from '@signbridge/types';
 
 interface DemoControlsProps {
   isOpen: boolean;
@@ -246,7 +246,7 @@ import { MetricsDashboard } from '../components/MetricsDashboard';
 import { DemoControls } from '../components/DemoControls';
 import { useRealtimeSession } from '../hooks/useRealtimeSession';
 import { useISLPerception } from '../hooks/useISLPerception';
-import { RecognitionEvent } from '@signbridge2vision/types';
+import { RecognitionEvent } from '@signbridge/types';
 
 export default function StudioPage() {
   const [isMetricsOpen, setIsMetricsOpen] = useState<boolean>(false);

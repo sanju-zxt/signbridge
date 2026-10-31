@@ -1,4 +1,4 @@
-import { SupportedLanguage } from '@signbridge2vision/types';
+import { SupportedLanguage } from '@signbridge/types';
 
 export class TTSPlayer {
   private synth: SpeechSynthesis | null = null;

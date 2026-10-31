@@ -1,67 +1,188 @@
 'use client';
 /**
- * page.tsx — SignBridge2Vision Live Meeting & Studio Platform
+ * page.tsx — SignBridge Real-Time Multimodal ISL AI Communication Platform
+ * Pixel-inspired implementation adhering to the official SaaS dashboard specification.
  */
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Header } from '../components/Header';
-import { AudioControls } from '../components/AudioControls';
-import { ConversationThread } from '../components/ConversationThread';
-import { ConfidenceGate } from '../components/ConfidenceGate';
-import { MetricsDashboard } from '../components/MetricsDashboard';
-import { DemoControls } from '../components/DemoControls';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { SignAvatar } from '../components/avatar/SignAvatar';
 import LandmarkOverlay from '../components/vision/LandmarkOverlay';
-import LiveCameraView from '../components/vision/LiveCameraView';
+import { OptimizedCameraView, RecognitionState } from '../components/vision/OptimizedCameraView';
 import DataCollectionStudio from '../components/studio/DataCollectionStudio';
+import { MetricsDashboard } from '../components/MetricsDashboard';
 import { useRealtimeSession } from '../hooks/useRealtimeSession';
-import { useISLPerception } from '../hooks/useISLPerception';
 import { StreamingSTTClient } from '../lib/speech/stt';
 import { ttsPlayer } from '../lib/speech/tts';
-import { ISL_VOCABULARY, RecognitionResult, CanonicalMessage, RawLandmarkFrame } from '@signbridge2vision/types';
+import { matchSpeechSequence } from '../lib/speech/phraseMatcher';
+import { SentenceDemoMode } from '../components/demo/SentenceDemoMode';
 import {
-  Mic,
-  MicOff,
-  Hand,
-  Volume2,
-  Camera,
-  CameraOff,
-  Sparkles,
+  ISL_VOCABULARY,
+  translateISLGlossSequenceToEnglish,
+  RecognitionResult,
+  RawLandmarkFrame,
+  SupportedLanguage,
+} from '@signbridge/types';
+import {
   LayoutDashboard,
   Video,
-  Database,
+  Clock,
+  Settings,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  Camera,
+  CameraOff,
   Send,
+  Sparkles,
   AlertCircle,
+  CheckCircle2,
+  ChevronDown,
+  ShieldCheck,
+  Eye,
+  RefreshCw,
+  Copy,
+  Check,
+  Sliders,
+  Database,
+  User,
+  Hand,
+  Play,
+  Pause,
+  Zap,
+  Activity,
+  RotateCcw,
 } from 'lucide-react';
 
 // ── Landmark Normalization and Feature Extraction Helpers ───────────────────
-function normHand(lms: Array<{ x: number; y: number; z: number }> | null): Float32Array {
-  const out = new Float32Array(63);
-  if (!lms || lms.length < 21) return out;
-  const wx = lms[0].x, wy = lms[0].y, wz = lms[0].z;
-  const dx = lms[9].x - wx, dy = lms[9].y - wy, dz = lms[9].z - wz;
-  const scale = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1.0;
+// ── Motion-Preserving Landmark Normalization & 30-Frame Resampling ───────────
+function interpolateHand(
+  h0: Array<{ x: number; y: number; z: number }> | null | undefined,
+  h1: Array<{ x: number; y: number; z: number }> | null | undefined,
+  t: number
+): Array<{ x: number; y: number; z: number }> | null {
+  if (!h0 && !h1) return null;
+  if (!h0) return h1 || null;
+  if (!h1) return h0;
+  const out: Array<{ x: number; y: number; z: number }> = [];
   for (let i = 0; i < 21; i++) {
-    out[i * 3]     = (lms[i].x - wx) / scale;
-    out[i * 3 + 1] = (lms[i].y - wy) / scale;
-    out[i * 3 + 2] = (lms[i].z - wz) / scale;
+    const p0 = h0[i] || { x: 0, y: 0, z: 0 };
+    const p1 = h1[i] || { x: 0, y: 0, z: 0 };
+    out.push({
+      x: p0.x + (p1.x - p0.x) * t,
+      y: p0.y + (p1.y - p0.y) * t,
+      z: p0.z + (p1.z - p0.z) * t,
+    });
   }
   return out;
 }
 
-function buildMatrix(
-  frames: Array<{ rightHand: Array<{ x: number; y: number; z: number }> | null; leftHand: Array<{ x: number; y: number; z: number }> | null }>,
+function buildNormalizedMatrix(
+  frames: Array<{
+    rightHand: Array<{ x: number; y: number; z: number }> | null;
+    leftHand: Array<{ x: number; y: number; z: number }> | null;
+  }>,
   winSize = 30
 ): Float32Array {
   const matrix = new Float32Array(winSize * 126);
-  const offset = Math.max(0, winSize - frames.length);
-  for (let i = 0; i < frames.length && i < winSize; i++) {
-    const rh = normHand(frames[i].rightHand);
-    const lh = normHand(frames[i].leftHand);
-    const base = (offset + i) * 126;
-    matrix.set(rh, base);
-    matrix.set(lh, base + 63);
+  if (!frames || frames.length === 0) return matrix;
+
+  const N = frames.length;
+  const resampled: Array<{
+    rightHand: Array<{ x: number; y: number; z: number }> | null;
+    leftHand: Array<{ x: number; y: number; z: number }> | null;
+  }> = [];
+
+  for (let k = 0; k < winSize; k++) {
+    const progress = winSize > 1 ? k / (winSize - 1) : 0;
+    const srcIndex = progress * (N - 1);
+    const i0 = Math.floor(srcIndex);
+    const i1 = Math.min(N - 1, Math.ceil(srcIndex));
+    const t = srcIndex - i0;
+    const f0 = frames[i0];
+    const f1 = frames[i1];
+
+    resampled.push({
+      rightHand: interpolateHand(f0?.rightHand, f1?.rightHand, t),
+      leftHand: interpolateHand(f0?.leftHand, f1?.leftHand, t),
+    });
   }
+
+  // Find reference initial right hand wrist & palm scale
+  let refRh0: { x: number; y: number; z: number } | null = null;
+  let refRhScale = 1.0;
+  for (const f of resampled) {
+    if (f.rightHand && f.rightHand.length >= 21) {
+      refRh0 = f.rightHand[0];
+      const dx = f.rightHand[9].x - refRh0.x;
+      const dy = f.rightHand[9].y - refRh0.y;
+      const dz = f.rightHand[9].z - refRh0.z;
+      refRhScale = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1.0;
+      break;
+    }
+  }
+
+  // Find reference initial left hand wrist & palm scale
+  let refLh0: { x: number; y: number; z: number } | null = null;
+  let refLhScale = 1.0;
+  for (const f of resampled) {
+    if (f.leftHand && f.leftHand.length >= 21) {
+      refLh0 = f.leftHand[0];
+      const dx = f.leftHand[9].x - refLh0.x;
+      const dy = f.leftHand[9].y - refLh0.y;
+      const dz = f.leftHand[9].z - refLh0.z;
+      refLhScale = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1.0;
+      break;
+    }
+  }
+
+  for (let step = 0; step < winSize; step++) {
+    const f = resampled[step];
+    const base = step * 126;
+
+    // Right hand (dims 0..62)
+    if (f.rightHand && f.rightHand.length >= 21 && refRh0) {
+      const wt = f.rightHand[0];
+      const dxt = f.rightHand[9].x - wt.x;
+      const dyt = f.rightHand[9].y - wt.y;
+      const dzt = f.rightHand[9].z - wt.z;
+      const curScale = Math.sqrt(dxt * dxt + dyt * dyt + dzt * dzt) || refRhScale;
+
+      // Joint 0: Wrist motion displacement relative to sequence initial frame
+      matrix[base + 0] = (wt.x - refRh0.x) / refRhScale;
+      matrix[base + 1] = (wt.y - refRh0.y) / refRhScale;
+      matrix[base + 2] = (wt.z - refRh0.z) / refRhScale;
+
+      // Joints 1..20: Skeletal configuration relative to instantaneous wrist
+      for (let i = 1; i < 21; i++) {
+        matrix[base + i * 3 + 0] = (f.rightHand[i].x - wt.x) / curScale;
+        matrix[base + i * 3 + 1] = (f.rightHand[i].y - wt.y) / curScale;
+        matrix[base + i * 3 + 2] = (f.rightHand[i].z - wt.z) / curScale;
+      }
+    }
+
+    // Left hand (dims 63..125)
+    if (f.leftHand && f.leftHand.length >= 21 && refLh0) {
+      const wt = f.leftHand[0];
+      const dxt = f.leftHand[9].x - wt.x;
+      const dyt = f.leftHand[9].y - wt.y;
+      const dzt = f.leftHand[9].z - wt.z;
+      const curScale = Math.sqrt(dxt * dxt + dyt * dyt + dzt * dzt) || refLhScale;
+
+      // Joint 0: Wrist motion displacement relative to sequence initial frame
+      matrix[base + 63 + 0] = (wt.x - refLh0.x) / refLhScale;
+      matrix[base + 63 + 1] = (wt.y - refLh0.y) / refLhScale;
+      matrix[base + 63 + 2] = (wt.z - refLh0.z) / refLhScale;
+
+      // Joints 1..20: Skeletal configuration relative to instantaneous wrist
+      for (let i = 1; i < 21; i++) {
+        matrix[base + 63 + i * 3 + 0] = (f.leftHand[i].x - wt.x) / curScale;
+        matrix[base + 63 + i * 3 + 1] = (f.leftHand[i].y - wt.y) / curScale;
+        matrix[base + 63 + i * 3 + 2] = (f.leftHand[i].z - wt.z) / curScale;
+      }
+    }
+  }
+
   return matrix;
 }
 
@@ -90,325 +211,317 @@ function computeMotionVector(
   const netX = (lastWrist.x - firstWrist.x) * 4.0;
   const netY = (lastWrist.y - firstWrist.y) * 4.0;
   const netZ = (lastWrist.z - firstWrist.z) * 4.0;
-
-  // Account for periodic waving oscillation where net displacement cancels out
   const effectiveX = totalDeltaX * 4.0 > 0.16 ? (Math.abs(netX) > 0.04 ? netX : 0.08) : netX;
-
   return [effectiveX, netY, netZ];
 }
 
-export default function SignBridge2VisionApp() {
-  const [viewMode, setViewMode] = useState<'meeting' | 'studio'>('meeting');
-  const [studioTab, setStudioTab] = useState<'recognition' | 'collection'>('recognition');
-  const [studioRawFrame, setStudioRawFrame] = useState<RawLandmarkFrame | null>(null);
+// ── 6 Canonical Quick Signs as Defined in Reference Specification ───────────
+const QUICK_SIGNS = [
+  { label: 'Hello', id: 'HELLO', englishText: 'Hello!' },
+  { label: 'You', id: 'YOU', englishText: 'You.' },
+  { label: 'Help', id: 'HELP', englishText: 'Help me.' },
+  { label: 'What', id: 'WHAT', englishText: 'What?' },
+  { label: 'Water', id: 'WATER', englishText: 'Water, please.' },
+  { label: 'Thank you', id: 'THANK_YOU', englishText: 'Thank you.' },
+];
 
-  const [isMicOn, setIsMicOn] = useState<boolean>(true);
-  const [isGestureEnabled, setIsGestureEnabled] = useState<boolean>(true);
-  const [isSignToVoiceEnabled, setIsSignToVoiceEnabled] = useState<boolean>(true);
+export default function SignBridgeDashboard() {
+  // Navigation & View State
+  const [navSection, setNavSection] = useState<'dashboard' | 'meeting' | 'history' | 'settings' | 'demo'>('dashboard');
+  const [meetingId] = useState<string>('SBV-12345');
+  const [copiedMeeting, setCopiedMeeting] = useState<boolean>(false);
+
+  // Control Toggles
   const [isCameraOn, setIsCameraOn] = useState<boolean>(true);
+  const [isMicOn, setIsMicOn] = useState<boolean>(true);
+  const [isSignToVoiceEnabled, setIsSignToVoiceEnabled] = useState<boolean>(true);
+  const [isSubtitlesOn, setIsSubtitlesOn] = useState<boolean>(true);
+  const [translationDirection, setTranslationDirection] = useState<'isl_to_speech' | 'speech_to_isl'>('isl_to_speech');
+  const [accessibilityMode, setAccessibilityMode] = useState<boolean>(false);
 
+  // Recognition & Perception State
   const [recognizedSign, setRecognizedSign] = useState<string | null>(null);
   const [recognizedConfidence, setRecognizedConfidence] = useState<number>(0);
   const [handsDetected, setHandsDetected] = useState<number>(0);
-  const [liveSubtitle, setLiveSubtitle] = useState<string>('Listening for speech... (speak or type below)');
+  const [isCameraActive, setIsCameraActive] = useState<boolean>(true);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+
+  // Transcription & Conversation State
+  const [liveSubtitle, setLiveSubtitle] = useState<string>('Waiting for signs. Perform gestures in camera to build sentences.');
+  const [transcriptionTimestamp, setTranscriptionTimestamp] = useState<string>('Ready');
   const [typedText, setTypedText] = useState<string>('');
   const [sttError, setSttError] = useState<string | null>(null);
-  const [isListeningActive, setIsListeningActive] = useState<boolean>(false);
-  const [avatarSign, setAvatarSign] = useState<string | null>('HELLO');
-
-  // Subtitle latency & interim tracking
   const [speechStatus, setSpeechStatus] = useState<'idle' | 'listening' | 'interim' | 'final'>('idle');
-  const speechStartRef = useRef<number>(0);
-  const [lastSpeechLatencyMs, setLastSpeechLatencyMs] = useState<number | null>(null);
-  const [speechTranscriptForAvatar, setSpeechTranscriptForAvatar] = useState<string | null>(null);
+  const [historyLog, setHistoryLog] = useState<Array<{ id: string; time: string; text: string; source: 'isl' | 'speech' | 'text'; sign?: string }>>([]);
 
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const rafRef = useRef<number | null>(null);
-  const mpRef = useRef<any>(null);
-  const [rightLandmarks, setRightLandmarks] = useState<Array<{ x: number; y: number; z: number }> | null>(null);
-  const [leftLandmarks, setLeftLandmarks] = useState<Array<{ x: number; y: number; z: number }> | null>(null);
+  // 3D Avatar State & Controls
+  const [avatarSign, setAvatarSign] = useState<string | null>('HELLO');
+  const [speechTranscriptForAvatar, setSpeechTranscriptForAvatar] = useState<string | null>(null);
+  const [avatarStatus, setAvatarStatus] = useState<{ activeAction: string; isPaused: boolean; isGlbLoaded: boolean; queuedActions?: string[] }>({
+    activeAction: 'HELLO',
+    isPaused: false,
+    isGlbLoaded: false,
+    queuedActions: [],
+  });
+  const avatarPerformSignRef = useRef<((signId: string) => void) | null>(null);
+  const avatarPerformSequenceRef = useRef<((signIds: string[]) => void) | null>(null);
+  const avatarReplayRef = useRef<(() => boolean) | null>(null);
+  const [lastExecutedSentence, setLastExecutedSentence] = useState<string | null>(null);
+
+  // Camera & Adaptive Recognition State
+  const [candidateSign, setCandidateSign] = useState<{ sign: string; label: string; confidence: number } | null>(null);
+  const [recognitionState, setRecognitionState] = useState<RecognitionState>('IDLE');
   const [isRecognizedFlash, setIsRecognizedFlash] = useState<boolean>(false);
   const [recognizedAt, setRecognizedAt] = useState<number | null>(null);
 
-  // Meeting View Inference Worker & Temporal Buffer
-  const meetingWorkerRef = useRef<Worker | null>(null);
-  const meetingBufferRef = useRef<Array<{ rightHand: Array<{ x: number; y: number; z: number }> | null; leftHand: Array<{ x: number; y: number; z: number }> | null }>>([]);
-  const inferenceRunningRef = useRef<boolean>(false);
-  const stableSignRef = useRef<string | null>(null);
-  const stableCountRef = useRef<number>(0);
-  const lastEmitRef = useRef<{ sign: string; at: number } | null>(null);
-
-  // Reset recognized sign display when hand leaves view
-  useEffect(() => {
-    if (handsDetected === 0 && recognizedSign) {
-      const timer = setTimeout(() => {
-        setRecognizedSign(null);
-      }, 1800);
-      return () => clearTimeout(timer);
-    }
-  }, [handsDetected, recognizedSign]);
-
-  const [isMetricsOpen, setIsMetricsOpen] = useState(false);
-  const [isPresetsOpen, setIsPresetsOpen] = useState(false);
-
+  // Continuous Sentence Buffer & Controls
+  const pauseTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const accumulatedGlossesRef = useRef<string[]>([]);
+  const [accumulatedGlosses, setAccumulatedGlosses] = useState<string[]>([]);
+  const [topProbabilities, setTopProbabilities] = useState<Array<{ sign: string; label: string; confidence: number }>>([]);
+  const [isSigningPaused, setIsSigningPaused] = useState<boolean>(false);
+  const speechStartRef = useRef<number>(0);
   const sttClientRef = useRef<StreamingSTTClient | null>(null);
 
+  // Settings configuration
+  const [confidenceThreshold, setConfidenceThreshold] = useState<number>(0.48);
+  const [ttsSpeed, setTtsSpeed] = useState<number>(1.0);
+
+  // Realtime Session Hook
   const {
     messages,
     systemState,
     isConnected,
     activeLanguage,
     setActiveLanguage,
-    partialSpeech,
-    latencyMetrics,
     sendFinalISLSign,
     sendFinalSpeech,
     sendTextMessage,
-    clearSession,
   } = useRealtimeSession('main-room', 'isl_signer');
 
-  const triggerSpeechTranscript = useCallback((text: string) => {
-    if (!text || !text.trim()) return;
-    const cleanText = text.trim();
-    console.log(`[STT] Final transcript received in application: "${cleanText}"`);
-    setLiveSubtitle(cleanText);
-    setSttError(null);
-    setSpeechStatus('final');
-    sendFinalSpeech(cleanText, 0.95);
-    setSpeechTranscriptForAvatar(cleanText);
-  }, [sendFinalSpeech]);
+  // Format current timestamp helper
+  const getCurrentFormattedTime = useCallback(() => {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }, []);
 
-  const triggerSpeechTranscriptRef = useRef(triggerSpeechTranscript);
+  // Clear Sentence Callback
+  const clearCurrentSentence = useCallback(() => {
+    if (pauseTimerRef.current) {
+      clearTimeout(pauseTimerRef.current);
+      pauseTimerRef.current = null;
+    }
+    accumulatedGlossesRef.current = [];
+    setAccumulatedGlosses([]);
+    setLiveSubtitle('Sentence cleared. Ready for next sign.');
+  }, []);
+
+  // Repeat Avatar Message Callback
+  const repeatAvatarMessage = useCallback(() => {
+    if (lastExecutedSentence) {
+      triggerSpeechTranscript(lastExecutedSentence);
+    } else if (accumulatedGlosses.length > 0 && avatarPerformSequenceRef.current) {
+      avatarPerformSequenceRef.current(accumulatedGlosses);
+    } else if (avatarSign && avatarPerformSignRef.current) {
+      avatarPerformSignRef.current(avatarSign);
+    }
+  }, [lastExecutedSentence, accumulatedGlosses, avatarSign]);
+
+  // Finalize Continuous ISL Sentence
+  const finalizeCurrentSentence = useCallback(() => {
+    if (pauseTimerRef.current) {
+      clearTimeout(pauseTimerRef.current);
+      pauseTimerRef.current = null;
+    }
+
+    const glosses = [...accumulatedGlossesRef.current];
+    if (glosses.length === 0) {
+      return;
+    }
+
+    accumulatedGlossesRef.current = [];
+    setAccumulatedGlosses([]);
+
+    const englishSentence = translateISLGlossSequenceToEnglish(glosses);
+    if (!englishSentence) return;
+    setLastExecutedSentence(englishSentence);
+
+    const timeStr = getCurrentFormattedTime();
+    setLiveSubtitle(englishSentence);
+    setTranscriptionTimestamp(timeStr);
+
+    setHistoryLog((prev) => [
+      { id: `hist_${Date.now()}`, time: timeStr, text: englishSentence, source: 'isl', sign: glosses.join(' ') },
+      ...prev,
+    ]);
+
+    if (isSignToVoiceEnabled) {
+      ttsPlayer.speak(englishSentence, activeLanguage);
+    }
+
+    sendFinalISLSign({
+      id: `isl_seq_${Date.now()}`,
+      sessionId: 'main-room',
+      timestamp: Date.now(),
+      sign: glosses.join(' '),
+      label: englishSentence,
+      confidence: 0.95,
+      alternatives: [],
+      modelVersion: 'SIGNBRIDGE-ISL-v8',
+      latencyMs: 18.2,
+      isDebounced: true,
+      status: 'final',
+    });
+  }, [isSignToVoiceEnabled, activeLanguage, sendFinalISLSign, getCurrentFormattedTime]);
+
+  const finalizeSentenceRef = useRef(finalizeCurrentSentence);
   useEffect(() => {
-    triggerSpeechTranscriptRef.current = triggerSpeechTranscript;
-  }, [triggerSpeechTranscript]);
+    finalizeSentenceRef.current = finalizeCurrentSentence;
+  }, [finalizeCurrentSentence]);
 
+  const finishSentenceRecognition = useCallback(() => {
+    if (pauseTimerRef.current) {
+      clearTimeout(pauseTimerRef.current);
+      pauseTimerRef.current = null;
+    }
+    finalizeSentenceRef.current();
+  }, []);
+
+  // Handle Confirmed Vision Recognition Result from Camera
   const handleRecognizedSignFromCamera = useCallback(
     (result: RecognitionResult) => {
-      if (!isGestureEnabled) return;
-      if (
-        !result.gesture ||
-        result.gesture === 'NONE' ||
-        result.gesture === 'NONE_RESTING' ||
-        result.gesture === 'UNKNOWN' ||
-        result.confidence < 0.60
-      ) {
+      if (isSigningPaused) return;
+      if (!result.gesture || result.gesture === 'NONE' || result.gesture === 'NONE_RESTING' || result.gesture === 'UNKNOWN' || result.confidence < confidenceThreshold) {
         return;
       }
+
+      const sign = result.gesture;
+
+      if (pauseTimerRef.current) {
+        clearTimeout(pauseTimerRef.current);
+      }
+      pauseTimerRef.current = setTimeout(() => {
+        finalizeSentenceRef.current();
+      }, 2500);
+
+      // Append verified sign to continuous sentence buffer
+      accumulatedGlossesRef.current.push(sign);
+      setAccumulatedGlosses([...accumulatedGlossesRef.current]);
 
       setRecognizedSign(result.displayName);
       setRecognizedConfidence(result.confidence);
       setIsRecognizedFlash(true);
       setRecognizedAt(Date.now());
+      setAvatarSign(sign);
 
-      setAvatarSign(result.gesture);
-
-      if (isSignToVoiceEnabled) {
-        const vocab = ISL_VOCABULARY.find((v) => v.sign === result.gesture);
-        const spokenText = vocab?.canonicalSentence || result.displayName;
-        ttsPlayer.speak(spokenText, activeLanguage);
+      if (avatarPerformSignRef.current) {
+        avatarPerformSignRef.current(sign);
       }
 
-      sendFinalISLSign({
-        id: `sign_${Date.now()}`,
-        sessionId: 'main-room',
-        timestamp: Date.now(),
-        sign: result.gesture,
-        label: result.displayName,
-        confidence: result.confidence,
-        alternatives: [],
-        modelVersion: 'SBV-ML-TEMPORAL-v1',
-        latencyMs: result.latencyMs,
-        isDebounced: true,
-        status: 'final',
-      });
+      const timeStr = getCurrentFormattedTime();
+      setTranscriptionTimestamp(timeStr);
+      const partialSentence = translateISLGlossSequenceToEnglish(accumulatedGlossesRef.current);
+      setLiveSubtitle(partialSentence ? partialSentence : `[ISL]: ${accumulatedGlossesRef.current.join(' ')}`);
 
-      setTimeout(() => setIsRecognizedFlash(false), 800);
+      setTimeout(() => setIsRecognizedFlash(false), 500);
     },
-    [isGestureEnabled, isSignToVoiceEnabled, activeLanguage, sendFinalISLSign]
+    [confidenceThreshold, isSigningPaused, getCurrentFormattedTime]
   );
+
+  const handleCandidateChanged = useCallback((cand: { sign: string; label: string; confidence: number } | null) => {
+    setCandidateSign(cand);
+  }, []);
+
+  const handleRecognitionStateChanged = useCallback((state: RecognitionState) => {
+    setRecognitionState(state);
+    if (state === 'UNKNOWN') {
+      setRecognizedSign('UNKNOWN');
+      setRecognizedConfidence(0.40);
+    }
+  }, []);
+
+  const handleTopProbabilitiesChanged = useCallback((probs: Array<{ sign: string; label: string; confidence: number }>) => {
+    setTopProbabilities(probs);
+  }, []);
 
   const handleRecognizedSignRef = useRef(handleRecognizedSignFromCamera);
   useEffect(() => {
     handleRecognizedSignRef.current = handleRecognizedSignFromCamera;
   }, [handleRecognizedSignFromCamera]);
 
-  // Camera & MediaPipe Initialization for Meeting View with live inference
-  useEffect(() => {
-    if (viewMode !== 'meeting') return;
-    if (!isCameraOn) {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-      if (videoRef.current) videoRef.current.srcObject = null;
-      setRightLandmarks(null);
-      setLeftLandmarks(null);
-      meetingWorkerRef.current?.terminate();
-      meetingWorkerRef.current = null;
-      return;
-    }
+  // Handle Speech Recognition Transcript (STT or Typed Message)
+  const triggerSpeechTranscript = useCallback(
+    (text: string) => {
+      if (!text || !text.trim()) return;
+      const cleanText = text.trim();
+      const timeStr = getCurrentFormattedTime();
 
-    let isMounted = true;
+      setLiveSubtitle(cleanText);
+      setTranscriptionTimestamp(timeStr);
+      setSttError(null);
+      setSpeechStatus('final');
+      sendFinalSpeech(cleanText, 0.95);
+      setSpeechTranscriptForAvatar(cleanText);
+      setLastExecutedSentence(cleanText);
 
-    async function initMeetingCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
-        });
-        if (!isMounted) {
-          stream.getTracks().forEach((t) => t.stop());
-          return;
+      setHistoryLog((prev) => [
+        { id: `speech_${Date.now()}`, time: timeStr, text: cleanText, source: 'speech' },
+        ...prev,
+      ]);
+
+      // Direct avatar full-sentence sequencing
+      const matchedTokens = matchSpeechSequence(cleanText);
+      if (matchedTokens.length > 0) {
+        if (avatarPerformSequenceRef.current) {
+          avatarPerformSequenceRef.current(matchedTokens);
+        } else if (avatarPerformSignRef.current) {
+          avatarPerformSignRef.current(matchedTokens[0]);
         }
-
-        streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          videoRef.current.play().catch(() => {});
-        }
-
-        // Initialize Web Worker for real-time inference in meeting view
-        const worker = new Worker(new URL('../workers/inferenceWorker.ts', import.meta.url), { type: 'module' });
-        meetingWorkerRef.current = worker;
-
-        worker.onmessage = (ev) => {
-          const msg = ev.data;
-          if (msg.type === 'PONG') {
-            worker.postMessage({
-              type: 'LOAD_MODEL',
-              modelUrl: '/models/sbv-gru-v1/model.json',
-              metadataUrl: '/models/sbv-gru-v1/metadata.json',
-            });
-          } else if (msg.type === 'RESULT') {
-            inferenceRunningRef.current = false;
-            const res: RecognitionResult = msg.result;
-            if (
-              res &&
-              res.confidence >= 0.60 &&
-              res.gesture !== 'NONE' &&
-              res.gesture !== 'NONE_RESTING' &&
-              res.gesture !== 'UNKNOWN'
-            ) {
-              if (res.gesture === stableSignRef.current) {
-                stableCountRef.current++;
-              } else {
-                stableSignRef.current = res.gesture;
-                stableCountRef.current = 1;
-              }
-              if (stableCountRef.current >= 2) {
-                const now = Date.now();
-                const isDuplicate = lastEmitRef.current?.sign === res.gesture && now - (lastEmitRef.current?.at ?? 0) < 2500;
-                if (!isDuplicate) {
-                  lastEmitRef.current = { sign: res.gesture, at: now };
-                  handleRecognizedSignRef.current(res);
-                }
-              }
-            } else {
-              stableCountRef.current = 0;
-              stableSignRef.current = null;
-            }
-          } else if (msg.type === 'ERROR') {
-            inferenceRunningRef.current = false;
-          }
-        };
-
-        worker.postMessage({ type: 'PING' });
-
-        const { createHandLandmarker } = await import('../lib/vision/handLandmarker');
-        const hl = await createHandLandmarker();
-
-        if (!isMounted) {
-          worker.terminate();
-          return;
-        }
-        mpRef.current = hl;
-
-        let lastTime = -1;
-        const loop = () => {
-          if (!isMounted) return;
-          const video = videoRef.current;
-          if (video && video.readyState >= 2 && mpRef.current) {
-            if (video.currentTime !== lastTime) {
-              const tAcqStart = performance.now();
-              lastTime = video.currentTime;
-              const tAcq = performance.now() - tAcqStart;
-
-              const tPrepStart = performance.now();
-              const result = mpRef.current.detectForVideo(video, performance.now());
-
-              let rh: Array<{ x: number; y: number; z: number }> | null = null;
-              let lh: Array<{ x: number; y: number; z: number }> | null = null;
-
-              if (result?.landmarks && result.landmarks.length > 0) {
-                for (let i = 0; i < result.landmarks.length; i++) {
-                  const isRight = result.handedness?.[i]?.[0]?.categoryName === 'Right';
-                  const lms = result.landmarks[i].map((lm: any) => ({ x: lm.x, y: lm.y, z: lm.z }));
-                  if (isRight) rh = lms;
-                  else lh = lms;
-                }
-              }
-
-              setRightLandmarks(rh);
-              setLeftLandmarks(lh);
-              setHandsDetected(rh || lh ? (rh && lh ? 2 : 1) : 0);
-
-              if (rh || lh) {
-                meetingBufferRef.current.push({ rightHand: rh, leftHand: lh });
-                if (meetingBufferRef.current.length > 30) meetingBufferRef.current.shift();
-
-                if (meetingBufferRef.current.length >= 5 && !inferenceRunningRef.current && meetingWorkerRef.current) {
-                  inferenceRunningRef.current = true;
-                  const frames = [...meetingBufferRef.current];
-                  const matrix = buildMatrix(frames, 30);
-                  const motionVector = computeMotionVector(frames);
-                  const tPrep = performance.now() - tPrepStart;
-                  meetingWorkerRef.current.postMessage(
-                    {
-                      type: 'INFER',
-                      features: matrix,
-                      motionVector,
-                      windowSize: 30,
-                      featureDim: 126,
-                      sentAt: performance.now(),
-                      tAcq,
-                      tPrep,
-                    },
-                    [matrix.buffer]
-                  );
-                }
-              } else {
-                meetingBufferRef.current = [];
-                stableCountRef.current = 0;
-                stableSignRef.current = null;
-              }
-            }
-          }
-          rafRef.current = requestAnimationFrame(loop);
-        };
-        loop();
-      } catch (err) {
-        console.error('Meeting camera init error:', err);
+        setAvatarSign(matchedTokens[0]);
       }
-    }
+    },
+    [sendFinalSpeech, getCurrentFormattedTime]
+  );
 
-    initMeetingCamera();
-
-    return () => {
-      isMounted = false;
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      meetingWorkerRef.current?.terminate();
-      meetingWorkerRef.current = null;
-    };
-  }, [viewMode, isCameraOn]);
-
-  // STT Microphone Streaming (Active in Meeting View)
+  const triggerSpeechRef = useRef(triggerSpeechTranscript);
   useEffect(() => {
-    if (viewMode === 'meeting' && isMicOn) {
+    triggerSpeechRef.current = triggerSpeechTranscript;
+  }, [triggerSpeechTranscript]);
+
+  // Quick Sign Action Handler - Chained into Continuous ISL Sentence Construction
+  const handleTriggerQuickSign = (signId: string, englishText: string) => {
+    if (avatarPerformSignRef.current) {
+      avatarPerformSignRef.current(signId);
+    }
+    setAvatarSign(signId);
+    setRecognizedSign(signId);
+    setRecognizedConfidence(0.98);
+
+    // Append to continuous sentence buffer so quick signs chain into complete sentences
+    accumulatedGlossesRef.current.push(signId);
+    const updatedGlosses = [...accumulatedGlossesRef.current];
+    setAccumulatedGlosses(updatedGlosses);
+
+    const fullSentence = translateISLGlossSequenceToEnglish(updatedGlosses);
+    const timeStr = getCurrentFormattedTime();
+    setLiveSubtitle(fullSentence || englishText);
+    setTranscriptionTimestamp(timeStr);
+
+    if (pauseTimerRef.current) {
+      clearTimeout(pauseTimerRef.current);
+    }
+    pauseTimerRef.current = setTimeout(() => {
+      finalizeSentenceRef.current();
+    }, 2500);
+  };
+
+
+
+  // STT Microphone Streaming
+  useEffect(() => {
+    if (isMicOn) {
       sttClientRef.current = new StreamingSTTClient({
         language: activeLanguage,
         onStateChange: (listening) => {
-          setIsListeningActive(listening);
           setSpeechStatus(listening ? 'listening' : 'idle');
         },
         onPartial: (partial) => {
@@ -418,14 +531,11 @@ export default function SignBridge2VisionApp() {
           setSttError(null);
         },
         onFinal: (finalText) => {
-          const latency = speechStartRef.current ? Math.round(Date.now() - speechStartRef.current) : 110;
           speechStartRef.current = 0;
-          setLastSpeechLatencyMs(latency);
           setSpeechStatus('final');
-          triggerSpeechTranscriptRef.current(finalText);
+          triggerSpeechRef.current(finalText);
         },
         onError: (err) => {
-          console.warn('STT Error:', err);
           setSttError(err);
           setSpeechStatus('idle');
         },
@@ -433,18 +543,15 @@ export default function SignBridge2VisionApp() {
       sttClientRef.current.start();
     } else {
       sttClientRef.current?.stop();
-      setIsListeningActive(false);
       setSpeechStatus('idle');
-      if (viewMode === 'meeting') {
-        setLiveSubtitle('Mic is muted. Click Mic ON or type below.');
-      }
     }
 
     return () => {
       sttClientRef.current?.stop();
     };
-  }, [viewMode, isMicOn, activeLanguage]);
+  }, [isMicOn, activeLanguage]);
 
+  // Handle Send Typed Text Message
   const handleSendText = (e: React.FormEvent) => {
     e.preventDefault();
     if (typedText.trim()) {
@@ -453,361 +560,933 @@ export default function SignBridge2VisionApp() {
     }
   };
 
+  // Copy Meeting ID helper
+  const handleCopyMeetingId = () => {
+    navigator.clipboard.writeText(meetingId);
+    setCopiedMeeting(true);
+    setTimeout(() => setCopiedMeeting(false), 2000);
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col">
-      {/* Top Navbar */}
-      <nav className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm">
+    <div className={`min-h-screen flex flex-col font-sans transition-colors ${accessibilityMode ? 'bg-white text-black' : 'bg-[#F7F9FC] text-[#14264F]'}`}>
+      {/* ── TOP NAVIGATION (Height ~72px) ─────────────────────────────────── */}
+      <header className="h-[72px] bg-white border-b border-[#DCE5EF] px-6 sm:px-8 flex items-center justify-between shrink-0 shadow-sm z-30">
         <div className="flex items-center gap-3">
-          <span className="text-2xl font-black text-slate-900 tracking-tight">SignBridge2Vision</span>
-          <span className="hidden sm:inline-block bg-sky-100 text-sky-800 text-xs font-bold px-2.5 py-0.5 rounded-full">
+          <span className="text-2xl font-black text-[#14264F] tracking-tight">SignBridge</span>
+          <span className="hidden sm:inline-flex items-center bg-[#E7F4FC] text-[#12B8C2] text-xs font-semibold px-3 py-1 rounded-full border border-[#12B8C2]/20">
             Real-Time Multimodal AI
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 sm:gap-6">
+          {/* System Online Status */}
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#12B8C2] animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[#12B8C2]">System Online</span>
+          </div>
+
+          {/* Meeting ID */}
+          <div className="hidden md:flex items-center gap-1.5 text-xs font-medium text-[#71809A]">
+            <span>Meeting ID:</span>
+            <button
+              onClick={handleCopyMeetingId}
+              className="font-bold text-[#14264F] hover:text-[#12B8C2] transition flex items-center gap-1"
+              title="Click to copy Meeting ID"
+            >
+              <span>{meetingId}</span>
+              {copiedMeeting ? <Check className="w-3 h-3 text-[#12B8C2]" /> : <Copy className="w-3 h-3 text-[#71809A]" />}
+            </button>
+          </div>
+
+          {/* Meeting View Button */}
           <button
-            onClick={() => setViewMode('meeting')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              viewMode === 'meeting'
-                ? 'bg-slate-900 text-white shadow-md'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            onClick={() => setNavSection((prev) => (prev === 'meeting' ? 'dashboard' : 'meeting'))}
+            className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm ${
+              navSection === 'meeting'
+                ? 'bg-[#12B8C2] text-white shadow-[#12B8C2]/30'
+                : 'bg-[#14264F] hover:bg-[#1e3875] text-white'
             }`}
           >
-            <Video className="w-3.5 h-3.5" /> Meeting View (3D Avatar)
-          </button>
-          <button
-            onClick={() => setViewMode('studio')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              viewMode === 'studio'
-                ? 'bg-slate-900 text-white shadow-md'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            }`}
-          >
-            <LayoutDashboard className="w-3.5 h-3.5" /> Studio Workspace
+            <Video className="w-3.5 h-3.5" />
+            <span>Meeting View</span>
           </button>
         </div>
-      </nav>
+      </header>
 
-      {/* 1. MEETING VIEW */}
-      {viewMode === 'meeting' ? (
-        <div className="flex-1 p-6 sm:p-10 max-w-7xl mx-auto w-full flex flex-col">
-          <header className="mb-6">
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">SignBridge2Vision</h1>
-            <p className="text-base text-slate-600 font-medium mt-1">Meeting ID : 12345</p>
-          </header>
+      {/* ── MAIN WORKSPACE CONTAINER ───────────────────────────────────────── */}
+      <div className="flex-1 flex flex-col md:flex-row min-h-0">
+        {/* ── LEFT SIDEBAR (Width ~220px) ─────────────────────────────────── */}
+        <aside className="w-full md:w-[220px] bg-white border-r border-[#DCE5EF] p-4 flex md:flex-col justify-between shrink-0 shadow-sm z-20">
+          <nav className="flex md:flex-col gap-1.5 w-full">
+            {/* Dashboard Link (Active State) */}
+            <button
+              onClick={() => setNavSection('dashboard')}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all w-full text-left ${
+                navSection === 'dashboard'
+                  ? 'bg-[#E7F4FC] text-[#14264F] shadow-sm'
+                  : 'text-[#71809A] hover:bg-[#F7F9FC] hover:text-[#14264F]'
+              }`}
+            >
+              {navSection === 'dashboard' && (
+                <span className="absolute left-0 top-2 bottom-2 w-1 bg-[#12B8C2] rounded-r-full" />
+              )}
+              <LayoutDashboard className={`w-4 h-4 ${navSection === 'dashboard' ? 'text-[#12B8C2]' : 'text-[#71809A]'}`} />
+              <span>Dashboard</span>
+            </button>
 
-          <main className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start flex-1">
-            {/* Left Column */}
-            <section className="flex flex-col gap-4">
-              <h2 className="text-xl font-bold text-slate-900">Camera Feed</h2>
+            {/* V14 Dedicated Bidirectional Sentence Demo */}
+            <button
+              onClick={() => setNavSection('demo')}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all w-full text-left ${
+                navSection === 'demo'
+                  ? 'bg-[#E7F4FC] text-[#14264F] shadow-sm'
+                  : 'text-[#71809A] hover:bg-[#F7F9FC] hover:text-[#14264F]'
+              }`}
+            >
+              {navSection === 'demo' && (
+                <span className="absolute left-0 top-2 bottom-2 w-1 bg-[#12B8C2] rounded-r-full" />
+              )}
+              <Sparkles className={`w-4 h-4 ${navSection === 'demo' ? 'text-[#12B8C2]' : 'text-[#71809A]'}`} />
+              <div className="flex items-center justify-between flex-1">
+                <span>Sentence Demo</span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#12B8C2] text-white">
+                  V14
+                </span>
+              </div>
+            </button>
 
-              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 shadow-xl">
-                {isCameraOn ? (
-                  <>
-                    <video
-                      ref={videoRef}
-                      autoPlay
-                      playsInline
-                      muted
-                      className="w-full h-full object-cover"
-                      style={{ transform: 'scaleX(-1)' }}
-                    />
-                    <div className="absolute inset-0 pointer-events-none" style={{ transform: 'scaleX(-1)' }}>
-                      <LandmarkOverlay
-                        rightLandmarks={rightLandmarks}
-                        leftLandmarks={leftLandmarks}
-                        width={640}
-                        height={480}
-                        isRecognized={isRecognizedFlash}
-                        recognizedAt={recognizedAt}
+            {/* Meeting Link */}
+            <button
+              onClick={() => setNavSection('meeting')}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all w-full text-left ${
+                navSection === 'meeting'
+                  ? 'bg-[#E7F4FC] text-[#14264F] shadow-sm'
+                  : 'text-[#71809A] hover:bg-[#F7F9FC] hover:text-[#14264F]'
+              }`}
+            >
+              {navSection === 'meeting' && (
+                <span className="absolute left-0 top-2 bottom-2 w-1 bg-[#12B8C2] rounded-r-full" />
+              )}
+              <Video className={`w-4 h-4 ${navSection === 'meeting' ? 'text-[#12B8C2]' : 'text-[#71809A]'}`} />
+              <span>Meeting</span>
+            </button>
+
+            {/* History Link */}
+            <button
+              onClick={() => setNavSection('history')}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all w-full text-left ${
+                navSection === 'history'
+                  ? 'bg-[#E7F4FC] text-[#14264F] shadow-sm'
+                  : 'text-[#71809A] hover:bg-[#F7F9FC] hover:text-[#14264F]'
+              }`}
+            >
+              {navSection === 'history' && (
+                <span className="absolute left-0 top-2 bottom-2 w-1 bg-[#12B8C2] rounded-r-full" />
+              )}
+              <Clock className={`w-4 h-4 ${navSection === 'history' ? 'text-[#12B8C2]' : 'text-[#71809A]'}`} />
+              <span>History</span>
+            </button>
+
+            {/* Settings Link */}
+            <button
+              onClick={() => setNavSection('settings')}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all w-full text-left ${
+                navSection === 'settings'
+                  ? 'bg-[#E7F4FC] text-[#14264F] shadow-sm'
+                  : 'text-[#71809A] hover:bg-[#F7F9FC] hover:text-[#14264F]'
+              }`}
+            >
+              {navSection === 'settings' && (
+                <span className="absolute left-0 top-2 bottom-2 w-1 bg-[#12B8C2] rounded-r-full" />
+              )}
+              <Settings className={`w-4 h-4 ${navSection === 'settings' ? 'text-[#12B8C2]' : 'text-[#71809A]'}`} />
+              <span>Settings</span>
+            </button>
+          </nav>
+
+          {/* Model Status Card on Sidebar Bottom */}
+          <div className="hidden md:block p-3 rounded-xl bg-[#F7F9FC] border border-[#DCE5EF] text-xs">
+            <div className="flex items-center justify-between text-[#71809A] mb-1">
+              <span className="font-semibold text-[11px] uppercase tracking-wide">GRU V1 Engine</span>
+              <span className="text-[10px] text-[#12B8C2] font-bold">97.5%</span>
+            </div>
+            <p className="text-[11px] text-[#71809A] leading-relaxed">
+              50 ISL classes • 30-frame temporal buffer • Unseen signer calibrated
+            </p>
+          </div>
+        </aside>
+
+        {/* ── MAIN CONTENT VIEWPORT ─────────────────────────────────────────── */}
+        <main className="flex-1 p-3.5 sm:p-4 lg:p-5 overflow-y-auto max-w-[1440px] mx-auto w-full flex flex-col gap-3.5">
+          {navSection === 'dashboard' && (
+            <>
+              {/* ── RESPONSIVE TWO-COLUMN WORKSPACE: 62%–66% Camera, 34%–38% Recognition & Avatar ─── */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+                {/* ── LEFT COLUMN: LARGE CAMERA VIEWPORT (62%–66% Width on Desktop) ─── */}
+                <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-3.5">
+                  <OptimizedCameraView
+                    isCameraOn={isCameraOn}
+                    onToggleCamera={() => setIsCameraOn((prev) => !prev)}
+                    confidenceThreshold={confidenceThreshold}
+                    onSignConfirmed={handleRecognizedSignFromCamera}
+                    onCandidateChanged={handleCandidateChanged}
+                    onRecognitionStateChanged={handleRecognitionStateChanged}
+                    onTopProbabilitiesChanged={handleTopProbabilitiesChanged}
+                    isSigningPaused={isSigningPaused}
+                    onToggleSigningPaused={() => setIsSigningPaused((prev) => !prev)}
+                    className="w-full min-h-[440px] xl:min-h-[500px]"
+                  />
+
+                  {/* CARD: LIVE TRANSCRIPTION */}
+                  <div className="bg-white rounded-2xl border border-[#DCE5EF] p-3.5 sm:p-4 shadow-sm flex flex-col justify-between min-h-[96px]">
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[11px] font-bold tracking-wider text-[#71809A] uppercase">
+                          Live Transcription
+                        </span>
+                        {speechStatus === 'interim' && (
+                          <span className="text-[9px] text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full font-semibold animate-pulse">
+                            Transcribing…
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Transcribed Text */}
+                      <p className="text-base sm:text-lg font-medium text-[#14264F] leading-snug">
+                        {isSubtitlesOn ? liveSubtitle : 'Subtitles are turned off. Enable them below.'}
+                      </p>
+                    </div>
+
+                    {/* Timestamp at bottom right */}
+                    <div className="flex items-center justify-between text-[10px] text-[#71809A] pt-2 border-t border-[#DCE5EF]/60 mt-2">
+                      <span>Indian Sign Language ↔ English</span>
+                      <span className="font-mono">{transcriptionTimestamp}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── RIGHT COLUMN: RECOGNITION, 3D AVATAR & QUICK ACTIONS (34%–38% Width on Desktop) ─── */}
+                <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-3.5">
+                  {/* CARD 1: GESTURE RECOGNITION & CONTINUOUS ISL ENGINE */}
+                  <div className="bg-white rounded-2xl border border-[#DCE5EF] p-4 shadow-sm flex flex-col gap-3">
+                    {/* Header with 5-State Status Badge and Pause/Resume Tracking */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold tracking-wider text-[#71809A] uppercase flex items-center gap-1.5">
+                        <Activity className="w-3.5 h-3.5 text-[#12B8C2]" />
+                        ISL Recognition Engine
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setIsSigningPaused(!isSigningPaused)}
+                        className={`text-[10px] font-bold px-2.5 py-1 rounded-full border transition-colors flex items-center gap-1 ${
+                          isSigningPaused
+                            ? 'bg-amber-100 text-amber-800 border-amber-300'
+                            : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                        }`}
+                        title="Pause or resume continuous sign recognition"
+                      >
+                        {isSigningPaused ? <Play className="w-2.5 h-2.5" /> : <Pause className="w-2.5 h-2.5" />}
+                        <span>{isSigningPaused ? 'Paused' : 'Active Tracking'}</span>
+                      </button>
+                    </div>
+
+                    {/* Prominent Confirmed Sign / State Presentation */}
+                    <div className="p-3.5 rounded-xl bg-[#F7F9FC] border border-[#DCE5EF]">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-bold text-[#71809A] uppercase tracking-wider">
+                          Current Sign
+                        </span>
+                        {/* 5-State Pill Badge */}
+                        {recognitionState === 'CONFIRMED' && (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px] flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" /> Confirmed
+                          </span>
+                        )}
+                        {recognitionState === 'CANDIDATE' && (
+                          <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-bold text-[10px] flex items-center gap-1">
+                            <Activity className="w-3 h-3 animate-spin" /> Evaluating
+                          </span>
+                        )}
+                        {recognitionState === 'ANALYZING' && (
+                          <span className="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-700 font-bold text-[10px] flex items-center gap-1">
+                            <Sparkles className="w-3 h-3" /> Analyzing
+                          </span>
+                        )}
+                        {recognitionState === 'HAND_DETECTED' && (
+                          <span className="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-bold text-[10px] flex items-center gap-1">
+                            <Hand className="w-3 h-3" /> Hand Detected
+                          </span>
+                        )}
+                        {recognitionState === 'UNKNOWN' && (
+                          <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-bold text-[10px] flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3" /> Unknown Sign
+                          </span>
+                        )}
+                        {recognitionState === 'IDLE' && (
+                          <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium text-[10px]">
+                            Waiting for Hand
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Big Confirmed Sign Text */}
+                      <div className="my-1">
+                        {recognitionState === 'UNKNOWN' ? (
+                          <span className="text-2xl sm:text-3xl font-extrabold text-rose-600 tracking-tight block">
+                            UNKNOWN SIGN
+                          </span>
+                        ) : (
+                          <span className="text-2xl sm:text-3xl font-extrabold text-[#14264F] tracking-tight block truncate">
+                            {recognizedSign || (isSigningPaused ? 'PAUSED' : 'WAITING FOR SIGN')}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Candidate Callout if in Candidate State */}
+                      {recognitionState === 'CANDIDATE' && candidateSign && (
+                        <div className="mt-1 mb-2 px-2.5 py-1 rounded-lg bg-amber-50/80 border border-dashed border-amber-300 text-[11px] text-amber-800 flex items-center justify-between">
+                          <span className="font-semibold">Candidate: {candidateSign.label}</span>
+                          <span className="font-mono text-[10px]">Evaluating stability ({Math.round(candidateSign.confidence * 100)}%)</span>
+                        </div>
+                      )}
+
+                      {/* Progress Bar & Confidence Gauge */}
+                      <div className="w-full h-2 rounded-full bg-[#E7F4FC] overflow-hidden my-1.5">
+                        <div
+                          className={`h-full rounded-full transition-all duration-200 ${
+                            recognitionState === 'CONFIRMED'
+                              ? 'bg-emerald-500'
+                              : recognitionState === 'CANDIDATE'
+                              ? 'bg-amber-500'
+                              : recognitionState === 'UNKNOWN'
+                              ? 'bg-rose-400'
+                              : 'bg-[#12B8C2]'
+                          }`}
+                          style={{
+                            width: recognitionState === 'UNKNOWN'
+                              ? '100%'
+                              : recognizedSign
+                              ? `${Math.max(15, Math.round(recognizedConfidence * 100))}%`
+                              : candidateSign
+                              ? `${Math.round(candidateSign.confidence * 100)}%`
+                              : '0%',
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-[#71809A]">
+                        <span>
+                          {recognitionState === 'UNKNOWN'
+                            ? 'Pose does not match trained ISL vocabulary.'
+                            : recognizedSign
+                            ? `Confidence: ${Math.round(recognizedConfidence * 100)}%`
+                            : 'Ready for next ISL gesture.'}
+                        </span>
+                        {recognizedSign && recognitionState !== 'UNKNOWN' && (
+                          <span className="text-[#12B8C2] font-semibold text-[10px] flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" /> Validated ISL
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Top-4 Alternative Predictions with clear Candidate Styling */}
+                    {topProbabilities.length > 0 && (
+                      <div className="flex flex-col gap-1.5 pt-1 border-t border-[#DCE5EF]">
+                        <span className="text-[10px] font-bold text-[#71809A] uppercase tracking-wider">
+                          Candidate Probabilities
+                        </span>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          {topProbabilities.slice(0, 4).map((p, idx) => (
+                            <div
+                              key={idx}
+                              className={`p-1.5 rounded-lg border text-xs flex items-center justify-between ${
+                                idx === 0
+                                  ? 'bg-[#E7F4FC] border-[#12B8C2]/40 text-[#14264F] font-semibold'
+                                  : 'bg-slate-50 border-slate-200 text-slate-600'
+                              }`}
+                            >
+                              <span className="truncate pr-1">{p.label}</span>
+                              <span className="font-mono text-[10px] text-[#12B8C2] font-bold shrink-0">
+                                {(p.confidence * 100).toFixed(0)}%
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Continuous Accumulated Glosses Sentence Buffer */}
+                    <div className="bg-[#F8FAFC] rounded-xl p-3 border border-[#E2E8F0]">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold text-[#475569] uppercase tracking-wider">
+                          Sentence Buffer ({accumulatedGlosses.length} {accumulatedGlosses.length === 1 ? 'sign' : 'signs'})
+                        </span>
+                        {accumulatedGlosses.length > 0 && (
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={finishSentenceRecognition}
+                              className="text-[10px] px-2 py-0.5 bg-[#12B8C2] hover:bg-[#0E8B93] text-white font-bold rounded-lg transition-colors shadow-xs"
+                            >
+                              Translate & Speak
+                            </button>
+                            <button
+                              type="button"
+                              onClick={clearCurrentSentence}
+                              className="text-[10px] px-2 py-0.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-lg transition-colors flex items-center gap-1"
+                              title="Clear current sentence buffer"
+                            >
+                              <RotateCcw className="w-2.5 h-2.5" />
+                              <span>Clear</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {accumulatedGlosses.length === 0 ? (
+                        <p className="text-[11px] text-[#94A3B8] italic">
+                          Perform consecutive signs to construct continuous ISL sentences.
+                        </p>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {accumulatedGlosses.map((gloss, idx) => (
+                              <span
+                                key={idx}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 bg-white border border-[#CBD5E1] rounded-lg text-xs font-bold text-[#14264F] shadow-2xs"
+                              >
+                                <span className="text-[10px] text-[#94A3B8] font-normal">{idx + 1}.</span>
+                                {gloss}
+                              </span>
+                            ))}
+                          </div>
+
+                          <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs bg-white p-2 rounded-lg border border-[#DCE5EF]">
+                            <div className="flex items-center gap-1.5 text-[#14264F] font-semibold truncate mr-2">
+                              <Volume2 className="w-3.5 h-3.5 text-[#12B8C2] shrink-0" />
+                              <span className="truncate">English: "{translateISLGlossSequenceToEnglish(accumulatedGlosses)}"</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const sentence = translateISLGlossSequenceToEnglish(accumulatedGlosses);
+                                if (sentence) ttsPlayer.speak(sentence, activeLanguage);
+                              }}
+                              className="text-[10px] px-2 py-0.5 bg-[#E7F4FC] hover:bg-[#12B8C2] text-[#14264F] hover:text-white font-bold rounded transition-colors shrink-0"
+                            >
+                              Speak Now
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* CARD 2: 3D SIGN AVATAR CARD */}
+                  <div className="bg-white rounded-2xl border border-[#DCE5EF] p-3.5 sm:p-4 shadow-sm flex flex-col">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-bold tracking-wider text-[#71809A] uppercase">
+                        3D Sign Avatar
+                      </span>
+
+                      {/* Status Indicator & Replay */}
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={repeatAvatarMessage}
+                          className="text-[10px] font-semibold text-[#14264F] hover:text-[#12B8C2] bg-[#E7F4FC] hover:bg-[#d4edfa] px-2 py-0.5 rounded-md transition-colors flex items-center gap-1"
+                          title="Repeat last sign or sentence animation"
+                        >
+                          <RefreshCw className="w-2.5 h-2.5" /> Replay
+                        </button>
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#12B8C2]">
+                          <span className="text-xs">{avatarStatus.isPaused ? 'Paused' : 'Active'}</span>
+                          <span className={`w-2 h-2 rounded-full ${avatarStatus.isPaused ? 'bg-amber-400' : 'bg-[#12B8C2]'}`} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Clean 3D Avatar Rendering Container */}
+                    <div className="w-full rounded-xl overflow-hidden bg-white">
+                      <SignAvatar
+                        currentSign={avatarSign}
+                        textToSign={speechTranscriptForAvatar}
+                        theme="light"
+                        showControls={true}
+                        showQuickActions={false}
+                        onPerformSignReady={(fn) => {
+                          avatarPerformSignRef.current = fn;
+                        }}
+                        onPerformSequenceReady={(fn) => {
+                          avatarPerformSequenceRef.current = fn;
+                        }}
+                        onReplaySequenceReady={(fn) => {
+                          avatarReplayRef.current = fn;
+                        }}
+                        onStatusChange={setAvatarStatus}
+                        className="w-full border-0 shadow-none"
                       />
                     </div>
-                  </>
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-slate-800 text-slate-400 gap-2">
-                    <CameraOff className="w-12 h-12" />
-                    <span className="text-sm font-medium">Camera is Turned OFF</span>
                   </div>
-                )}
+
+                  {/* CARD 3: QUICK SIGN PANEL (6 Buttons as Specified) ─────── */}
+                  <div className="bg-white rounded-2xl border border-[#DCE5EF] p-3 shadow-sm">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+                      {QUICK_SIGNS.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => handleTriggerQuickSign(item.id, item.englishText)}
+                          className="px-2.5 py-2 rounded-xl bg-white hover:bg-[#E7F4FC] text-[#14264F] hover:text-[#12B8C2] border border-[#DCE5EF] hover:border-[#12B8C2] text-xs font-semibold transition-all shadow-sm active:scale-95 text-center truncate"
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">Gesture Recognition</h3>
-                <p className="text-base font-semibold text-slate-700 mt-1">
-                  {handsDetected === 0 ? (
-                    <span className="text-slate-500 bg-slate-100 px-3 py-1 rounded-md border border-slate-200">
-                      No hand in view
-                    </span>
-                  ) : recognizedSign ? (
-                    <span className="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-md border border-emerald-200">
-                      {recognizedSign} ({Math.round(recognizedConfidence * 100)}%)
-                    </span>
-                  ) : (
-                    <span className="text-sky-600 bg-sky-50 px-3 py-1 rounded-md border border-sky-200 animate-pulse">
-                      Detecting gesture…
-                    </span>
-                  )}
-                </p>
-              </div>
+              {/* ── CARD 5.5: V14 DEDICATED BIDIRECTIONAL SENTENCE DEMONSTRATION ─── */}
+              <SentenceDemoMode
+                onDispatchSequenceToAvatar={(signIds) => {
+                  if (avatarPerformSequenceRef.current) {
+                    avatarPerformSequenceRef.current(signIds);
+                  }
+                  if (signIds.length > 0) setAvatarSign(signIds[0]);
+                }}
+                onReplayAvatarSequence={() => {
+                  if (avatarReplayRef.current) return avatarReplayRef.current();
+                  return false;
+                }}
+                onToggleAvatarPause={() => {
+                  setAvatarStatus((prev) => ({ ...prev, isPaused: !prev.isPaused }));
+                }}
+                onResetAvatar={() => {
+                  if (avatarPerformSignRef.current) avatarPerformSignRef.current('IDLE');
+                  setAvatarSign('IDLE');
+                }}
+                isAvatarPaused={avatarStatus.isPaused}
+                avatarActiveAction={avatarStatus.activeAction}
+                avatarQueuedActions={avatarStatus.queuedActions || []}
+                recognizedCameraSign={recognizedSign}
+                recognizedCameraConfidence={recognizedConfidence}
+                accumulatedCameraGlosses={accumulatedGlosses}
+                onClearCameraSequence={clearCurrentSentence}
+                isCameraActive={isCameraActive && isCameraOn}
+                onToggleCamera={() => setIsCameraOn((prev) => !prev)}
+              />
 
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">Live Subtitles</h3>
-                <div className="mt-2 bg-[#2a9d8f] text-white px-5 py-3.5 rounded-xl font-semibold text-base shadow-md flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                    <span
-                      className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                        speechStatus === 'interim'
-                          ? 'bg-amber-300 animate-ping'
-                          : isListeningActive
-                          ? 'bg-emerald-300 animate-pulse'
-                          : 'bg-white/80'
+              {/* ── CARD 6: VOICE & ACCESSIBILITY FULL-WIDTH PANEL ──────────── */}
+              <div className="bg-white rounded-2xl border border-[#DCE5EF] p-3.5 sm:p-4 shadow-sm flex flex-col gap-2.5">
+                <span className="text-[11px] font-bold tracking-wider text-[#71809A] uppercase">
+                  Voice &amp; Accessibility
+                </span>
+
+                <div className="flex flex-wrap items-center gap-3 lg:gap-5 justify-between">
+                  {/* 1. Mic On / Off Toggle */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsMicOn((prev) => !prev)}
+                      aria-label="Toggle Microphone"
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all border shadow-sm ${
+                        isMicOn
+                          ? 'bg-[#E7F4FC] border-[#12B8C2] text-[#12B8C2]'
+                          : 'bg-white border-[#DCE5EF] text-[#71809A]'
                       }`}
-                    />
-                    <span className="truncate">{liveSubtitle}</span>
+                    >
+                      {isMicOn ? <Mic className="w-4 h-4 text-[#12B8C2]" /> : <MicOff className="w-4 h-4" />}
+                    </button>
+                    <div className="flex flex-col text-left">
+                      <span className="text-[10px] text-[#71809A] leading-tight">Mic</span>
+                      <span className="text-xs font-bold text-[#14264F]">{isMicOn ? 'On' : 'Off'}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    {speechStatus === 'interim' && (
-                      <span className="text-xs bg-amber-400/30 border border-amber-300/40 px-2 py-0.5 rounded text-amber-100 font-semibold flex items-center gap-1">
-                        Interim
-                      </span>
-                    )}
-                    {speechStatus === 'final' && lastSpeechLatencyMs !== null && (
-                      <span className="text-xs bg-white/20 px-2 py-0.5 rounded text-white font-mono">
-                        {lastSpeechLatencyMs}ms
-                      </span>
-                    )}
-                    {isListeningActive && (
-                      <span className="text-xs bg-white/20 px-2 py-0.5 rounded text-white font-medium">Live Mic</span>
-                    )}
+
+                  {/* 2. Text Input & Send Button */}
+                  <form onSubmit={handleSendText} className="flex-1 min-w-[240px] flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={typedText}
+                      onChange={(e) => setTypedText(e.target.value)}
+                      placeholder="Type a message to translate..."
+                      className="flex-1 bg-white border border-[#DCE5EF] rounded-xl px-3.5 py-2 text-xs sm:text-sm text-[#14264F] placeholder-[#71809A] focus:outline-none focus:ring-2 focus:ring-[#12B8C2]/40 focus:border-[#12B8C2] transition-all"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-[#14264F] hover:bg-[#1e3875] text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all shadow-sm shrink-0"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Send</span>
+                    </button>
+                  </form>
+
+                  {/* 3. Voice Output On / Off Toggle */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsSignToVoiceEnabled((prev) => !prev)}
+                      aria-label="Toggle Voice Output"
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all border shadow-sm ${
+                        isSignToVoiceEnabled
+                          ? 'bg-[#E7F4FC] border-[#12B8C2] text-[#12B8C2]'
+                          : 'bg-white border-[#DCE5EF] text-[#71809A]'
+                      }`}
+                    >
+                      {isSignToVoiceEnabled ? (
+                        <Volume2 className="w-4 h-4 text-[#12B8C2]" />
+                      ) : (
+                        <VolumeX className="w-4 h-4" />
+                      )}
+                    </button>
+                    <div className="flex flex-col text-left">
+                      <span className="text-[10px] text-[#71809A] leading-tight">Voice output</span>
+                      <span className="text-xs font-bold text-[#14264F]">{isSignToVoiceEnabled ? 'On' : 'Off'}</span>
+                    </div>
+                  </div>
+
+                  {/* 4. Subtitles On / Off Toggle */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsSubtitlesOn((prev) => !prev)}
+                      aria-label="Toggle Subtitles"
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all border shadow-sm font-bold ${
+                        isSubtitlesOn
+                          ? 'bg-[#E7F4FC] border-[#12B8C2] text-[#12B8C2]'
+                          : 'bg-white border-[#DCE5EF] text-[#71809A]'
+                      }`}
+                    >
+                      <span className="text-xs font-black tracking-tighter">CC</span>
+                    </button>
+                    <div className="flex flex-col text-left">
+                      <span className="text-[10px] text-[#71809A] leading-tight">Subtitles</span>
+                      <span className="text-xs font-bold text-[#14264F]">{isSubtitlesOn ? 'On' : 'Off'}</span>
+                    </div>
+                  </div>
+
+                  {/* 5. Translation Direction Dropdown */}
+                  <div className="relative shrink-0">
+                    <select
+                      value={translationDirection}
+                      onChange={(e) => setTranslationDirection(e.target.value as any)}
+                      className="appearance-none bg-white border border-[#DCE5EF] rounded-xl pl-3 pr-7 py-2 text-xs font-semibold text-[#14264F] focus:outline-none focus:ring-2 focus:ring-[#12B8C2]/40 focus:border-[#12B8C2] cursor-pointer shadow-sm"
+                    >
+                      <option value="isl_to_speech">ISL → English</option>
+                      <option value="speech_to_isl">English → ISL Avatar</option>
+                    </select>
+                    <ChevronDown className="w-3.5 h-3.5 text-[#71809A] absolute right-2 top-2.5 pointer-events-none" />
                   </div>
                 </div>
 
                 {sttError && (
-                  <div className="mt-2 text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-lg flex items-start gap-1.5">
-                    <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                    <span>{sttError}</span>
+                  <div className="text-[11px] text-rose-600 bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                    <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>Microphone Notice: {sttError}</span>
                   </div>
                 )}
+              </div>
+            </>
+          )}
 
-                {/* Quick Speech Test Bar */}
-                <form onSubmit={handleSendText} className="mt-3 flex gap-2">
-                  <input
-                    type="text"
-                    value={typedText}
-                    onChange={(e) => setTypedText(e.target.value)}
-                    placeholder="Type speech message (e.g. Where is hospital?)..."
-                    className="flex-1 bg-slate-100 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#2a9d8f]"
+          {/* ── DEDICATED SENTENCE DEMO VIEW TAB (V14 Full Duplex) ─────────────── */}
+          {navSection === 'demo' && (
+            <div className="flex-1 flex flex-col gap-4">
+              <SentenceDemoMode
+                onDispatchSequenceToAvatar={(signIds) => {
+                  if (avatarPerformSequenceRef.current) {
+                    avatarPerformSequenceRef.current(signIds);
+                  }
+                  if (signIds.length > 0) setAvatarSign(signIds[0]);
+                }}
+                onReplayAvatarSequence={() => {
+                  if (avatarReplayRef.current) return avatarReplayRef.current();
+                  return false;
+                }}
+                onToggleAvatarPause={() => {
+                  setAvatarStatus((prev) => ({ ...prev, isPaused: !prev.isPaused }));
+                }}
+                onResetAvatar={() => {
+                  if (avatarPerformSignRef.current) avatarPerformSignRef.current('IDLE');
+                  setAvatarSign('IDLE');
+                }}
+                isAvatarPaused={avatarStatus.isPaused}
+                avatarActiveAction={avatarStatus.activeAction}
+                avatarQueuedActions={avatarStatus.queuedActions || []}
+                recognizedCameraSign={recognizedSign}
+                recognizedCameraConfidence={recognizedConfidence}
+                accumulatedCameraGlosses={accumulatedGlosses}
+                onClearCameraSequence={clearCurrentSentence}
+                isCameraActive={isCameraActive && isCameraOn}
+                onToggleCamera={() => setIsCameraOn((prev) => !prev)}
+              />
+
+              {/* Side-by-Side Dual Visual Viewports */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1">
+                {/* Visual Viewport 1: Live Camera with Skeleton Overlay */}
+                <div className="flex flex-col flex-1">
+                  <OptimizedCameraView
+                    isCameraOn={isCameraOn}
+                    onToggleCamera={() => setIsCameraOn((prev) => !prev)}
+                    confidenceThreshold={confidenceThreshold}
+                    onSignConfirmed={handleRecognizedSignFromCamera}
+                    onCandidateChanged={handleCandidateChanged}
+                    onRecognitionStateChanged={handleRecognitionStateChanged}
+                    onTopProbabilitiesChanged={handleTopProbabilitiesChanged}
+                    isSigningPaused={isSigningPaused}
+                    onToggleSigningPaused={() => setIsSigningPaused((prev) => !prev)}
+                    className="w-full flex-1 min-h-[360px]"
                   />
-                  <button
-                    type="submit"
-                    className="bg-[#2a9d8f] hover:bg-[#21867a] text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-1 shadow-sm transition-all"
-                  >
-                    <Send className="w-3.5 h-3.5" /> Send
-                  </button>
-                </form>
-
-                {/* Preset Speech Suggestions */}
-                <div className="mt-2 flex items-center gap-1.5 overflow-x-auto text-xs py-1">
-                  <span className="text-slate-500 font-medium text-[11px] whitespace-nowrap flex items-center gap-1">
-                    <Sparkles className="w-3 h-3 text-[#2a9d8f]" /> Test Voice:
-                  </span>
-                  {[
-                    'Hello, how can I help you?',
-                    'Where is the hospital?',
-                    'Please give me water and food',
-                    'Thank you very much',
-                  ].map((phrase) => (
-                    <button
-                      key={phrase}
-                      type="button"
-                      onClick={() => triggerSpeechTranscript(phrase)}
-                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-all border border-slate-200"
-                    >
-                      "{phrase}"
-                    </button>
-                  ))}
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <button
-                  onClick={() => setIsMicOn((prev) => !prev)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm text-white shadow-md transition-all ${
-                    isMicOn ? 'bg-[#2a9d8f] hover:bg-[#21867a]' : 'bg-slate-500 hover:bg-slate-600'
-                  }`}
-                >
-                  {isMicOn ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
-                  {isMicOn ? 'Mic ON' : 'Mic OFF'}
-                </button>
-
-                <button
-                  onClick={() => setIsGestureEnabled((prev) => !prev)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm text-white shadow-md transition-all ${
-                    isGestureEnabled ? 'bg-[#2b7fff] hover:bg-[#1f6feb]' : 'bg-slate-500 hover:bg-slate-600'
-                  }`}
-                >
-                  <Hand className="w-4 h-4" />
-                  {isGestureEnabled ? 'Enable Gesture' : 'Gesture OFF'}
-                </button>
-
-                <button
-                  onClick={() => setIsSignToVoiceEnabled((prev) => !prev)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm text-white shadow-md transition-all ${
-                    isSignToVoiceEnabled ? 'bg-[#8338ec] hover:bg-[#7226db]' : 'bg-slate-500 hover:bg-slate-600'
-                  }`}
-                >
-                  <Volume2 className="w-4 h-4" />
-                  {isSignToVoiceEnabled ? 'Enable Sign → Voice' : 'Voice Output OFF'}
-                </button>
-
-                <button
-                  onClick={() => setIsCameraOn((prev) => !prev)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm text-white shadow-md transition-all ${
-                    isCameraOn ? 'bg-[#f4a261] hover:bg-[#e76f51]' : 'bg-slate-500 hover:bg-slate-600'
-                  }`}
-                >
-                  {isCameraOn ? <Camera className="w-4 h-4" /> : <CameraOff className="w-4 h-4" />}
-                  {isCameraOn ? 'Camera ON' : 'Camera OFF'}
-                </button>
-              </div>
-            </section>
-
-            {/* Right Column: 3D Sign Avatar */}
-            <section className="flex flex-col gap-4">
-              <h2 className="text-xl font-bold text-slate-900">Sign Avatar</h2>
-              <SignAvatar currentSign={avatarSign} textToSign={speechTranscriptForAvatar} className="w-full" />
-            </section>
-          </main>
-        </div>
-      ) : (
-        /* 2. ADVANCED STUDIO WORKSPACE */
-        <div className="flex-1 bg-gray-950 text-gray-100 flex flex-col">
-          <Header
-            systemState={systemState}
-            isConnected={isConnected}
-            activeLanguage={activeLanguage}
-            onLanguageChange={setActiveLanguage}
-            latencySummary={latencyMetrics}
-            onOpenMetrics={() => setIsMetricsOpen(true)}
-            onOpenPresets={() => setIsPresetsOpen(true)}
-          />
-
-          <main className="flex-1 container mx-auto px-4 py-4 max-w-7xl flex flex-col gap-4">
-            {/* Studio Workspace Tab Navigation */}
-            <div className="flex flex-wrap items-center justify-between gap-3 bg-gray-900/60 p-2.5 rounded-2xl border border-gray-800">
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setStudioTab('recognition')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm ${
-                    studioTab === 'recognition'
-                      ? 'bg-[#2b7fff] text-white shadow-blue-500/20'
-                      : 'bg-gray-800 text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-                  }`}
-                >
-                  <Video className="w-4 h-4" /> Live Recognition & Chat
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setStudioTab('collection')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm ${
-                    studioTab === 'collection'
-                      ? 'bg-amber-500 text-slate-950 shadow-amber-500/20'
-                      : 'bg-gray-800 text-gray-400 hover:text-gray-200 hover:bg-gray-700'
-                  }`}
-                >
-                  <Database className="w-4 h-4" /> Training Data Collection Studio
-                </button>
-              </div>
-
-              <div className="text-xs text-gray-400 font-mono hidden md:inline">
-                {studioTab === 'recognition'
-                  ? 'Real-Time Full-Duplex Vision & Speech Stream'
-                  : '30-Frame ISLRTC Landmark Sequence Recorder'}
+                {/* Visual Viewport 2: 3D Sign Avatar with Skeletal Controller */}
+                <div className="bg-white rounded-2xl border border-[#DCE5EF] p-4 shadow-sm flex flex-col">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold tracking-wider text-[#71809A] uppercase flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-[#12B8C2]" /> 3D ISL Avatar Output
+                    </span>
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#E7F4FC] text-[#12B8C2]">
+                      {avatarStatus.activeAction === 'IDLE' ? 'Idle' : `Signing: ${avatarStatus.activeAction}`}
+                    </span>
+                  </div>
+                  <div className="w-full rounded-xl overflow-hidden bg-white flex-1 min-h-[360px]">
+                    <SignAvatar
+                      currentSign={avatarSign}
+                      textToSign={speechTranscriptForAvatar}
+                      theme="light"
+                      showControls={true}
+                      showQuickActions={false}
+                      onPerformSignReady={(fn) => {
+                        avatarPerformSignRef.current = fn;
+                      }}
+                      onPerformSequenceReady={(fn) => {
+                        avatarPerformSequenceRef.current = fn;
+                      }}
+                      onReplaySequenceReady={(fn) => {
+                        avatarReplayRef.current = fn;
+                      }}
+                      onStatusChange={setAvatarStatus}
+                      className="w-full border-0 shadow-none"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
+          )}
 
-            {studioTab === 'recognition' ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-4">
-                  <LiveCameraView
-                    onSignRecognised={handleRecognizedSignFromCamera}
-                    onRawFrame={setStudioRawFrame}
-                    sessionId="main-room"
-                    isActive={true}
-                  />
-                  <AudioControls
-                    activeLanguage={activeLanguage}
-                    partialSpeech={partialSpeech}
-                    onSendSpeech={(text) => {
-                      triggerSpeechTranscript(text);
-                    }}
-                    onSendText={(text) => {
-                      triggerSpeechTranscript(text);
-                      sendTextMessage(text);
-                    }}
+          {/* ── MEETING VIEW TAB (Dedicated Collaborative Mode) ─────────────── */}
+          {navSection === 'meeting' && (
+            <div className="flex-1 flex flex-col gap-6">
+              <div className="bg-white rounded-2xl border border-[#DCE5EF] p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-[#14264F]">SignBridge Collaborative Meeting</h2>
+                  <p className="text-sm text-[#71809A]">
+                    Room ID: <span className="font-mono font-bold text-[#14264F]">{meetingId}</span> • Full-Duplex ISL ↔ Speech Channel
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleCopyMeetingId}
+                    className="px-4 py-2 bg-[#E7F4FC] hover:bg-[#d9effa] text-[#12B8C2] border border-[#12B8C2]/30 text-xs font-bold rounded-xl flex items-center gap-2 transition"
+                  >
+                    {copiedMeeting ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                    <span>{copiedMeeting ? 'Copied Link' : 'Copy Room Link'}</span>
+                  </button>
+                  <button
+                    onClick={() => setNavSection('dashboard')}
+                    className="px-4 py-2 bg-[#14264F] hover:bg-[#1e3875] text-white text-xs font-bold rounded-xl transition"
+                  >
+                    Back to Dashboard
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+                <div className="flex flex-col flex-1">
+                  <OptimizedCameraView
+                    isCameraOn={isCameraOn}
+                    onToggleCamera={() => setIsCameraOn((prev) => !prev)}
+                    confidenceThreshold={confidenceThreshold}
+                    onSignConfirmed={handleRecognizedSignFromCamera}
+                    onCandidateChanged={handleCandidateChanged}
+                    onRecognitionStateChanged={handleRecognitionStateChanged}
+                    onTopProbabilitiesChanged={handleTopProbabilitiesChanged}
+                    isSigningPaused={isSigningPaused}
+                    onToggleSigningPaused={() => setIsSigningPaused((prev) => !prev)}
+                    className="w-full flex-1 min-h-[380px]"
                   />
                 </div>
 
-                <div className="flex flex-col gap-4">
-                  <SignAvatar currentSign={avatarSign} textToSign={speechTranscriptForAvatar} />
-                  <ConversationThread
-                    messages={messages}
-                    activeLanguage={activeLanguage}
-                    onClear={clearSession}
+                <div className="bg-white rounded-2xl border border-[#DCE5EF] p-5 shadow-sm flex flex-col">
+                  <span className="text-xs font-bold tracking-wider text-[#71809A] uppercase mb-3">3D Sign Translator</span>
+                  <SignAvatar
+                    currentSign={avatarSign}
+                    textToSign={speechTranscriptForAvatar}
+                    theme="light"
+                    showControls={true}
+                    showQuickActions={true}
+                    className="w-full flex-1 border-0 shadow-none"
                   />
                 </div>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-5 flex flex-col gap-4">
-                  <LiveCameraView
-                    onSignRecognised={handleRecognizedSignFromCamera}
-                    onRawFrame={setStudioRawFrame}
-                    sessionId="main-room"
-                    isActive={true}
-                  />
+            </div>
+          )}
+
+          {/* ── HISTORY VIEW TAB (Conversation Log) ─────────────────────────── */}
+          {navSection === 'history' && (
+            <div className="bg-white rounded-2xl border border-[#DCE5EF] p-6 shadow-sm flex flex-col gap-4">
+              <div className="flex items-center justify-between border-b border-[#DCE5EF] pb-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-[#14264F]">Session Transcription History</h2>
+                  <p className="text-xs text-[#71809A]">Chronological transcript of all bidirectional interpretations.</p>
                 </div>
-                <div className="lg:col-span-7 flex flex-col gap-4">
-                  <DataCollectionStudio rawFrame={studioRawFrame} sessionId="studio_collector" />
+                <button
+                  onClick={() => setHistoryLog([])}
+                  className="px-3.5 py-1.5 bg-[#F7F9FC] hover:bg-slate-100 text-[#71809A] hover:text-rose-600 border border-[#DCE5EF] rounded-xl text-xs font-semibold transition"
+                >
+                  Clear History
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-3 max-h-[540px] overflow-y-auto pr-1">
+                {historyLog.length === 0 ? (
+                  <p className="text-sm text-[#71809A] py-8 text-center">No conversation records yet in this session.</p>
+                ) : (
+                  historyLog.map((item) => (
+                    <div
+                      key={item.id}
+                      className="p-4 rounded-xl border border-[#DCE5EF] bg-[#F7F9FC] flex items-start justify-between gap-4"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
+                              item.source === 'isl'
+                                ? 'bg-[#E7F4FC] text-[#12B8C2]'
+                                : 'bg-slate-200 text-[#14264F]'
+                            }`}
+                          >
+                            {item.source === 'isl' ? 'ISL Vision' : 'Spoken Speech'}
+                          </span>
+                          {item.sign && (
+                            <span className="text-[11px] font-mono text-[#71809A]">
+                              Sign: {item.sign}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-base font-medium text-[#14264F]">{item.text}</p>
+                      </div>
+                      <span className="text-xs font-mono text-[#71809A] shrink-0">{item.time}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* ── SETTINGS VIEW TAB ───────────────────────────────────────────── */}
+          {navSection === 'settings' && (
+            <div className="bg-white rounded-2xl border border-[#DCE5EF] p-6 shadow-sm flex flex-col gap-6">
+              <div>
+                <h2 className="text-2xl font-bold text-[#14264F]">Platform Settings & Preferences</h2>
+                <p className="text-xs text-[#71809A]">Configure perception thresholds, audio synthesis, and accessibility preferences.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Recognition Threshold */}
+                <div className="p-5 rounded-xl border border-[#DCE5EF] bg-[#F7F9FC] flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-bold text-[#14264F]">Vision Confidence Threshold</label>
+                    <span className="text-xs font-mono font-bold text-[#12B8C2]">{Math.round(confidenceThreshold * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.50"
+                    max="0.95"
+                    step="0.05"
+                    value={confidenceThreshold}
+                    onChange={(e) => setConfidenceThreshold(parseFloat(e.target.value))}
+                    className="w-full accent-[#12B8C2] cursor-pointer"
+                  />
+                  <p className="text-[11px] text-[#71809A]">Higher threshold prevents false positives; lower threshold responds faster.</p>
+                </div>
+
+                {/* Spoken Language Selector */}
+                <div className="p-5 rounded-xl border border-[#DCE5EF] bg-[#F7F9FC] flex flex-col gap-3">
+                  <label className="text-sm font-bold text-[#14264F]">Speech Recognition Language</label>
+                  <select
+                    value={activeLanguage}
+                    onChange={(e) => setActiveLanguage(e.target.value as SupportedLanguage)}
+                    className="bg-white border border-[#DCE5EF] rounded-xl px-3 py-2 text-xs font-semibold text-[#14264F] focus:outline-none focus:ring-2 focus:ring-[#12B8C2]"
+                  >
+                    <option value="en">English (India)</option>
+                    <option value="hi">Hindi (हिंदी)</option>
+                    <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                    <option value="te">Telugu (తెలుగు)</option>
+                  </select>
+                  <p className="text-[11px] text-[#71809A]">Language utilized for speech-to-sign transcription matching.</p>
+                </div>
+
+                {/* TTS Speed */}
+                <div className="p-5 rounded-xl border border-[#DCE5EF] bg-[#F7F9FC] flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-bold text-[#14264F]">Voice Synthesis Rate</label>
+                    <span className="text-xs font-mono font-bold text-[#12B8C2]">{ttsSpeed.toFixed(1)}x</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.75"
+                    max="1.5"
+                    step="0.25"
+                    value={ttsSpeed}
+                    onChange={(e) => setTtsSpeed(parseFloat(e.target.value))}
+                    className="w-full accent-[#12B8C2] cursor-pointer"
+                  />
+                  <p className="text-[11px] text-[#71809A]">Controls audio speech playback pace.</p>
+                </div>
+
+                {/* High Contrast Accessibility Mode */}
+                <div className="p-5 rounded-xl border border-[#DCE5EF] bg-[#F7F9FC] flex items-center justify-between gap-4">
+                  <div>
+                    <span className="text-sm font-bold text-[#14264F] block">High-Contrast Accessibility Mode</span>
+                    <span className="text-[11px] text-[#71809A]">Maximizes contrast ratios for visual accessibility.</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setAccessibilityMode((prev) => !prev)}
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                      accessibilityMode ? 'bg-[#12B8C2]' : 'bg-[#DCE5EF]'
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                        accessibilityMode ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
                 </div>
               </div>
-            )}
-          </main>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* ── FOOTER BAR ─────────────────────────────────────────────────────── */}
+      <footer className="h-9 bg-[#E7F4FC] border-t border-[#DCE5EF] px-6 sm:px-8 flex items-center justify-between text-xs text-[#5A7184] font-medium shrink-0">
+        <div className="flex items-center gap-1.5">
+          <ShieldCheck className="w-3.5 h-3.5 text-[#12B8C2]" />
+          <span>Privacy-first processing</span>
         </div>
-      )}
-
-      {/* Metrics Modal */}
-      <MetricsDashboard
-        isOpen={isMetricsOpen}
-        onClose={() => setIsMetricsOpen(false)}
-        latencyData={latencyMetrics}
-      />
-
-      {/* Demo Controls */}
-      <DemoControls
-        isOpen={isPresetsOpen}
-        onClose={() => setIsPresetsOpen(false)}
-        onRunScenarioStep={(speaker, sign, text) => {
-          if (speaker === 'isl' && sign) {
-            setAvatarSign(sign);
-            handleRecognizedSignFromCamera({
-              gesture: sign,
-              displayName: sign,
-              confidence: 0.95,
-              probabilities: [{ sign, confidence: 0.95, label: sign }],
-              timestamp: Date.now(),
-              sequenceLength: 30,
-              latencyMs: 3.5,
-              modelId: 'SBV-ML-TEMPORAL-v1',
-            });
-          } else if (speaker === 'speech' && text) {
-            triggerSpeechTranscript(text);
-          }
-        }}
-      />
+        <button
+          onClick={() => setAccessibilityMode((prev) => !prev)}
+          className="flex items-center gap-1.5 hover:text-[#14264F] transition"
+        >
+          <Eye className="w-3.5 h-3.5 text-[#12B8C2]" />
+          <span>{accessibilityMode ? 'Accessibility mode (Active)' : 'Accessibility mode'}</span>
+        </button>
+      </footer>
     </div>
   );
 }

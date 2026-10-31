@@ -1,0 +1,171 @@
+{
+  "serverStatus": "OK (200)",
+  "dashboardRender": "PASSED (11/11 DOM tokens verified)",
+  "hardware": {
+    "webcam": "HP True Vision FHD Camera",
+    "microphone": "Microphone Array (AMD Audio Device)",
+    "speaker": "Speaker (Realtek(R) Audio)"
+  },
+  "landmarkPipeline": {
+    "temporalFrames": 30,
+    "featureDim": 126,
+    "landmarksPerHand": 21,
+    "coordinatesPerLandmark": 3
+  },
+  "modelRecognition": {
+    "testedCount": 10,
+    "accuracy": "100.0%",
+    "details": [
+      {
+        "expected": "HELLO",
+        "predicted": "HELLO",
+        "confidence": "91.4%",
+        "match": "PASS"
+      },
+      {
+        "expected": "THANK_YOU",
+        "predicted": "THANK_YOU",
+        "confidence": "100.0%",
+        "match": "PASS"
+      },
+      {
+        "expected": "SORRY",
+        "predicted": "SORRY",
+        "confidence": "99.7%",
+        "match": "PASS"
+      },
+      {
+        "expected": "PLEASE",
+        "predicted": "PLEASE",
+        "confidence": "99.3%",
+        "match": "PASS"
+      },
+      {
+        "expected": "HELP",
+        "predicted": "HELP",
+        "confidence": "100.0%",
+        "match": "PASS"
+      },
+      {
+        "expected": "WATER",
+        "predicted": "WATER",
+        "confidence": "99.9%",
+        "match": "PASS"
+      },
+      {
+        "expected": "HOSPITAL",
+        "predicted": "HOSPITAL",
+        "confidence": "96.8%",
+        "match": "PASS"
+      },
+      {
+        "expected": "WHERE",
+        "predicted": "WHERE",
+        "confidence": "83.7%",
+        "match": "PASS"
+      },
+      {
+        "expected": "EMERGENCY",
+        "predicted": "EMERGENCY",
+        "confidence": "98.1%",
+        "match": "PASS"
+      },
+      {
+        "expected": "BATHROOM",
+        "predicted": "BATHROOM",
+        "confidence": "99.7%",
+        "match": "PASS"
+      }
+    ]
+  },
+  "avatarPlayback": {
+    "testSign": "HELLO",
+    "rightArmDisplacement": "8.9°",
+    "tPoseAvoided": true
+  },
+  "queueing": {
+    "repeatedSignsSupported": false,
+    "sequenceQueued": [
+      "HELP",
+      "WATER",
+      "PLEASE"
+    ]
+  },
+  "directionB": [
+    {
+      "sentence": "Where is the hospital?",
+      "islIR": "[object Object] [object Object]",
+      "avatarTokens": [
+        "HOSPITAL",
+        "WHERE"
+      ]
+    },
+    {
+      "sentence": "Please give me food and water.",
+      "islIR": "[object Object] [object Object] [object Object] + [object Object]",
+      "avatarTokens": [
+        "PLEASE",
+        "I_ME",
+        "FOOD",
+        "WATER"
+      ]
+    },
+    {
+      "sentence": "Thank you so much.",
+      "islIR": "[object Object] [object Object]",
+      "avatarTokens": [
+        "THANK_YOU",
+        "YOU"
+      ]
+    },
+    {
+      "sentence": "Hello, how can I help you?",
+      "islIR": "[object Object] + [object Object] [object Object] [object Object] [object Object]",
+      "avatarTokens": [
+        "HELLO",
+        "I_ME",
+        "YOU",
+        "HELP",
+        "HOW"
+      ]
+    }
+  ],
+  "directionA": [
+    {
+      "glosses": [
+        "HELLO"
+      ],
+      "englishSpeech": "hello."
+    },
+    {
+      "glosses": [
+        "THANK_YOU"
+      ],
+      "englishSpeech": "Thank you."
+    },
+    {
+      "glosses": [
+        "HELP",
+        "WATER",
+        "PLEASE"
+      ],
+      "englishSpeech": "Please I help the water."
+    },
+    {
+      "glosses": [
+        "HOSPITAL",
+        "WHERE"
+      ],
+      "englishSpeech": "Where is the hospital?"
+    },
+    {
+      "glosses": [
+        "I_ME",
+        "WORK",
+        "GO"
+      ],
+      "englishSpeech": "I work."
+    }
+  ],
+  "bidirectionalConcurrency": "VERIFIED_ACTIVE"
+}

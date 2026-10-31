@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { CanonicalMessage, SupportedLanguage } from '@signbridge2vision/types';
+import { CanonicalMessage, SupportedLanguage } from '@signbridge/types';
 import { Camera, Mic, Bot, Volume2, Globe, AlertTriangle } from 'lucide-react';
 import { ttsPlayer } from '../lib/speech/tts';
 

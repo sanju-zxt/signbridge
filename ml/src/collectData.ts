@@ -1,6 +1,6 @@
-﻿/**
+/**
  * collectData.ts
- * ─────────────────────────────────────────────────────────────────────────────
+ * -----------------------------------------------------------------------------
  * Data collection server for the SignBridge2Vision ISL gesture recognition.
  *
  * This Node.js script:
@@ -21,13 +21,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import express from 'express';
 import { WebSocketServer } from 'ws';
-import { ISL_VOCABULARY, CollectionSequence } from '@signbridge2vision/types';
+import { ISL_VOCABULARY, CollectionSequence } from '@signbridge/types';
 
 const PORT     = 4200;
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const CLASS_LABELS = ISL_VOCABULARY.map(v => v.sign);
 
-// ── Count existing sequences ───────────────────────────────────────────────
+// -- Count existing sequences -----------------------------------------------
 function countExisting(): Record<string, number> {
   const counts: Record<string, number> = {};
   for (const sign of CLASS_LABELS) {
@@ -39,7 +39,7 @@ function countExisting(): Record<string, number> {
   return counts;
 }
 
-// ── Save sequence ──────────────────────────────────────────────────────────
+// -- Save sequence ----------------------------------------------------------
 function saveSequence(seq: CollectionSequence): string {
   const dir = path.join(DATA_DIR, seq.sign.toLowerCase());
   fs.mkdirSync(dir, { recursive: true });
@@ -50,13 +50,13 @@ function saveSequence(seq: CollectionSequence): string {
   return filepath;
 }
 
-// ── Browser HTML tool ─────────────────────────────────────────────────────
+// -- Browser HTML tool -----------------------------------------------------
 const HTML_TOOL = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SignBridge2Vision — Data Collection Tool</title>
+<title>SignBridge2Vision � Data Collection Tool</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', sans-serif; background: #0a0a0f; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
@@ -95,7 +95,7 @@ const HTML_TOOL = `<!DOCTYPE html>
 </style>
 </head>
 <body>
-<h1>🤟 SignBridge2Vision — ISL Data Collection Tool</h1>
+<h1>?? SignBridge2Vision � ISL Data Collection Tool</h1>
 <div class="layout">
   <div class="camera-panel">
     <video id="video" autoplay muted playsinline></video>
@@ -104,19 +104,19 @@ const HTML_TOOL = `<!DOCTYPE html>
   <div class="right-panel">
     <div class="target-sign">
       <div class="target-label">Perform This Sign</div>
-      <div class="target-name" id="signName">—</div>
-      <div class="target-desc" id="signDesc">Loading…</div>
+      <div class="target-name" id="signName">�</div>
+      <div class="target-desc" id="signDesc">Loading�</div>
     </div>
-    <div class="status-bar status-idle" id="statusBar">Initialising camera…</div>
+    <div class="status-bar status-idle" id="statusBar">Initialising camera�</div>
     <div>
       <div style="font-size:0.75rem;color:#64748b;margin-bottom:4px;">Recording progress (30 frames)</div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     </div>
     <div class="controls">
-      <button class="btn-record" id="btnRecord" disabled>⏺ Record (SPACE)</button>
-      <button class="btn-next"   id="btnNext">Next Sign →</button>
+      <button class="btn-record" id="btnRecord" disabled>? Record (SPACE)</button>
+      <button class="btn-next"   id="btnNext">Next Sign ?</button>
     </div>
-    <div class="counts" id="counts">Loading counts…</div>
+    <div class="counts" id="counts">Loading counts�</div>
     <div class="instructions">
       <strong>Instructions:</strong><br>
       1. Position your hand in camera view so skeleton is visible.<br>
@@ -168,15 +168,15 @@ function connectWS() {
     if (msg.type === 'SAVED') {
       counts[msg.sign] = (counts[msg.sign] || 0) + 1;
       renderCounts();
-      setStatus(\`✅ Sequence saved: \${msg.sign} #\${counts[msg.sign]} — path: \${msg.path}\`, 'saved');
+      setStatus(\`? Sequence saved: \${msg.sign} #\${counts[msg.sign]} � path: \${msg.path}\`, 'saved');
       setTimeout(() => setStatus('Ready to record next sequence.', 'ready'), 2000);
     } else if (msg.type === 'COUNTS') {
       counts = msg.counts;
       renderCounts();
     }
   };
-  ws.onerror = () => setStatus('WebSocket error — is the server running?', 'idle');
-  ws.onclose = () => { setStatus('Disconnected. Reconnecting…', 'idle'); setTimeout(connectWS, 2000); };
+  ws.onerror = () => setStatus('WebSocket error � is the server running?', 'idle');
+  ws.onclose = () => { setStatus('Disconnected. Reconnecting�', 'idle'); setTimeout(connectWS, 2000); };
 }
 
 // MediaPipe initialisation
@@ -270,7 +270,7 @@ function startRecording() {
   isRecording = true;
   recordedFrames = [];
   progressFill.style.width = '0%';
-  setStatus('🔴 Recording… hold the gesture!', 'record');
+  setStatus('?? Recording� hold the gesture!', 'record');
   btnRecord.disabled = true;
 }
 
@@ -288,7 +288,7 @@ function finishRecording() {
   };
   if (ws && ws.readyState === 1) {
     ws.send(JSON.stringify({ type: 'SEQUENCE', data: seq }));
-    setStatus('Sending sequence to server…', 'ready');
+    setStatus('Sending sequence to server�', 'ready');
   }
   progressFill.style.width = '0%';
 }
@@ -309,7 +309,7 @@ function renderCounts() {
   for (const sign of SIGNS) {
     const n = counts[sign.sign] || 0;
     const cls = n >= 30 ? 'count-ok' : n >= 10 ? 'count-warn' : 'count-bad';
-    const bar = '█'.repeat(Math.min(n, 30)) + '░'.repeat(Math.max(0, 30 - n));
+    const bar = '�'.repeat(Math.min(n, 30)) + '�'.repeat(Math.max(0, 30 - n));
     html += \`<div class="count-row"><span>\${sign.sign}</span><span class="\${cls}">\${String(n).padStart(2,' ')}/30  <span style="font-family:monospace;font-size:0.7rem">\${bar}</span></span></div>\`;
   }
   countsDiv.innerHTML = html;
@@ -336,7 +336,7 @@ startCamera();
 </body>
 </html>`;
 
-// ── WebSocket server ───────────────────────────────────────────────────────
+// -- WebSocket server -------------------------------------------------------
 
 const app    = express();
 const server = http.createServer(app);
@@ -355,7 +355,7 @@ wss.on('connection', (ws) => {
         const seq: CollectionSequence = msg.data;
         const filepath = saveSequence(seq);
         const counts = countExisting();
-        console.log(`✅ Saved: ${seq.sign} — ${seq.frames.length} frames → ${path.basename(filepath)}`);
+        console.log(`? Saved: ${seq.sign} � ${seq.frames.length} frames ? ${path.basename(filepath)}`);
         ws.send(JSON.stringify({ type: 'SAVED', sign: seq.sign, path: filepath }));
         // Broadcast updated counts to all clients
         wss.clients.forEach(client => {
@@ -370,18 +370,18 @@ wss.on('connection', (ws) => {
   });
 });
 
-// ── Start ──────────────────────────────────────────────────────────────────
+// -- Start ------------------------------------------------------------------
 
 server.listen(PORT, () => {
-  console.log('══════════════════════════════════════════════════════');
-  console.log('SignBridge2Vision — ISL Data Collection Server');
-  console.log('══════════════════════════════════════════════════════');
+  console.log('------------------------------------------------------');
+  console.log('SignBridge2Vision � ISL Data Collection Server');
+  console.log('------------------------------------------------------');
   console.log(`Open in Chrome/Edge: http://localhost:${PORT}`);
   console.log('');
   console.log('Current sample counts:');
   const counts = countExisting();
   for (const [sign, count] of Object.entries(counts)) {
-    const status = count >= 30 ? '✅' : count >= 10 ? '⚠ ' : '❌';
+    const status = count >= 30 ? '?' : count >= 10 ? '? ' : '?';
     console.log(`  ${status} ${sign.padEnd(18)} ${count}/30`);
   }
   console.log('');

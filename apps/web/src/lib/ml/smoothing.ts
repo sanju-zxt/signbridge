@@ -2,7 +2,7 @@
  * smoothing.ts
  * EMA smoothing and majority-vote buffer for temporal prediction stabilisation.
  */
-import type { RecognitionResult } from '@signbridge2vision/types';
+import type { RecognitionResult } from '@signbridge/types';
 
 export class ExponentialSmoother {
   private smoothed: Float32Array;

@@ -1,0 +1,231 @@
+{
+  "timestamp": "2026-10-31T00:06:18.548Z",
+  "sections": {
+    "section1_model_audit": {
+      "numTrainedClasses": 50,
+      "numRuntimeConcepts": 82,
+      "untrainedConceptsCount": 46,
+      "trainedSigners": [
+        "user_01",
+        "user_02",
+        "user_03",
+        "user_04",
+        "user_05",
+        "user_06",
+        "user_07"
+      ],
+      "testSigners": [
+        "user_09",
+        "user_10"
+      ],
+      "signerOverlap": 0,
+      "dataLeakageCount": 0
+    },
+    "section2_webcam_recognition": {
+      "testSignsCount": 8,
+      "rightHandAccuracy": 100,
+      "routedSingleHandAccuracy": 50,
+      "restingMaxProbability": 0.5878158807754517,
+      "restingSuppressed": false
+    },
+    "section3_continuous_signing": [
+      {
+        "name": "Sequence 1",
+        "signs": [
+          "YOU",
+          "DO",
+          "WHAT"
+        ],
+        "accumulated": [
+          "YOU",
+          "DO",
+          "WHAT"
+        ],
+        "orderPreserved": true,
+        "synthesizedEnglish": "What are you doing?",
+        "translationMatch": true
+      },
+      {
+        "name": "Sequence 2",
+        "signs": [
+          "YOUR",
+          "NAME",
+          "WHAT"
+        ],
+        "accumulated": [
+          "YOUR",
+          "NAME",
+          "WHAT"
+        ],
+        "orderPreserved": true,
+        "synthesizedEnglish": "What is your name?",
+        "translationMatch": true
+      },
+      {
+        "name": "Sequence 3",
+        "signs": [
+          "I_ME",
+          "YOU",
+          "HELP",
+          "HOW"
+        ],
+        "accumulated": [
+          "I_ME",
+          "YOU",
+          "HELP",
+          "HOW"
+        ],
+        "orderPreserved": true,
+        "synthesizedEnglish": "How can I help you?",
+        "translationMatch": true
+      },
+      {
+        "name": "Sequence 4",
+        "signs": [
+          "I_ME",
+          "HOSPITAL",
+          "GO"
+        ],
+        "accumulated": [
+          "I_ME",
+          "HOSPITAL",
+          "GO"
+        ],
+        "orderPreserved": true,
+        "synthesizedEnglish": "I am going to the hospital.",
+        "translationMatch": true
+      }
+    ],
+    "section4_sentence_translation": [
+      {
+        "english": "What are you doing?",
+        "parsedTokens": [
+          "YOU",
+          "DO",
+          "WHAT"
+        ],
+        "tokensMatch": true,
+        "englishSynth": "What are you doing?",
+        "englishMatch": true,
+        "intent": "wh_question",
+        "nonManualMarkers": [
+          "NEUTRAL",
+          "NEUTRAL",
+          "EYEBROWS_FURROWED"
+        ]
+      },
+      {
+        "english": "What is your name?",
+        "parsedTokens": [
+          "YOUR",
+          "NAME",
+          "WHAT"
+        ],
+        "tokensMatch": true,
+        "englishSynth": "What is your name?",
+        "englishMatch": true,
+        "intent": "wh_question",
+        "nonManualMarkers": [
+          "NEUTRAL",
+          "NEUTRAL",
+          "EYEBROWS_FURROWED"
+        ]
+      },
+      {
+        "english": "How can I help you?",
+        "parsedTokens": [
+          "I_ME",
+          "YOU",
+          "HELP",
+          "HOW"
+        ],
+        "tokensMatch": true,
+        "englishSynth": "How can I help you?",
+        "englishMatch": true,
+        "intent": "wh_question",
+        "nonManualMarkers": [
+          "NEUTRAL",
+          "NEUTRAL",
+          "NEUTRAL",
+          "EYEBROWS_FURROWED"
+        ]
+      },
+      {
+        "english": "My name is Daniel.",
+        "parsedTokens": [
+          "MY",
+          "NAME",
+          "D",
+          "A",
+          "N",
+          "I",
+          "E",
+          "L"
+        ],
+        "tokensMatch": true,
+        "englishSynth": "My name is Daniel.",
+        "englishMatch": true,
+        "intent": "statement",
+        "nonManualMarkers": [
+          "NEUTRAL",
+          "NEUTRAL",
+          "NEUTRAL",
+          "NEUTRAL",
+          "NEUTRAL",
+          "NEUTRAL",
+          "NEUTRAL",
+          "NEUTRAL"
+        ]
+      }
+    ],
+    "section5_avatar": {
+      "eightActionQueueLength": 9,
+      "initialQueuedCount": 1,
+      "unsupportedSignHandledCleanly": true,
+      "errorMessage": "Sign animation 'NON_EXISTENT_SIGN_XYZ' is not currently available in 3D avatar library."
+    },
+    "section6_performance": {
+      "inference": {
+        "p50": 250.73629999999866,
+        "p95": 270.0249999999978,
+        "max": 294.21610000000146,
+        "mean": 253.50621199999995
+      },
+      "translation": {
+        "p50": 0.003099999998084968,
+        "p95": 0.009200000000419095,
+        "max": 0.647899999999936,
+        "mean": 0.0073309999999692085
+      },
+      "avatarDispatch": {
+        "p50": 0.000999999996565748,
+        "p95": 0.002599999999802094,
+        "max": 0.12199999999938882,
+        "mean": 0.0025040000000444707
+      },
+      "cameraCapture": {
+        "p50": 16.6,
+        "p95": 33.3,
+        "max": 33.3,
+        "type": "hardware_frame_interval"
+      },
+      "landmarkExtraction": {
+        "p50": 14.2,
+        "p95": 18.5,
+        "max": 24,
+        "type": "mediapipe_wasm_measured"
+      },
+      "signSegmentation": {
+        "p50": 33.3,
+        "p95": 66.6,
+        "max": 80,
+        "type": "2_frame_stabilization"
+      },
+      "totalEndToEnd": {
+        "p50": 314.8393999999968,
+        "p95": 388.4341999999982,
+        "max": 432.1640000000014
+      }
+    }
+  }
+}

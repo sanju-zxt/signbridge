@@ -1,11 +1,11 @@
-﻿import {
+import {
   CanonicalMessage,
   ConversationSession,
   LatencyMetricRecord,
   LatencySummary,
   SupportedLanguage,
   SpeakerRole
-} from '@signbridge2vision/types';
+} from '@signbridge/types';
 
 export class SessionStore {
   private sessions: Map<string, ConversationSession> = new Map();
@@ -54,7 +54,7 @@ export class SessionStore {
 
   addParticipant(sessionId: string, participant: { id: string; name: string; role: SpeakerRole; preferredLanguage: SupportedLanguage }) {
     const session = this.getOrCreateSession(sessionId);
-    const existingIndex = session.participants.findIndex(p => p.id === participant.id);
+    const existingIndex = session.participants.findIndex((p: any) => p.id === participant.id);
     if (existingIndex >= 0) {
       session.participants[existingIndex] = participant;
     } else {
@@ -66,7 +66,7 @@ export class SessionStore {
   removeParticipant(sessionId: string, participantId: string) {
     const session = this.sessions.get(sessionId);
     if (session) {
-      session.participants = session.participants.filter(p => p.id !== participantId);
+      session.participants = session.participants.filter((p: any) => p.id !== participantId);
     }
   }
 

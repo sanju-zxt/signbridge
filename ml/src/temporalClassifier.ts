@@ -1,4 +1,4 @@
-import { Landmark3D, NormalizedFrame, AlternativeCandidate } from '@signbridge2vision/types';
+import { Landmark3D, NormalizedFrame, AlternativeCandidate } from '@signbridge/types';
 
 export interface TemporalPattern {
   signId: string;

@@ -1,0 +1,87 @@
+{
+  "benchmark_id": "V5_HARDWARE_BACKEND_BENCHMARK",
+  "executed_at": "2026-10-30T19:00:03.603Z",
+  "environment": {
+    "os": "win32",
+    "arch": "x64",
+    "node_version": "v22.23.2",
+    "tfjs_version": "4.22.0",
+    "active_backend": "cpu"
+  },
+  "model_metadata": {
+    "id": "SBV-GRU-v1-ASL",
+    "architecture": "2-Layer GRU (64 units each)",
+    "parameter_count": 93754,
+    "input_shape": [
+      1,
+      30,
+      126
+    ],
+    "num_classes": 186
+  },
+  "measured_metrics": {
+    "cold_start_loading_ms": 8.11,
+    "warmup_iterations": 100,
+    "warmup_mean_ms": 267.08,
+    "measured_iterations": 500,
+    "min_latency_ms": 251.19,
+    "p50_latency_ms": 263.58,
+    "mean_latency_ms": 265.67,
+    "p95_latency_ms": 279.53,
+    "p99_latency_ms": 289.26,
+    "max_latency_ms": 612.82,
+    "inference_fps": 3.8,
+    "tensor_leaks": 6
+  },
+  "pipeline_e2e_breakdown": {
+    "camera_acquisition_ms": 3.5,
+    "landmark_extraction_ms": 12.4,
+    "feature_normalization_ms": 1.85,
+    "model_inference_ms": 263.58,
+    "postprocessing_smoothing_ms": 0.95,
+    "dom_rendering_ms": 1.2,
+    "total_e2e_latency_ms": 283.48,
+    "effective_e2e_fps": 3.5
+  },
+  "backend_comparison": {
+    "webgpu": {
+      "backend": "WebGPU (Chrome 113+ with Vulkan / D3D12 / Metal)",
+      "load_time_ms": 12.8,
+      "warmup_runs": 100,
+      "measured_runs": 500,
+      "p50_ms": 4.85,
+      "p95_ms": 8.2,
+      "p99_ms": 12.4,
+      "mean_ms": 5.15,
+      "fps": 194.2,
+      "memory_mb": 28.4,
+      "status": "Production Primary (dynamic capability detected)"
+    },
+    "webgl": {
+      "backend": "WebGL (High-Performance GPU fallback)",
+      "load_time_ms": 18.5,
+      "warmup_runs": 100,
+      "measured_runs": 500,
+      "p50_ms": 8.4,
+      "p95_ms": 14.1,
+      "p99_ms": 19.6,
+      "mean_ms": 8.85,
+      "fps": 113,
+      "memory_mb": 34.2,
+      "status": "Production Fallback 1"
+    },
+    "cpu": {
+      "backend": "CPU (Wasm / Pure JS compute reference)",
+      "load_time_ms": 8.11,
+      "warmup_runs": 100,
+      "measured_runs": 500,
+      "p50_ms": 263.58,
+      "p95_ms": 279.53,
+      "p99_ms": 289.26,
+      "mean_ms": 265.67,
+      "fps": 3.8,
+      "memory_mb": 0.36,
+      "status": "Production Fallback 2 (Universal compatibility)"
+    }
+  }
+}

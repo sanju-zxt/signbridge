@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Camera, CameraOff, Sparkles, RefreshCw, Eye, EyeOff, Zap } from 'lucide-react';
-import { ISL_VOCABULARY } from '@signbridge2vision/types';
+import { ISL_VOCABULARY } from '@signbridge/types';
 
 interface LiveCameraViewProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;

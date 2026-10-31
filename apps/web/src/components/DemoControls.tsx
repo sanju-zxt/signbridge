@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { X, Sparkles, Play, HeartPulse, GraduationCap, Users } from 'lucide-react';
-import { DEMO_SCENARIO_PRESETS } from '@signbridge2vision/types';
+import { DEMO_SCENARIO_PRESETS } from '@signbridge/types';
 
 interface DemoControlsProps {
   isOpen: boolean;

@@ -5,24 +5,16 @@
       "name": "sequential_1",
       "layers": [
         {
-          "class_name": "Masking",
+          "class_name": "GRU",
           "config": {
-            "mask_value": 0,
-            "name": "masking_Masking1",
+            "name": "gru_GRU1",
             "trainable": true,
             "batch_input_shape": [
               null,
               30,
               126
             ],
-            "dtype": "float32"
-          }
-        },
-        {
-          "class_name": "GRU",
-          "config": {
-            "name": "gru_GRU1",
-            "trainable": true,
+            "dtype": "float32",
             "units": 64,
             "activation": "tanh",
             "recurrent_activation": "hard_sigmoid",
@@ -54,8 +46,8 @@
             "kernel_constraint": null,
             "recurrent_constraint": null,
             "bias_constraint": null,
-            "dropout": 0.3,
-            "recurrent_dropout": 0.2,
+            "dropout": 0.2,
+            "recurrent_dropout": 0,
             "implementation": null,
             "reset_after": false,
             "return_sequences": true,
@@ -101,8 +93,8 @@
             "kernel_constraint": null,
             "recurrent_constraint": null,
             "bias_constraint": null,
-            "dropout": 0.3,
-            "recurrent_dropout": 0.2,
+            "dropout": 0.2,
+            "recurrent_dropout": 0,
             "implementation": null,
             "reset_after": false,
             "return_sequences": false,
@@ -143,7 +135,7 @@
         {
           "class_name": "Dropout",
           "config": {
-            "rate": 0.4,
+            "rate": 0.25,
             "noise_shape": null,
             "seed": null,
             "name": "dropout_Dropout1",
@@ -153,7 +145,7 @@
         {
           "class_name": "Dense",
           "config": {
-            "units": 17,
+            "units": 50,
             "activation": "softmax",
             "use_bias": true,
             "kernel_initializer": {
@@ -184,7 +176,7 @@
     "backend": "tensor_flow.js"
   },
   "format": "layers-model",
-  "generatedBy": "TensorFlow.js Layers",
+  "generatedBy": "TensorFlow.js tfjs-layers v4.22.0",
   "convertedBy": null,
   "weightsManifest": [
     {
@@ -257,14 +249,14 @@
           "name": "dense_Dense2/kernel",
           "shape": [
             128,
-            17
+            50
           ],
           "dtype": "float32"
         },
         {
           "name": "dense_Dense2/bias",
           "shape": [
-            17
+            50
           ],
           "dtype": "float32"
         }

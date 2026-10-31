@@ -1,0 +1,246 @@
+{
+  "timestamp": "2026-10-31T01:26:59.863Z",
+  "overallStatus": "PASS",
+  "sentences": [
+    {
+      "sentenceId": 1,
+      "english": "What are you doing?",
+      "expectedGlosses": [
+        "YOU",
+        "DO",
+        "WHAT"
+      ],
+      "directionB": {
+        "parsedGlosses": [
+          "YOU",
+          "DO",
+          "WHAT"
+        ],
+        "glossesMatch": true,
+        "animCheck": {
+          "YOU": {
+            "exists": true,
+            "duration": 2
+          },
+          "DO": {
+            "exists": true,
+            "duration": 2
+          },
+          "WHAT": {
+            "exists": true,
+            "duration": 2
+          }
+        },
+        "missingCount": 0,
+        "avatarQueueDispatched": true,
+        "replaySuccess": true,
+        "latencyMs": 2.360900000000015,
+        "verdict": "PASS"
+      },
+      "directionA": {
+        "inputGlosses": [
+          "YOU",
+          "DO",
+          "WHAT"
+        ],
+        "translatedEnglish": "What are you doing?",
+        "expectedEnglish": "What are you doing?",
+        "latencyMs": 0.2715000000000032,
+        "verdict": "PASS"
+      },
+      "overallVerdict": "PASS"
+    },
+    {
+      "sentenceId": 2,
+      "english": "What is your name?",
+      "expectedGlosses": [
+        "YOUR",
+        "NAME",
+        "WHAT"
+      ],
+      "directionB": {
+        "parsedGlosses": [
+          "YOUR",
+          "NAME",
+          "WHAT"
+        ],
+        "glossesMatch": true,
+        "animCheck": {
+          "YOUR": {
+            "exists": true,
+            "duration": 2
+          },
+          "NAME": {
+            "exists": true,
+            "duration": 2.8333332538604736
+          },
+          "WHAT": {
+            "exists": true,
+            "duration": 2
+          }
+        },
+        "missingCount": 0,
+        "avatarQueueDispatched": true,
+        "replaySuccess": true,
+        "latencyMs": 0.6099000000000387,
+        "verdict": "PASS"
+      },
+      "directionA": {
+        "inputGlosses": [
+          "YOUR",
+          "NAME",
+          "WHAT"
+        ],
+        "translatedEnglish": "What is your name?",
+        "expectedEnglish": "What is your name?",
+        "latencyMs": 0.011799999999993815,
+        "verdict": "PASS"
+      },
+      "overallVerdict": "PASS"
+    },
+    {
+      "sentenceId": 3,
+      "english": "How can I help you?",
+      "expectedGlosses": [
+        "I_ME",
+        "YOU",
+        "HELP",
+        "HOW"
+      ],
+      "directionB": {
+        "parsedGlosses": [
+          "I_ME",
+          "YOU",
+          "HELP",
+          "HOW"
+        ],
+        "glossesMatch": true,
+        "animCheck": {
+          "I_ME": {
+            "exists": true,
+            "duration": 2
+          },
+          "YOU": {
+            "exists": true,
+            "duration": 2
+          },
+          "HELP": {
+            "exists": true,
+            "duration": 3
+          },
+          "HOW": {
+            "exists": true,
+            "duration": 2
+          }
+        },
+        "missingCount": 0,
+        "avatarQueueDispatched": true,
+        "replaySuccess": true,
+        "latencyMs": 0.32260000000002265,
+        "verdict": "PASS"
+      },
+      "directionA": {
+        "inputGlosses": [
+          "I_ME",
+          "YOU",
+          "HELP",
+          "HOW"
+        ],
+        "translatedEnglish": "How can I help you?",
+        "expectedEnglish": "How can I help you?",
+        "latencyMs": 0.01290000000000191,
+        "verdict": "PASS"
+      },
+      "overallVerdict": "PASS"
+    },
+    {
+      "sentenceId": 4,
+      "english": "My name is Daniel.",
+      "expectedGlosses": [
+        "MY",
+        "NAME",
+        "D",
+        "A",
+        "N",
+        "I",
+        "E",
+        "L"
+      ],
+      "directionB": {
+        "parsedGlosses": [
+          "MY",
+          "NAME",
+          "D",
+          "A",
+          "N",
+          "I",
+          "E",
+          "L"
+        ],
+        "glossesMatch": true,
+        "animCheck": {
+          "MY": {
+            "exists": true,
+            "duration": 2
+          },
+          "NAME": {
+            "exists": true,
+            "duration": 2.8333332538604736
+          },
+          "D": {
+            "exists": true,
+            "duration": 0.85
+          },
+          "A": {
+            "exists": true,
+            "duration": 0.85
+          },
+          "N": {
+            "exists": true,
+            "duration": 0.85
+          },
+          "I": {
+            "exists": true,
+            "duration": 0.85
+          },
+          "E": {
+            "exists": true,
+            "duration": 0.85
+          },
+          "L": {
+            "exists": true,
+            "duration": 0.85
+          }
+        },
+        "missingCount": 0,
+        "avatarQueueDispatched": true,
+        "replaySuccess": true,
+        "latencyMs": 0.3756999999999948,
+        "verdict": "PASS"
+      },
+      "directionA": {
+        "inputGlosses": [
+          "MY",
+          "NAME",
+          "D",
+          "A",
+          "N",
+          "I",
+          "E",
+          "L"
+        ],
+        "translatedEnglish": "My name is Daniel.",
+        "expectedEnglish": "My name is Daniel.",
+        "latencyMs": 0.103999999999985,
+        "verdict": "PASS"
+      },
+      "overallVerdict": "PASS"
+    }
+  ],
+  "failureHandling": {
+    "testedSign": "XYLOPHONE_ASTRONAUT_FAKE",
+    "errorReported": true,
+    "errorMessage": "Sign animation 'XYLOPHONE_ASTRONAUT_FAKE' is not currently available in 3D avatar library.",
+    "verdict": "PASS"
+  }
+}

@@ -5,7 +5,7 @@
  * session-safe dataset partitioning, and evaluation metrics computation.
  */
 
-import { RawLandmarkFrame, CollectionSequence, Landmark3D } from '@signbridge2vision/types';
+import { RawLandmarkFrame, CollectionSequence, Landmark3D } from '@signbridge/types';
 
 export interface PrototypeSignInfo {
   sign: string;

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Activity, Radio, Volume2, ShieldCheck, Languages, BarChart3, Sparkles } from 'lucide-react';
-import { SystemState, SupportedLanguage, LatencySummary } from '@signbridge2vision/types';
+import { SystemState, SupportedLanguage, LatencySummary } from '@signbridge/types';
 
 interface HeaderProps {
   systemState: SystemState;
@@ -56,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-lg tracking-tight text-white">SignBridge<span className="text-isl-teal">2</span>Vision</span>
+              <span className="font-bold text-lg tracking-tight text-white">SignBridge</span>
               <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded bg-brand-500/20 text-brand-100 border border-brand-500/30">
                 Multimodal AI
               </span>

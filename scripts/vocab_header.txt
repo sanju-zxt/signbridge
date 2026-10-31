@@ -1,0 +1,64 @@
+/**
+ * islVocabulary.ts
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Indian Sign Language (ISL) Canonical Vocabulary Manifest & Grammar Engine
+ *
+ * Implements:
+ * 1. 10 Prioritized Everyday & Emergency ISL Communication Categories:
+ *    - Greetings and introductions
+ *    - Personal information
+ *    - Everyday conversations
+ *    - Questions and responses
+ *    - Assistance and requests
+ *    - Medical emergencies
+ *    - Emergency services
+ *    - Education and workplace communication
+ *    - Directions and locations
+ *    - Common actions and expressions
+ * 2. Structured ~100 Concept Vocabulary organized across Groups A through I:
+ *    - Group A: Basic communication
+ *    - Group B: Personal information
+ *    - Group C: Questions
+ *    - Group D: Daily activities
+ *    - Group E: Communication
+ *    - Group F: Feelings
+ *    - Group G: Emergency and healthcare
+ *    - Group H: Time and location
+ *    - Group I: Common actions
+ *    - Alphabet: Fingerspelling manual alphabet
+ * 3. Transparent support status:
+ *    - Exactly 50 classes have trained neural network model weights (isTrainedModelClass: true)
+ *    - Extended concepts are marked honestly (isTrainedModelClass: false)
+ * 4. Bidirectional translation:
+ *    - ISL Gloss Sequence -> Grammatically complete English sentence
+ *    - English / Spoken Utterance -> ISL Gloss Sequence (SOV & Topic-Comment)
+ */
+
+import { ISLSignDefinition, DemoScenarioPreset } from './index';
+import { translateISLIRToEnglish, parseEnglishToISLSentenceIR } from './islGrammar';
+
+export type ISLCommunicationCategory =
+  | 'greetings_and_introductions'
+  | 'personal_information'
+  | 'everyday_conversations'
+  | 'questions_and_responses'
+  | 'assistance_and_requests'
+  | 'medical_emergencies'
+  | 'emergency_services'
+  | 'education_and_workplace'
+  | 'directions_and_locations'
+  | 'common_actions_and_expressions';
+
+export interface ISLExtendedConcept {
+  id: string;
+  sign: string;
+  label: string;
+  categoryGroup: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'Alphabet';
+  categoryName: string;
+  isTrainedModelClass: boolean; // TRUE for 50 neural classes, FALSE for extended concepts
+  hasAuthenticTrainingData: boolean;
+  animationStatus: 'native_glb' | 'procedural' | 'fingerspelled' | 'planned';
+  recordingRequirements: string;
+  description: string;
+  nonManualMarkers: string;
+}

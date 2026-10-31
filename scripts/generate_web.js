@@ -20,7 +20,7 @@ save('apps/web/package.json', `{
     "lint": "next lint"
   },
   "dependencies": {
-    "@signbridge2vision/types": "*",
+    "@signbridge/types": "*",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
     "next": "^15.1.7",
@@ -72,7 +72,7 @@ save('apps/web/tsconfig.json', `{
 save('apps/web/next.config.mjs', `/** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@signbridge2vision/types']
+  transpilePackages: ['@signbridge/types']
 };
 
 export default nextConfig;

@@ -10,7 +10,7 @@ import {
   LatencyMetricRecord,
   ISL_VOCABULARY,
   DEMO_SCENARIO_PRESETS
-} from '@signbridge2vision/types';
+} from '@signbridge/types';
 import { sessionStore } from './store';
 import { conversationalAgent } from './agent';
 import { speechService } from './speech';
@@ -92,7 +92,7 @@ wss.on('connection', (ws: WebSocket) => {
         case 'vision.final': {
           // Finalized ISL sign
           const recognition: RecognitionEvent = data;
-          const vocabItem = ISL_VOCABULARY.find(v => v.sign === recognition.sign);
+          const vocabItem = ISL_VOCABULARY.find((v: any) => v.sign === recognition.sign);
           const text = vocabItem ? vocabItem.canonicalSentence : recognition.label;
 
           const canonicalMsg: CanonicalMessage = {

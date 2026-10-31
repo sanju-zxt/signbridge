@@ -1,14 +1,14 @@
-# SignBridge2Vision: Real-Time Multimodal AI Communication Platform
+# SignBridge: Real-Time Multimodal AI Communication Platform
 
-> **"SignBridge2Vision turns different communication modalities into one shared conversation."**
+> **"SignBridge turns different communication modalities into one shared conversation."**
 
-SignBridge2Vision is an accessibility-first, real-time multimodal communication platform designed to bridge communication between **Indian Sign Language (ISL)** users and spoken-language communicators.
+SignBridge is an accessibility-first, real-time multimodal communication platform designed to bridge communication between **American Sign Language (ASL)** users and spoken-language communicators.
 
-Rather than operating merely as an isolated sign classifier or a generic chatbot, SignBridge2Vision combines:
+Rather than operating merely as an isolated sign classifier or a generic chatbot, SignBridge combines:
 - **Temporal Computer Vision & 3D Landmark Perception**
-- **Constrained ISL Temporal Sequence Matching (93.7% Accuracy, 93.5% F1)**
+- **Continuous ASL Temporal Sequence Matching & Boundary Segmentation**
 - **Streaming Speech-to-Text (STT) with Partial & Final Transcripts**
-- **LLM Conversational Intelligence & Multilingual Translation** (English, Hindi, Kannada, Telugu)
+- **Conversational Intelligence & Multilingual Translation** (English, Hindi, Kannada, Telugu)
 - **Text-to-Speech (TTS) Synthesis with Barge-in Interruption**
 - **Confidence-Aware Confirmation & Low-Confidence Guardrails**
 - **Real-Time WebSocket State Synchronization & Telemetry** (<20ms local processing latency)

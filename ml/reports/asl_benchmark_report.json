@@ -1,0 +1,27 @@
+{
+  "benchmarkDate": "2026-10-30T17:23:03.550Z",
+  "hardware": {
+    "platform": "win32",
+    "arch": "x64",
+    "nodeVersion": "v22.23.2",
+    "threads": 8
+  },
+  "metrics": {
+    "modelLoadTimeMs": 8.26,
+    "cameraAcquisitionEstMs": 15,
+    "preprocessingMeanMs": 0.036,
+    "inference": {
+      "runs": 500,
+      "warmupRuns": 100,
+      "minMs": 320.511,
+      "meanMs": 508.01,
+      "p50Ms": 540.276,
+      "p95Ms": 653.293,
+      "p99Ms": 688.113,
+      "maxMs": 723.76
+    },
+    "postprocessingMeanMs": 0.029,
+    "totalEndToEndLatencyMs": 523.07,
+    "pipelineThroughputFps": 2
+  }
+}

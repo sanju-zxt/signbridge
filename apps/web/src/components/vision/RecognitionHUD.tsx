@@ -34,10 +34,14 @@ function confidenceBarColor(confidence: number): string {
 
 function stateBadgeStyle(state: string): string {
   switch (state) {
+    case 'RECOGNIZED':
     case 'STABLE':
       return 'bg-green-600 text-green-100';
+    case 'CLASSIFYING':
     case 'ANALYZING':
       return 'bg-blue-600 text-blue-100';
+    case 'DETECTING':
+    case 'LOW_CONFIDENCE':
     case 'UNCLEAR':
       return 'bg-yellow-600 text-yellow-100';
     default:
@@ -47,8 +51,12 @@ function stateBadgeStyle(state: string): string {
 
 function stateLabel(state: string): string {
   switch (state) {
-    case 'STABLE':    return 'STABLE';
-    case 'ANALYZING': return 'ANALYZING';
+    case 'RECOGNIZED':
+    case 'STABLE':    return 'RECOGNIZED';
+    case 'CLASSIFYING':
+    case 'ANALYZING': return 'CLASSIFYING';
+    case 'DETECTING': return 'DETECTING';
+    case 'LOW_CONFIDENCE':
     case 'UNCLEAR':   return 'UNCLEAR';
     case 'IDLE':      return 'IDLE';
     default:          return state;

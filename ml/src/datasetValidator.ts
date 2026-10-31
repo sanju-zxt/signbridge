@@ -5,7 +5,7 @@
  * session-safe dataset partitioning, and evaluation metrics computation.
  */
 
-import { CollectionSequence } from '@signbridge2vision/types';
+import { CollectionSequence } from '@signbridge/types';
 
 export interface PrototypeSignInfo {
   sign: string;

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Landmark3D, NormalizedFrame } from '@signbridge2vision/types';
+import { Landmark3D, NormalizedFrame } from '@signbridge/types';
 import { SIGN_FEATURE_TEMPLATES } from './temporalClassifier';
 
 export interface BenchmarkSample {

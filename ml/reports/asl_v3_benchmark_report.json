@@ -1,0 +1,38 @@
+{
+  "benchmarkDate": "2026-10-30T17:45:52.233Z",
+  "version": "3.0.0-asl-optimized",
+  "hardware": {
+    "platform": "win32",
+    "arch": "x64",
+    "nodeVersion": "v22.23.2",
+    "threads": 8
+  },
+  "metrics": {
+    "modelLoadTimeMs": 7.87,
+    "weightsFootprint": {
+      "fp32Bytes": 375016,
+      "fp32Kb": 366.2,
+      "int8EstimatedBytes": 93754,
+      "int8EstimatedKb": 91.6,
+      "compressionRatio": "4.0x"
+    },
+    "preprocessingMeanMs": 0.038,
+    "rawInference": {
+      "runs": 200,
+      "warmupRuns": 50,
+      "minMs": 254.6,
+      "meanMs": 266.83,
+      "p50Ms": 266.51,
+      "p95Ms": 275.69,
+      "p99Ms": 302.03,
+      "maxMs": 322.03
+    },
+    "motionGatedScheduling": {
+      "meanLatencyMs": 133.34,
+      "effectiveThroughputFps": 7.5,
+      "computeCycleReductionPercent": 50
+    },
+    "totalEndToEndLatencyMs": 148.41,
+    "uiThreadBlockingMs": 0
+  }
+}

@@ -13,7 +13,7 @@ save('apps/web/src/components/AudioControls.tsx', `'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Send, Activity } from 'lucide-react';
-import { SupportedLanguage } from '@signbridge2vision/types';
+import { SupportedLanguage } from '@signbridge/types';
 import { StreamingSTTClient } from '../lib/speech/stt';
 
 interface AudioControlsProps {
@@ -176,7 +176,7 @@ export const AudioControls: React.FC<AudioControlsProps> = ({
 save('apps/web/src/components/ConversationThread.tsx', `'use client';
 
 import React, { useRef, useEffect } from 'react';
-import { CanonicalMessage, SupportedLanguage } from '@signbridge2vision/types';
+import { CanonicalMessage, SupportedLanguage } from '@signbridge/types';
 import { Camera, Mic, Bot, Volume2, Globe, AlertTriangle } from 'lucide-react';
 import { ttsPlayer } from '../lib/speech/tts';
 
@@ -341,7 +341,7 @@ save('apps/web/src/components/ConfidenceGate.tsx', `'use client';
 
 import React from 'react';
 import { AlertCircle, Check, RefreshCw } from 'lucide-react';
-import { AlternativeCandidate } from '@signbridge2vision/types';
+import { AlternativeCandidate } from '@signbridge/types';
 
 interface ConfidenceGateProps {
   provisionalSign: string;

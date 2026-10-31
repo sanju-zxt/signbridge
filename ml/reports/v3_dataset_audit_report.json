@@ -1,0 +1,90 @@
+{
+  "totalSamples": 3396,
+  "splitCounts": {
+    "train": 2280,
+    "validation": 372,
+    "test": 744
+  },
+  "numClasses": 186,
+  "sources": {
+    "WLASL": 2976,
+    "SignBridge-Studio-V3": 420
+  },
+  "corruptedCount": 0,
+  "duplicatesCount": 0,
+  "signersBySplit": {
+    "train": [
+      "signer_01",
+      "signer_02",
+      "signer_03",
+      "signer_04",
+      "signer_05",
+      "signer_06",
+      "signer_07",
+      "signer_08",
+      "signer_09",
+      "signer_10"
+    ],
+    "validation": [
+      "signer_11",
+      "signer_12"
+    ],
+    "test": [
+      "signer_13",
+      "signer_14",
+      "signer_15",
+      "signer_16"
+    ]
+  },
+  "leakage": {
+    "train_val": [],
+    "train_test": [],
+    "val_test": []
+  },
+  "essential44Coverage": {
+    "HELLO": 26,
+    "THANK_YOU": 26,
+    "PLEASE": 26,
+    "SORRY": 26,
+    "YES": 26,
+    "NO": 26,
+    "GOOD": 26,
+    "HELP": 26,
+    "WATER": 26,
+    "FOOD": 26,
+    "WELCOME_HOME": 16,
+    "SCHOOL": 26,
+    "HOSPITAL": 26,
+    "WANT": 16,
+    "EMERGENCY": 26,
+    "POLICE": 26,
+    "STOP": 26,
+    "GO": 26,
+    "WAIT": 26,
+    "COME": 26,
+    "UNDERSTAND": 26,
+    "DONT_UNDERSTAND": 26,
+    "NAME": 26,
+    "WHERE": 26,
+    "BATHROOM": 26,
+    "NICE_TO_MEET_YOU": 26,
+    "YOU": 26,
+    "I_ME": 26,
+    "MY": 26,
+    "YOUR": 26,
+    "WE_US": 26,
+    "THEY": 26,
+    "MEET": 26,
+    "FRIEND": 26,
+    "DEAF": 26,
+    "WELCOME": 26,
+    "FINE": 26,
+    "EXCUSE_ME": 26,
+    "BAD": 26,
+    "MAYBE": 26,
+    "LIKE": 26,
+    "DONT_LIKE": 26,
+    "AGAIN": 26,
+    "FINISHED": 26
+  }
+}

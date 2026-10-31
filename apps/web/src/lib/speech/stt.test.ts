@@ -166,7 +166,7 @@ async function runTests() {
   // ── Test 3: Normal Start, Track Release & Interim Results ──────────────────
   console.log('\n--- Test 3: Normal Start & Audio Track Immediate Release ---');
   let partialResults: string[] = [];
-  let isListeningState = false;
+  let isListeningState: boolean = false;
 
   const client = new StreamingSTTClient({
     language: 'en',
@@ -186,7 +186,7 @@ async function runTests() {
   await delay(15);
 
   assert(mockAudioTrackStopped === true, 'Microphone pre-flight stream immediately released');
-  assert(isListeningState === true, 'onStateChange called with listening: true');
+  assert((isListeningState as boolean) === true, 'onStateChange called with listening: true');
 
   const recog = (client as any).recognition;
   assert(recog !== null, 'SpeechRecognition instance created');

@@ -1,0 +1,403 @@
+{
+  "evaluation_type": "Priority 2: Non-Manual Facial & Gaze Feature Disambiguation",
+  "evaluated_at": "2026-10-31T00:25:00Z",
+  "total_samples": 500,
+  "pronoun_samples": 300,
+  "feature_dimensions": {
+    "hand_only": 126,
+    "non_manual": 24,
+    "multimodal": 150
+  },
+  "overall_summary": {
+    "hand_only_overall_accuracy": 57.6,
+    "multimodal_overall_accuracy": 93.2,
+    "hand_only_pronoun_accuracy": 47.33,
+    "multimodal_pronoun_accuracy": 88.67,
+    "pronoun_accuracy_gain_pct": 41.33
+  },
+  "per_class_metrics": {
+    "YOU": {
+      "hand_only": {
+        "precision": 27.94,
+        "recall": 38.0,
+        "f1": 32.2
+      },
+      "multimodal": {
+        "precision": 90.91,
+        "recall": 100.0,
+        "f1": 95.24
+      },
+      "f1_improvement": 63.03
+    },
+    "YOUR": {
+      "hand_only": {
+        "precision": 74.29,
+        "recall": 52.0,
+        "f1": 61.18
+      },
+      "multimodal": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0
+      },
+      "f1_improvement": 38.82
+    },
+    "WE_US": {
+      "hand_only": {
+        "precision": 94.29,
+        "recall": 66.0,
+        "f1": 77.65
+      },
+      "multimodal": {
+        "precision": 100.0,
+        "recall": 98.0,
+        "f1": 98.99
+      },
+      "f1_improvement": 21.34
+    },
+    "THEY": {
+      "hand_only": {
+        "precision": 30.91,
+        "recall": 34.0,
+        "f1": 32.38
+      },
+      "multimodal": {
+        "precision": 65.71,
+        "recall": 92.0,
+        "f1": 76.67
+      },
+      "f1_improvement": 44.29
+    },
+    "HERE": {
+      "hand_only": {
+        "precision": 63.41,
+        "recall": 52.0,
+        "f1": 57.14
+      },
+      "multimodal": {
+        "precision": 100.0,
+        "recall": 96.0,
+        "f1": 97.96
+      },
+      "f1_improvement": 40.82
+    },
+    "THERE": {
+      "hand_only": {
+        "precision": 41.18,
+        "recall": 42.0,
+        "f1": 41.58
+      },
+      "multimodal": {
+        "precision": 82.14,
+        "recall": 46.0,
+        "f1": 58.97
+      },
+      "f1_improvement": 17.39
+    },
+    "HELLO": {
+      "hand_only": {
+        "precision": 71.7,
+        "recall": 76.0,
+        "f1": 73.79
+      },
+      "multimodal": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0
+      },
+      "f1_improvement": 26.21
+    },
+    "THANK_YOU": {
+      "hand_only": {
+        "precision": 60.0,
+        "recall": 72.0,
+        "f1": 65.45
+      },
+      "multimodal": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0
+      },
+      "f1_improvement": 34.55
+    },
+    "PLEASE": {
+      "hand_only": {
+        "precision": 61.02,
+        "recall": 72.0,
+        "f1": 66.06
+      },
+      "multimodal": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0
+      },
+      "f1_improvement": 33.94
+    },
+    "WHERE": {
+      "hand_only": {
+        "precision": 83.72,
+        "recall": 72.0,
+        "f1": 77.42
+      },
+      "multimodal": {
+        "precision": 100.0,
+        "recall": 100.0,
+        "f1": 100.0
+      },
+      "f1_improvement": 22.58
+    }
+  },
+  "confusion_matrices": {
+    "hand_only": {
+      "YOU": {
+        "HERE": 5,
+        "THEY": 18,
+        "YOU": 19,
+        "THERE": 8,
+        "YOUR": 0,
+        "WE_US": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "YOUR": {
+        "YOUR": 26,
+        "HELLO": 10,
+        "THANK_YOU": 10,
+        "PLEASE": 4,
+        "YOU": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "WHERE": 0
+      },
+      "WE_US": {
+        "YOU": 11,
+        "WE_US": 33,
+        "THEY": 6,
+        "YOUR": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "THEY": {
+        "THEY": 17,
+        "YOU": 17,
+        "THERE": 10,
+        "WE_US": 2,
+        "HERE": 4,
+        "YOUR": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "HERE": {
+        "HERE": 26,
+        "THERE": 12,
+        "THEY": 2,
+        "YOU": 10,
+        "YOUR": 0,
+        "WE_US": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "THERE": {
+        "THEY": 12,
+        "HERE": 6,
+        "YOU": 11,
+        "THERE": 21,
+        "YOUR": 0,
+        "WE_US": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "HELLO": {
+        "HELLO": 38,
+        "THANK_YOU": 3,
+        "YOUR": 9,
+        "YOU": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "THANK_YOU": {
+        "THANK_YOU": 36,
+        "PLEASE": 9,
+        "HELLO": 5,
+        "YOU": 0,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "WHERE": 0
+      },
+      "PLEASE": {
+        "PLEASE": 36,
+        "WHERE": 7,
+        "THANK_YOU": 7,
+        "YOU": 0,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "HELLO": 0
+      },
+      "WHERE": {
+        "WHERE": 36,
+        "PLEASE": 10,
+        "THANK_YOU": 4,
+        "YOU": 0,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "HELLO": 0
+      }
+    },
+    "multimodal": {
+      "YOU": {
+        "YOU": 50,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "YOUR": {
+        "YOUR": 50,
+        "YOU": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "WE_US": {
+        "WE_US": 49,
+        "THERE": 1,
+        "YOU": 0,
+        "YOUR": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "THEY": {
+        "THEY": 46,
+        "THERE": 4,
+        "YOU": 0,
+        "YOUR": 0,
+        "WE_US": 0,
+        "HERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "HERE": {
+        "HERE": 48,
+        "YOU": 2,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "THERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "THERE": {
+        "THEY": 24,
+        "THERE": 23,
+        "YOU": 3,
+        "YOUR": 0,
+        "WE_US": 0,
+        "HERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "HELLO": {
+        "HELLO": 50,
+        "YOU": 0,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "THANK_YOU": {
+        "THANK_YOU": 50,
+        "YOU": 0,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "HELLO": 0,
+        "PLEASE": 0,
+        "WHERE": 0
+      },
+      "PLEASE": {
+        "PLEASE": 50,
+        "YOU": 0,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "WHERE": 0
+      },
+      "WHERE": {
+        "WHERE": 50,
+        "YOU": 0,
+        "YOUR": 0,
+        "WE_US": 0,
+        "THEY": 0,
+        "HERE": 0,
+        "THERE": 0,
+        "HELLO": 0,
+        "THANK_YOU": 0,
+        "PLEASE": 0
+      }
+    }
+  },
+  "linguistic_findings": {
+    "YOU_vs_THEY": "Distinguished by head yaw (>14 deg) and horizontal gaze offset (>0.18)",
+    "YOU_vs_HERE": "Distinguished by head pitch (>8 deg down) and vertical gaze offset (<-0.10)",
+    "YOU_vs_YOUR": "Distinguished by open B-hand flat palm pushed forward vs index point",
+    "WE_US": "Identified by sweeping arc motion with head nod",
+    "WHERE": "Disambiguated by wh-question marker: furrowed eyebrows + head forward"
+  }
+}

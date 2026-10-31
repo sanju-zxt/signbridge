@@ -1,4 +1,4 @@
-import { NormalizedFrame, AlternativeCandidate } from '@signbridge2vision/types';
+import { NormalizedFrame, AlternativeCandidate } from '@signbridge/types';
 import { computeFingerExtensions } from './normalizer';
 
 export interface TemporalPattern {

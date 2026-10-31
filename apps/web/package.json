@@ -1,5 +1,5 @@
 {
-  "name": "@signbridge2vision/web",
+  "name": "@signbridge/web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.22",
-    "@signbridge2vision/types": "*",
+    "@signbridge/types": "*",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
+    "@tensorflow/tfjs-backend-webgpu": "^4.22.0",
     "@types/three": "^0.185.4",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",

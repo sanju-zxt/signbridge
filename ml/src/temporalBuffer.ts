@@ -1,13 +1,13 @@
-﻿/**
+/**
  * temporalBuffer.ts
- * ─────────────────────────────────────────────────────────────────────────────
+ * -----------------------------------------------------------------------------
  * Rolling temporal frame buffer.  Maintains a sliding window of normalised
  * feature frames ready for GRU inference.
  */
 
-import { NormalizedFeatureFrame, PipelineConfig, DEFAULT_PIPELINE_CONFIG } from '@signbridge2vision/types';
+import { NormalizedFeatureFrame, PipelineConfig, DEFAULT_PIPELINE_CONFIG } from '@signbridge/types';
 import { FEATURE_DIM, extractFrameFeatures } from './features/landmarkFeatures';
-import type { Landmark3D } from '@signbridge2vision/types';
+import type { Landmark3D } from '@signbridge/types';
 
 export class TemporalBuffer {
   private readonly windowSize: number;
@@ -82,7 +82,7 @@ export class TemporalBuffer {
   }
 
   /**
-   * Build a flat Float32Array of shape [windowSize × FEATURE_DIM] (row-major)
+   * Build a flat Float32Array of shape [windowSize � FEATURE_DIM] (row-major)
    * for passing to the GRU model.  Zero-padded if buffer not yet full.
    */
   getFeatureMatrix(): Float32Array {

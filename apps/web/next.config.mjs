@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@signbridge2vision/types'],
+  transpilePackages: ['@signbridge/types'],
 
   // Suppress the lockfile workspace warning
   outputFileTracingRoot: path.join(__dirname, '../../'),

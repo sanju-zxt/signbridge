@@ -1,5 +1,5 @@
 {
-  "name": "@signbridge2vision/gateway",
+  "name": "@signbridge/gateway",
   "version": "1.0.0",
   "main": "dist/server.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "ts-node src/testClient.ts"
   },
   "dependencies": {
-    "@signbridge2vision/types": "*",
+    "@signbridge/types": "*",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",

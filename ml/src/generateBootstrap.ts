@@ -10,7 +10,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { FEATURE_DIM, buildFeatureMatrix, jitterLandmarks, timeWarp } from './features/landmarkFeatures';
-import { ISL_VOCABULARY } from '@signbridge2vision/types';
+import { ISL_VOCABULARY } from '@signbridge/types';
 
 // Dynamic require
 // eslint-disable-next-line @typescript-eslint/no-require-imports

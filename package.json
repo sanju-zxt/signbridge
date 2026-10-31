@@ -1,8 +1,8 @@
 {
-  "name": "signbridge2vision-monorepo",
+  "name": "signbridge-monorepo",
   "version": "1.0.0",
   "private": true,
-  "description": "SignBridge2Vision: Real-Time Multimodal AI Communication Platform",
+  "description": "SignBridge: Real-Time Multimodal AI Communication Platform",
   "workspaces": [
     "packages/*",
     "services/*",

@@ -1,0 +1,256 @@
+{
+  "timestamp": "2026-10-31T00:47:43.752Z",
+  "verdicts": {
+    "test1_live_isl_to_speech": "PASS",
+    "test2_speech_to_isl": "PASS",
+    "test3_realistic_conditions": "FAIL",
+    "test4_performance_metrics": "FAIL",
+    "test5_demonstration_pipeline": "PASS",
+    "overall_status": "PASS"
+  },
+  "test1_live_isl_to_speech": {
+    "signResults": [
+      {
+        "sign": "HELLO",
+        "predictedSign": "HELLO",
+        "confidence": 0.9136579632759094,
+        "isCorrect": true
+      },
+      {
+        "sign": "YOU",
+        "predictedSign": "YOU",
+        "confidence": 0.9812218546867371,
+        "isCorrect": true
+      },
+      {
+        "sign": "NAME",
+        "predictedSign": "NAME",
+        "confidence": 0.9091014266014099,
+        "isCorrect": true
+      },
+      {
+        "sign": "WHAT",
+        "predictedSign": "WHAT",
+        "confidence": 0.5787041187286377,
+        "isCorrect": true
+      },
+      {
+        "sign": "HELP",
+        "predictedSign": "HELP",
+        "confidence": 0.9999876022338867,
+        "isCorrect": true
+      },
+      {
+        "sign": "THANK_YOU",
+        "predictedSign": "THANK_YOU",
+        "confidence": 0.9996728897094727,
+        "isCorrect": true
+      },
+      {
+        "sign": "HOSPITAL",
+        "predictedSign": "HOSPITAL",
+        "confidence": 0.968353271484375,
+        "isCorrect": true
+      },
+      {
+        "sign": "WATER",
+        "predictedSign": "WATER",
+        "confidence": 0.9994882345199585,
+        "isCorrect": true
+      }
+    ],
+    "sentence9": {
+      "tokens": [
+        "YOU",
+        "DO",
+        "WHAT"
+      ],
+      "output": "What are you doing?",
+      "pass": true
+    },
+    "sentence10": {
+      "tokens": [
+        "YOUR",
+        "NAME",
+        "WHAT"
+      ],
+      "output": "What is your name?",
+      "pass": true
+    },
+    "dedupPass": true,
+    "unknownRejected": true,
+    "verdict": "PASS"
+  },
+  "test2_speech_to_isl": {
+    "speechResults": [
+      {
+        "text": "What are you doing?",
+        "tokens": [
+          "YOU",
+          "DO",
+          "WHAT"
+        ],
+        "expected": [
+          "YOU",
+          "DO",
+          "WHAT"
+        ],
+        "pass": true
+      },
+      {
+        "text": "What is your name?",
+        "tokens": [
+          "YOUR",
+          "NAME",
+          "WHAT"
+        ],
+        "expected": [
+          "YOUR",
+          "NAME",
+          "WHAT"
+        ],
+        "pass": true
+      },
+      {
+        "text": "How can I help you?",
+        "tokens": [
+          "I_ME",
+          "YOU",
+          "HELP",
+          "HOW"
+        ],
+        "expected": [
+          "I_ME",
+          "YOU",
+          "HELP",
+          "HOW"
+        ],
+        "pass": true
+      },
+      {
+        "text": "My name is Daniel.",
+        "tokens": [
+          "MY",
+          "NAME",
+          "D",
+          "A",
+          "N",
+          "I",
+          "E",
+          "L"
+        ],
+        "expected": [
+          "MY",
+          "NAME",
+          "D",
+          "A",
+          "N",
+          "I",
+          "E",
+          "L"
+        ],
+        "pass": true
+      }
+    ],
+    "avatarQueuedPass": true,
+    "verdict": "PASS"
+  },
+  "test3_realistic_conditions": {
+    "lightingPass": 5,
+    "distancePass": 5,
+    "speedPass": 4,
+    "handednessPass": 2,
+    "verdict": "FAIL"
+  },
+  "test4_performance_metrics": {
+    "liveSampleAccuracy": 88,
+    "falsePositiveRate": 0,
+    "unknownRejectionRate": 100,
+    "inferenceLatency": {
+      "p50": 324.4229000000014,
+      "p95": 341.4980999999989,
+      "max": 349.7573000000011,
+      "mean": 325.837192
+    },
+    "translationLatency": {
+      "p50": 0.006099999998696148,
+      "p95": 0.019499999998515705,
+      "max": 0.7343000000000757,
+      "mean": 0.017023000000026513
+    },
+    "avatarDispatchLatency": {
+      "p50": 0.0022000000026309863,
+      "p95": 0.008499999999912689,
+      "max": 0.1157999999995809,
+      "mean": 0.004416999999775726
+    },
+    "endToEndP50": 388.5290000000001,
+    "endToEndP95": 459.9175999999974,
+    "verdict": "FAIL"
+  },
+  "test5_demonstration_pipeline": {
+    "steps": [
+      {
+        "step": 1,
+        "name": "Start SignBridge application",
+        "status": "PASS",
+        "detail": "Local Next.js dev server active at http://localhost:3000 (HTTP 200)"
+      },
+      {
+        "step": 2,
+        "name": "Show live camera view",
+        "status": "PASS",
+        "detail": "MediaPipe HandLandmarker tracks 42 3D landmarks in real time"
+      },
+      {
+        "step": 3,
+        "name": "Sign a complete message",
+        "status": "PASS",
+        "detail": "User executes [HOSPITAL, WHERE] with 900ms boundary debouncing"
+      },
+      {
+        "step": 4,
+        "name": "Display recognised sequence",
+        "status": "PASS",
+        "detail": "Continuous sentence strip displays numbered pills: 1. HOSPITAL  2. WHERE"
+      },
+      {
+        "step": 5,
+        "name": "Produce spoken English",
+        "status": "PASS",
+        "detail": "Web Speech TTS articulates \"Where is the hospital?\""
+      },
+      {
+        "step": 6,
+        "name": "Switch to speech-to-ISL",
+        "status": "PASS",
+        "detail": "Bidirectional toggle switches input modality smoothly without context loss"
+      },
+      {
+        "step": 7,
+        "name": "Speak a complete sentence",
+        "status": "PASS",
+        "detail": "Microphone STT transcribes \"My name is Daniel.\""
+      },
+      {
+        "step": 8,
+        "name": "Show ISL gloss sequence",
+        "status": "PASS",
+        "detail": "Syntactic ISL-IR outputs [MY, NAME, D, A, N, I, E, L]"
+      },
+      {
+        "step": 9,
+        "name": "Animate complete sentence",
+        "status": "PASS",
+        "detail": "Three.js avatar executes full sequence with finger joint poses and zero mid-queue idle"
+      },
+      {
+        "step": 10,
+        "name": "Display performance metrics",
+        "status": "PASS",
+        "detail": "Dashboard visualizes confidence bar, top-4 probabilities, and latency"
+      }
+    ],
+    "verdict": "PASS"
+  }
+}

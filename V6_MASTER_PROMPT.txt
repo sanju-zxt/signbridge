@@ -1,0 +1,545 @@
+<USER_REQUEST>
+# MASTER PROMPT — SIGNBRIDGE V6
+## Complete ISL Migration | Bidirectional Communication | Sentence Intelligence | Loop Elimination | Ultra-Low Latency
+
+Act as a senior AI/ML architect, Indian Sign Language (ISL) specialist, speech recognition engineer, computer vision engineer, NLP engineer, and real-time systems optimization expert.
+
+Your task is to transform my existing SignBridge application into a reliable, bidirectional **Indian Sign Language communication system**.
+
+The primary objective is to make SignBridge understand complete human communication rather than recognizing only individual words or executing only the first detected action.
+
+IMPORTANT: Do not rebuild my project. Upgrade the existing codebase incrementally.
+
+# 1. COMPLETE ASL TO ISL MIGRATION
+
+My project currently contains ASL-related vocabulary, datasets, model classes, and recognition logic.
+
+I now want the entire sign-language recognition system to use ISL (Indian Sign Language).
+
+Audit and identify every ASL dependency, including:
+
+- ASL datasets and labels.
+- ASL gloss vocabulary.
+- ASL class mappings.
+- ASL-specific grammar rules.
+- Training configurations.
+- Model output labels.
+- Recognition dictionaries.
+- Animation mappings.
+- Sentence translation logic.
+- UI labels and documentation.
+
+Replace ASL-specific functionality with verified ISL equivalents.
+
+### Important migration rules
+
+- Do not simply rename ASL classes to ISL.
+- Do not assume an ASL sign has an identical ISL equivalent.
+- Obtain authentic ISL recordings and verified gloss labels.
+- Use Indian Sign Language linguistic references and qualified ISL signers.
+- Preserve regional variations where appropriate.
+- Maintain a clear distinction between ISL gloss and spoken Indian-language output.
+- Never invent ISL signs or claim that unverified signs are authentic.
+
+Prioritize these everyday and emergency communication categories:
+
+1. Greetings and introductions.
+2. Personal information.
+3. Everyday conversations.
+4. Questions and responses.
+5. Assistance and requests.
+6. Medical emergencies.
+7. Emergency services.
+8. Education and workplace communication.
+9. Directions and locations.
+10. Common actions and expressions.
+
+Create an ISL vocabulary manifest with verified labels, recording references, animation mappings, and confidence requirements.
+
+Retain the existing model architecture where technically possible. However, retrain or fine-tune the model with genuine ISL data. Do not use ASL weights as if they were an ISL-trained model.
+
+# 2. FIX THE REPEATING ACTION / INFINITE LOOP PROBLEM
+
+This is one of my most important requirements.
+
+Currently, when a sign is recognized, the same action or animation sometimes keeps executing repeatedly.
+
+I want every completed sign or speech command to execute exactly once.
+
+### Implement an event-driven action execution system.
+
+Each recognized action must have:
+
+- Unique event ID.
+- Recognition timestamp.
+- Action identifier.
+- Confidence score.
+- Execution status.
+- Completion status.
+
+### Required execution lifecycle
+
+IDLE → DETECTED → VALIDATED → QUEUED → EXECUTING → COMPLETED → IDLE.
+
+Implement:
+
+- Duplicate event prevention.
+- Event ID tracking.
+- Idempotent action execution.
+- Animation completion callbacks.
+- Queue management.
+- Cooldown only where appropriate.
+- Cancellation of stale actions.
+- Proper state reset.
+- Recovery from failed animations.
+
+### Critical behavior
+
+If the user signs HELLO:
+
+- Recognize HELLO.
+- Execute the HELLO animation once.
+- Wait for animation completion.
+- Mark the event completed.
+- Return to idle.
+
+Do not replay HELLO continuously while the user's hands remain visible.
+
+If the user signs HELLO again intentionally after completing the previous sign, recognize and execute it again.
+
+Do not implement a permanent cooldown that prevents intentional repeated signs.
+
+### Avatar requirements
+
+- Eliminate unnecessary animation restarts.
+- Eliminate T-pose during idle periods.
+- Prevent overlapping animations.
+- Support sequential animation transitions.
+- Ensure the avatar completes the current action before starting the next one unless the action is explicitly interruptible.
+
+The action controller must be state-driven, not frame-driven.
+
+# 3. COMPLETE ISL-TO-SPEECH SENTENCE UNDERSTANDING
+
+Currently, the system can identify individual signs but does not consistently understand the complete sentence.
+
+I want to upgrade this into a continuous ISL recognition and sentence interpretation pipeline.
+
+### Required processing pipeline
+
+ISL video → Hand and facial landmark extraction → Temporal sign recognition → ISL gloss sequence → Sentence interpretation → English sentence generation → Text-to-speech.
+
+### Example
+
+Input signing:
+
+HELLO + YOU + HOW
+
+Expected interpretation:
+
+"Hello, how are you?"
+
+Another example:
+
+Input signing:
+
+ME + HELP + NEED
+
+Expected output:
+
+"I need help."
+
+Another example:
+
+Input signing:
+
+AMBULANCE + CALL + NEED
+
+Expected output:
+
+"I need an ambulance."
+
+These are illustrative semantic examples, not universal ISL grammar rules. Have the sentence mapping reviewed by qualified ISL experts.
+
+### Sentence intelligence requirements
+
+Implement:
+
+- Continuous sign sequence recognition.
+- Temporal segmentation.
+- Sign boundary detection.
+- Context retention.
+- Sentence boundary detection.
+- ISL gloss sequence construction.
+- Context-aware sentence interpretation.
+- Grammatical sentence generation.
+- Sentence finalization.
+- Text-to-speech output.
+
+### Grammatical word completion
+
+The system should intelligently add necessary English grammatical elements such as:
+
+- is / am / are.
+- do / does.
+- can / could.
+- have / has.
+- I / you / we / they.
+- Articles and prepositions where appropriate.
+
+However:
+
+- Do not blindly insert words.
+- Do not change the user's intended meaning.
+- Do not hallucinate missing information.
+- Do not translate ISL by simply concatenating English dictionary definitions.
+- Preserve questions, negation, tense, and intent.
+- Use context and verified linguistic rules.
+
+Maintain separate internal representations for:
+
+1. Recognized ISL signs.
+2. ISL gloss sequence.
+3. Interpreted meaning.
+4. Generated English sentence.
+5. Spoken output.
+
+If confidence is low, request clarification rather than generating an unreliable sentence.
+
+# 4. FIX SPEECH-TO-ISL INCOMPLETE WORD RECOGNITION
+
+This is another critical issue.
+
+Example:
+
+User speaks:
+
+"Hello, how are you?"
+
+Current incorrect behavior:
+
+- Recognizes HELLO.
+- Displays HELLO.
+- Executes only the HELLO animation.
+- Ignores HOW ARE YOU.
+
+Expected behavior:
+
+- Capture the complete utterance.
+- Convert speech to text.
+- Process all recognized words.
+- Understand the complete sentence.
+- Convert the sentence into an appropriate ISL representation.
+- Execute all required avatar animations in the correct order.
+
+### Build a complete speech processing pipeline
+
+Microphone → Speech recognition → Complete transcript → Text normalization → Sentence parsing → Semantic interpretation → ISL gloss mapping → Animation sequence → Avatar output.
+
+### Requirements
+
+Implement:
+
+- Continuous microphone input.
+- Proper audio buffering.
+- Streaming speech recognition where supported.
+- Partial transcript handling.
+- Final transcript detection.
+- Utterance completion detection.
+- Sentence segmentation.
+- Punctuation normalization.
+- Word preservation.
+- Semantic sentence parsing.
+- ISL sequence generation.
+- Sequential avatar execution.
+
+### Prevent early sentence termination
+
+Do not execute the first recognized word as the complete utterance.
+
+Do not discard remaining words when a partial transcript is updated.
+
+Maintain a complete utterance buffer until the speech recognizer confirms a final transcript or the configured endpointing logic determines that the utterance has ended.
+
+Partial transcripts should update the display but must not repeatedly trigger complete avatar animations.
+
+### Example test cases
+
+Input: "Hello, how are you?"
+
+Expected:
+Complete sentence processed, with the corresponding ISL sequence executed.
+
+Input: "Can you help me?"
+
+Expected:
+The entire request is interpreted and represented through the appropriate ISL sequence.
+
+Input: "I need medical assistance."
+
+Expected:
+The complete sentence is processed, not just MEDICAL or HELP.
+
+Input: "Please call an ambulance."
+
+Expected:
+All meaningful components are represented in the generated ISL sequence.
+
+Never silently drop recognized words. If a word has no verified direct sign mapping, use a validated semantic representation or an appropriate fingerspelling strategy where supported.
+
+# 5. BIDIRECTIONAL COMMUNICATION ARCHITECTURE
+
+SignBridge must support both directions.
+
+### Direction A: ISL TO SPEECH
+
+Camera → ISL recognition → Temporal sequence → ISL gloss → Sentence interpretation → English text → TTS.
+
+### Direction B: SPEECH TO ISL
+
+Microphone → Speech recognition → Complete transcript → NLP → ISL gloss sequence → Avatar animation.
+
+Both directions must work independently and reliably.
+
+Ensure:
+- Separate pipeline states.
+- No cross-triggering between microphone and camera.
+- No duplicated output.
+- Proper resource management.
+- Clear error handling.
+- Reliable switching between communication modes.
+
+Do not remove either communication direction.
+
+# 6. REDUCE END-TO-END LATENCY
+
+Performance is a major requirement.
+
+Optimize both:
+
+A. ISL-to-speech latency.
+
+B. Speech-to-ISL latency.
+
+First profile the existing pipeline and identify actual bottlenecks.
+
+### Computer vision optimization
+
+- Reduce unnecessary frame processing.
+- Avoid duplicate landmark extraction.
+- Reuse allocated buffers.
+- Use appropriate frame sampling.
+- Maintain temporal continuity.
+- Run inference asynchronously where appropriate.
+- Avoid blocking the main UI thread.
+
+### Model inference optimization
+
+- Benchmark CPU, WebGL and WebGPU.
+- Use the fastest stable backend supported by the device.
+- Implement worker-based inference where compatible.
+- Optimize tensor creation and disposal.
+- Investigate quantization.
+- Cache loaded models.
+- Avoid repeated model initialization.
+
+### Speech processing optimization
+
+- Use streaming speech recognition where supported.
+- Avoid waiting unnecessarily for long timeouts.
+- Process partial transcripts without triggering duplicate actions.
+- Optimize endpoint detection.
+- Avoid repeatedly sending identical text to the NLP layer.
+- Reuse initialized services and connections.
+
+### Avatar optimization
+
+- Preload animations.
+- Cache animation references.
+- Avoid unnecessary model reloads.
+- Queue actions asynchronously.
+- Execute animation transitions without blocking recognition.
+
+### Benchmark separately
+
+Measure:
+
+- Camera capture latency.
+- Landmark extraction latency.
+- Model inference latency.
+- Speech recognition latency.
+- NLP processing latency.
+- ISL gloss generation latency.
+- Animation dispatch latency.
+- TTS startup latency.
+- Total end-to-end latency.
+
+Report P50, P95 and P99.
+
+Do not report estimated values as actual measurements.
+
+# 7. ISL DATASET AND MODEL TRAINING
+
+Audit the existing model and dataset before training.
+
+The previous V4 audit reported synthesized landmark data rather than genuine real-world recordings. Do not present those results as authentic ISL performance.
+
+### Training requirements
+
+- Acquire genuine ISL recordings.
+- Use verified ISL gloss labels.
+- Record multiple signers.
+- Include different camera angles and lighting conditions.
+- Maintain signer-independent splits.
+- Validate the quality of extracted landmarks.
+- Track dataset provenance.
+- Balance the essential vocabulary.
+
+Preserve the existing GRU as a baseline and determine whether it can support the ISL vocabulary effectively.
+
+Train and evaluate on genuine ISL samples.
+
+Do not use synthetic landmarks as a substitute for real ISL training data.
+
+If authentic data are unavailable, build the recording and annotation pipeline first.
+
+# 8. UI AND EXISTING FUNCTIONALITY PRESERVATION
+
+Preserve my existing SignBridge UI/UX and project structure.
+
+Do not unnecessarily change:
+- Dashboard.
+- Navigation.
+- Camera interface.
+- Microphone interface.
+- 3D avatar.
+- Existing API contracts.
+- WebSocket integration.
+- Model loading behavior.
+
+Only make UI changes required to improve the communication workflow.
+
+Display:
+- Live recognized signs.
+- Complete interpreted sentence.
+- Speech transcript.
+- Recognition confidence.
+- Current animation/action.
+- Processing status.
+- Errors and recovery states.
+
+The interface must clearly distinguish partial recognition from finalized output.
+
+# 9. TESTING AND ACCEPTANCE CRITERIA
+
+Create automated and real-device tests.
+
+### Test A: Single action execution
+
+Input: HELLO.
+
+Expected: Exactly one HELLO animation.
+
+### Test B: Intentional repetition
+
+Input: HELLO, followed by another HELLO.
+
+Expected: Two intentional executions, not one continuous loop.
+
+### Test C: Full sentence from speech
+
+Input: "Hello, how are you?"
+
+Expected: The entire utterance is processed and its complete ISL sequence is executed.
+
+### Test D: Complete ISL-to-speech sentence
+
+Input: A signer performs a verified multi-sign ISL sentence.
+
+Expected: A meaningful, grammatically correct spoken sentence.
+
+### Test E: Unknown sign
+
+Expected: Low-confidence handling or clarification. Never invent a sign.
+
+### Test F: Consecutive speech commands
+
+Input: Two separate spoken sentences.
+
+Expected: Both are independently processed without dropping words or duplicating actions.
+
+### Test G: Latency
+
+Expected: Measured end-to-end performance improves over the existing baseline.
+
+### Test H: Bidirectional integration
+
+Expected: Both ISL-to-speech and speech-to-ISL work without breaking each other.
+
+Run all existing tests and the production build after implementation.
+
+# 10. IMPLEMENTATION PHASES
+
+Phase 0: Full repository audit and baseline profiling.
+
+Phase 1: ASL-to-ISL migration audit and vocabulary/data pipeline.
+
+Phase 2: Fix repeating actions and avatar animation execution.
+
+Phase 3: Fix complete speech transcription and sentence buffering.
+
+Phase 4: Implement continuous ISL sentence recognition and translation.
+
+Phase 5: Integrate authentic ISL training data and retrain the model.
+
+Phase 6: Optimize both communication directions for latency.
+
+Phase 7: Run complete integration tests and generate the V6 report.
+
+Do not make all changes blindly in one operation. Make incremental, reversible changes and run regression tests after every major phase.
+
+# 11. FINAL DELIVERABLES
+
+Generate these reports:
+
+- `V6_IMPLEMENTATION_REPORT.md`
+- `ISL_MIGRATION_REPORT.md`
+- `ISL_DATASET_AUDIT.md`
+- `SENTENCE_RECOGNITION_REPORT.md`
+- `ACTION_LOOP_FIX_REPORT.md`
+- `LATENCY_OPTIMIZATION_REPORT.md`
+- `V6_TEST_RESULTS.md`
+
+Include:
+- Files changed.
+- Features implemented.
+- Dataset provenance.
+- Training results.
+- ISL recognition evaluation.
+- Sentence-level evaluation.
+- Speech transcription evaluation.
+- Duplicate action test results.
+- Measured latency before and after.
+- Remaining limitations.
+
+# FINAL OBJECTIVE
+
+SignBridge must become a genuinely bidirectional ISL communication platform.
+
+A person should be able to:
+
+1. Sign a complete ISL sentence and receive meaningful spoken output.
+2. Speak a complete sentence and see the avatar communicate the corresponding ISL sequence.
+3. Repeat a sign or sentence intentionally without the system getting stuck in an animation loop.
+4. Communicate naturally without the system ignoring words or signs.
+5. Experience responsive, low-latency communication.
+
+Prioritize real ISL, complete sentence understanding, reliable one-time action execution, and low end-to-end latency.
+
+Do not claim success based only on successful builds or isolated word accuracy. Validate the complete communication experience with real users and real recordings.
+
+BEGIN WITH PHASE 0. AUDIT THE EXISTING PROJECT BEFORE MODIFYING ANYTHING.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-10-31T00:36:55+05:30.
+</ADDITIONAL_METADATA>

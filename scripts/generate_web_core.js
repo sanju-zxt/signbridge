@@ -9,7 +9,7 @@ function save(relPath, content) {
 }
 
 // 1. apps/web/src/lib/vision/normalizer.ts
-save('apps/web/src/lib/vision/normalizer.ts', `import { Landmark3D } from '@signbridge2vision/types';
+save('apps/web/src/lib/vision/normalizer.ts', `import { Landmark3D } from '@signbridge/types';
 
 export function normalizeHandLandmarks(landmarks: Landmark3D[]): Landmark3D[] {
   if (!landmarks || landmarks.length !== 21) return [];
@@ -60,7 +60,7 @@ export function computeFingerExtensions(normLm: Landmark3D[]): [number, number, 
 `);
 
 // 2. apps/web/src/lib/vision/temporalMatcher.ts
-save('apps/web/src/lib/vision/temporalMatcher.ts', `import { NormalizedFrame, AlternativeCandidate } from '@signbridge2vision/types';
+save('apps/web/src/lib/vision/temporalMatcher.ts', `import { NormalizedFrame, AlternativeCandidate } from '@signbridge/types';
 import { computeFingerExtensions } from './normalizer';
 
 export interface TemporalPattern {
@@ -166,7 +166,7 @@ export function matchTemporalSequence(frames: NormalizedFrame[]) {
 `);
 
 // 3. apps/web/src/lib/speech/stt.ts
-save('apps/web/src/lib/speech/stt.ts', `import { SupportedLanguage } from '@signbridge2vision/types';
+save('apps/web/src/lib/speech/stt.ts', `import { SupportedLanguage } from '@signbridge/types';
 
 export interface STTOptions {
   language: SupportedLanguage;
@@ -283,7 +283,7 @@ export class StreamingSTTClient {
 `);
 
 // 4. apps/web/src/lib/speech/tts.ts
-save('apps/web/src/lib/speech/tts.ts', `import { SupportedLanguage } from '@signbridge2vision/types';
+save('apps/web/src/lib/speech/tts.ts', `import { SupportedLanguage } from '@signbridge/types';
 
 export class TTSPlayer {
   private synth: SpeechSynthesis | null = null;

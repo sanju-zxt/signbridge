@@ -1,0 +1,862 @@
+{
+  "timestamp": "2026-10-31T01:14:21.189Z",
+  "summary": {
+    "totalConcepts": 89,
+    "supportedInBothDirections": 50,
+    "recognitionOnly": 0,
+    "avatarOnly": 15,
+    "unsupported": 24
+  },
+  "matrix": [
+    {
+      "concept": "A",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "AMBULANCE",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "B",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "BAD",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "BATHROOM",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "C",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "CALL",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "COME",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "D",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "DANGER",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "DEAF",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "DO",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "DOCTOR",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "DONT_UNDERSTAND",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "E",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "EMERGENCY",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "F",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "FINISH",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "FOOD",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "FRIEND",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "G",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "GIVE",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "GO",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "GOOD",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "GOODBYE",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "H",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "HEARING",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "HELLO",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "HELP",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "HERE",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "HOME",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "HOSPITAL",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "HOW",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "HOW_ARE_YOU",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "I",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "I_ME",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "J",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "K",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "L",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "LEFT",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "LETTER_A",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "LETTER_D",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "LETTER_E",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "LETTER_I",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "LETTER_L",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "LETTER_N",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "M",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "MEDICINE",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "MY",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "N",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "NAME",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "NEED",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "NICE_TO_MEET_YOU",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "NO",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "NOW",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "O",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "P",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "PAIN",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "PLEASE",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "POLICE",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "Q",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "R",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "REPEAT",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "RIGHT",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "S",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "SCHOOL",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "SORRY",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "STOP",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "T",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "THANK_YOU",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "TODAY",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "TOMORROW",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "U",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "UNDERSTAND",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "V",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "W",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "WAIT",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "WANT",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "WATER",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "WHAT",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "WHERE",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "WORK",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "X",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "Y",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "YES",
+      "trainedRecognition": true,
+      "avatarAnimation": "native",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "YESTERDAY",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    },
+    {
+      "concept": "YOU",
+      "trainedRecognition": true,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": true,
+      "bidirectionalStatus": "BOTH_DIRECTIONS"
+    },
+    {
+      "concept": "YOUR",
+      "trainedRecognition": false,
+      "avatarAnimation": "procedural",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "AVATAR_ONLY"
+    },
+    {
+      "concept": "Z",
+      "trainedRecognition": false,
+      "avatarAnimation": "none",
+      "inLexicon": true,
+      "inVocabulary": false,
+      "bidirectionalStatus": "UNSUPPORTED"
+    }
+  ],
+  "demoSentences": [
+    {
+      "id": 1,
+      "english": "What are you doing?",
+      "expectedGlosses": [
+        "YOU",
+        "DO",
+        "WHAT"
+      ],
+      "parsedTokens": [
+        "YOU",
+        "DO",
+        "WHAT"
+      ],
+      "animationTypes": {
+        "YOU": "dedicated_procedural",
+        "DO": "dedicated_procedural",
+        "WHAT": "dedicated_procedural"
+      },
+      "missingAnimations": [],
+      "speechToISLPass": true,
+      "generatedEnglish": "What are you doing?",
+      "islToSpeechPass": true,
+      "recognitionFeasibility": {
+        "YOU": "TRAINED_NEURAL_MODEL",
+        "DO": "SHARED_LEXICAL_ROOT (WORK)",
+        "WHAT": "TRAINED_NEURAL_MODEL"
+      }
+    },
+    {
+      "id": 2,
+      "english": "What is your name?",
+      "expectedGlosses": [
+        "YOUR",
+        "NAME",
+        "WHAT"
+      ],
+      "parsedTokens": [
+        "YOUR",
+        "NAME",
+        "WHAT"
+      ],
+      "animationTypes": {
+        "YOUR": "dedicated_procedural",
+        "NAME": "native_glb",
+        "WHAT": "dedicated_procedural"
+      },
+      "missingAnimations": [],
+      "speechToISLPass": true,
+      "generatedEnglish": "What is your name?",
+      "islToSpeechPass": true,
+      "recognitionFeasibility": {
+        "YOUR": "SHARED_PRONOMINAL_ROOT (YOU)",
+        "NAME": "TRAINED_NEURAL_MODEL",
+        "WHAT": "TRAINED_NEURAL_MODEL"
+      }
+    },
+    {
+      "id": 3,
+      "english": "How can I help you?",
+      "expectedGlosses": [
+        "I_ME",
+        "YOU",
+        "HELP",
+        "HOW"
+      ],
+      "parsedTokens": [
+        "I_ME",
+        "YOU",
+        "HELP",
+        "HOW"
+      ],
+      "animationTypes": {
+        "I_ME": "dedicated_procedural",
+        "YOU": "dedicated_procedural",
+        "HELP": "native_glb",
+        "HOW": "dedicated_procedural"
+      },
+      "missingAnimations": [],
+      "speechToISLPass": true,
+      "generatedEnglish": "How can I help you?",
+      "islToSpeechPass": true,
+      "recognitionFeasibility": {
+        "I_ME": "TRAINED_NEURAL_MODEL",
+        "YOU": "TRAINED_NEURAL_MODEL",
+        "HELP": "TRAINED_NEURAL_MODEL",
+        "HOW": "TRAINED_NEURAL_MODEL"
+      }
+    },
+    {
+      "id": 4,
+      "english": "My name is Daniel.",
+      "expectedGlosses": [
+        "MY",
+        "NAME",
+        "D",
+        "A",
+        "N",
+        "I",
+        "E",
+        "L"
+      ],
+      "parsedTokens": [
+        "MY",
+        "NAME",
+        "D",
+        "A",
+        "N",
+        "I",
+        "E",
+        "L"
+      ],
+      "animationTypes": {
+        "MY": "dedicated_procedural",
+        "NAME": "native_glb",
+        "D": "dedicated_procedural",
+        "A": "dedicated_procedural",
+        "N": "dedicated_procedural",
+        "I": "dedicated_procedural",
+        "E": "dedicated_procedural",
+        "L": "dedicated_procedural"
+      },
+      "missingAnimations": [],
+      "speechToISLPass": true,
+      "generatedEnglish": "My name is Daniel.",
+      "islToSpeechPass": true,
+      "recognitionFeasibility": {
+        "MY": "TRAINED_NEURAL_MODEL",
+        "NAME": "TRAINED_NEURAL_MODEL",
+        "D": "MANUAL_ALPHABET_EXT",
+        "A": "MANUAL_ALPHABET_EXT",
+        "N": "MANUAL_ALPHABET_EXT",
+        "I": "MANUAL_ALPHABET_EXT",
+        "E": "MANUAL_ALPHABET_EXT",
+        "L": "MANUAL_ALPHABET_EXT"
+      }
+    }
+  ]
+}

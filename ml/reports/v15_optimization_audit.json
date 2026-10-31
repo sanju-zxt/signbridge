@@ -1,0 +1,64 @@
+{
+  "timestamp": "2026-10-31T02:19:53.210Z",
+  "version": "V15-OPTIMIZATION",
+  "passedTests": 9,
+  "totalTests": 9,
+  "allPassed": true,
+  "results": [
+    {
+      "testId": "REG_01",
+      "name": "Model Loading & 50 Trained Classes Audit",
+      "status": "PASS",
+      "details": "Successfully verified all 50 classes in SBV-ISL-GRU-V8. Key ISL signs present."
+    },
+    {
+      "testId": "REG_02",
+      "name": "Hand Landmark Routing & Slot Mapping",
+      "status": "PASS",
+      "details": "Verified dominant-hand single hand routing and bilateral 2-hand slot isolation."
+    },
+    {
+      "testId": "REG_03",
+      "name": "UNKNOWN Sign Rejection",
+      "status": "PASS",
+      "details": "Inconclusive/random inputs with max score 0.22 correctly rejected as UNKNOWN."
+    },
+    {
+      "testId": "REG_04",
+      "name": "Resting Hand Defense & Suppression",
+      "status": "PASS",
+      "details": "Stationary hands (motionMag=0.0024) suppressed to max score 0.2 <= 0.20."
+    },
+    {
+      "testId": "REG_05",
+      "name": "Adaptive Fast Sign Confirmation Timing",
+      "status": "PASS",
+      "details": "Sign confirmed on Frame 2 at exact elapsed time of 180ms (target: 150-300ms).",
+      "measuredLatencyMs": 180
+    },
+    {
+      "testId": "REG_06",
+      "name": "Hold Suppression & Neutral Reset Audit",
+      "status": "PASS",
+      "details": "Held poses suppressed duplicate triggers; 4-frame neutral transition cleanly permitted re-trigger."
+    },
+    {
+      "testId": "REG_07",
+      "name": "Continuous Sentence Buffer & ISL Grammar Engine",
+      "status": "PASS",
+      "details": "Translated \"YOU WANT WATER\" -> \"You want the water.\". Buffer clearance verified."
+    },
+    {
+      "testId": "REG_08",
+      "name": "Speech-to-ISL Phrase Matcher & Avatar Queue",
+      "status": "PASS",
+      "details": "Spoken input \"What is your name?\" mapped to [YOUR -> NAME -> WHAT]."
+    },
+    {
+      "testId": "REG_09",
+      "name": "Camera Viewport Layout & Desktop Constraints",
+      "status": "PASS",
+      "details": "Verified 62-66% camera width, 34-38% recognition width, min-h 420-500px, uncropped object-contain, and fullscreen toggle."
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import {
   SystemState,
   LatencyMetricRecord,
   ISL_VOCABULARY
-} from '@signbridge2vision/types';
+} from '@signbridge/types';
 import { sessionStore } from './store';
 import { conversationalAgent } from './agent';
 
@@ -34,7 +34,7 @@ async function testFullPipeline() {
         ws.send(JSON.stringify({ event: 'session.joined', data: { status: 'ok' } }));
       } else if (event === 'vision.final') {
         const recognition: RecognitionEvent = data;
-        const vocabItem = ISL_VOCABULARY.find(v => v.sign === recognition.sign);
+        const vocabItem = ISL_VOCABULARY.find((v: any) => v.sign === recognition.sign);
         const text = vocabItem ? vocabItem.canonicalSentence : recognition.label;
 
         const canonicalMsg: CanonicalMessage = {

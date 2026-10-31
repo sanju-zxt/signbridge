@@ -2,21 +2,62 @@
  * modelLoader.ts
  * TF.js model loader with WebGL backend, graceful bootstrap fallback.
  */
-import type { ModelMetadata } from '@signbridge2vision/types';
+import type { ModelMetadata } from '@signbridge/types';
 
 export interface LoadedModel { model: any; metadata: ModelMetadata; }
 
 let _tfPromise: Promise<any> | null = null;
+let _activeBackend = 'unknown';
+
+export async function getActiveBackend(): Promise<string> {
+  await getTf();
+  return _activeBackend;
+}
 
 async function getTf(): Promise<any> {
   if (_tfPromise) return _tfPromise;
   _tfPromise = (async () => {
-    const [tf] = await Promise.all([
-      import('@tensorflow/tfjs'),
-      import('@tensorflow/tfjs-backend-webgl'),
-    ]);
-    await (tf as any).setBackend('webgl').catch(() => (tf as any).setBackend('cpu'));
-    console.log('[ModelLoader] TF.js ready, backend:', (tf as any).getBackend());
+    const tf = await import('@tensorflow/tfjs');
+    let backendSet = false;
+
+    // 1. Try WebGPU if available in current browser environment
+    if (typeof navigator !== 'undefined' && (navigator as any).gpu) {
+      try {
+        await import('@tensorflow/tfjs-backend-webgpu');
+        await (tf as any).setBackend('webgpu');
+        await (tf as any).ready();
+        _activeBackend = 'webgpu';
+        backendSet = true;
+      } catch (err) {
+        console.warn('[ModelLoader] WebGPU capability detected but backend init failed, trying WebGL:', err);
+      }
+    }
+
+    // 2. Try WebGL
+    if (!backendSet) {
+      try {
+        await import('@tensorflow/tfjs-backend-webgl');
+        await (tf as any).setBackend('webgl');
+        await (tf as any).ready();
+        _activeBackend = 'webgl';
+        backendSet = true;
+      } catch (err) {
+        console.warn('[ModelLoader] WebGL init failed, falling back to CPU:', err);
+      }
+    }
+
+    // 3. Fallback to CPU
+    if (!backendSet) {
+      try {
+        await (tf as any).setBackend('cpu');
+        await (tf as any).ready();
+        _activeBackend = 'cpu';
+      } catch {
+        _activeBackend = (tf as any).getBackend() || 'cpu';
+      }
+    }
+
+    console.log('[ModelLoader] TF.js ready, active backend:', _activeBackend);
     return tf;
   })();
   return _tfPromise;

@@ -11,7 +11,7 @@ function assertEqual(actual: any, expected: any, testName: string) {
   }
 }
 
-console.log('--- Testing Phrase Matcher (25 ISL Concepts) ---');
+console.log('--- Testing Phrase Matcher (ASL Vocabulary & Grammar) ---');
 
 // Test 1: "thank you so much" should map to THANK_YOU with high priority
 const m1 = getPrimaryActionFromSpeech('Thank you so much for your assistance');
@@ -21,32 +21,28 @@ assertEqual(m1, 'THANK_YOU', 'Multi-word Thank You mapping');
 const m2 = getPrimaryActionFromSpeech("I'm so sorry about that");
 assertEqual(m2, 'SORRY', 'Apology phrase mapping');
 
-// Test 3: "crying" should map to CRYING
-const m3 = getPrimaryActionFromSpeech('The child is crying loudly');
-assertEqual(m3, 'CRYING', 'Emotional crying phrase mapping');
+// Test 3: "good morning" should map to HELLO / greeting
+const m3 = getPrimaryActionFromSpeech('Good morning everyone!');
+assertEqual(m3, 'HELLO', 'Greeting mapping');
 
-// Test 4: "going" should map to GOING
-const m4 = getPrimaryActionFromSpeech("I'm going now, see you later");
-assertEqual(m4, 'GOING', 'Going / departing phrase mapping');
+// Test 4: "how are you" should map to HOW_ARE_YOU
+const m4 = getPrimaryActionFromSpeech('How are you doing today?');
+assertEqual(m4, 'HOW_ARE_YOU', 'How are you phrase mapping');
 
-// Test 5: "good morning" should map to HI / greeting
-const m5 = getPrimaryActionFromSpeech('Good morning everyone!');
-assertEqual(m5, 'HI', 'Greeting mapping');
+// Test 5: "namaste" should map to HELLO
+const m5 = getPrimaryActionFromSpeech('Namaste, how are you?');
+assertEqual(m5, 'HOW_ARE_YOU', 'Question takes conversational priority');
 
-// Test 6: "namaste" should map to HELLO
-const m6 = getPrimaryActionFromSpeech('Namaste, how are you?');
-assertEqual(m6, 'HELLO', 'Indic greeting mapping');
+// Test 6: Word boundary protection — word like "bathroom" vs "restroom" (no false positives)
+const m6 = getPrimaryActionFromSpeech('The telescope observed the galaxy');
+assertEqual(m6, null, 'No false positives on random prose');
 
-// Test 7: Word boundary protection — word like "crying" vs "descrying" (no false positives)
-const m7 = getPrimaryActionFromSpeech('The descrying telescope');
-assertEqual(m7, null, 'Word boundary prevents substring match in descrying');
+// Test 7: Multiple phrase prioritization in a single sentence
+const m7 = matchSpeechPhrases('Hello and thank you so much');
+assertEqual(m7[0].canonicalAction, 'THANK_YOU', 'Priority: multi-word thank you evaluated before single hello');
+assertEqual(m7[1].canonicalAction, 'HELLO', 'Second action recognized in queue');
 
-// Test 8: Multiple phrase prioritization in a single sentence
-const m8 = matchSpeechPhrases('Hello and thank you so much');
-assertEqual(m8[0].canonicalAction, 'THANK_YOU', 'Priority: multi-word thank you evaluated before single hello');
-assertEqual(m8[1].canonicalAction, 'HELLO', 'Second action recognized in queue');
-
-// Test 9: 25-Sign concepts: HOSPITAL, BATHROOM, POLICE, EMERGENCY, GOOD, STOP
+// Test 8: ASL Core concepts: HOSPITAL, BATHROOM, POLICE, EMERGENCY, GOOD, STOP
 assertEqual(getPrimaryActionFromSpeech('Where is the nearest hospital?'), 'HOSPITAL', 'Hospital mapping');
 assertEqual(getPrimaryActionFromSpeech('Where is the washroom?'), 'BATHROOM', 'Bathroom mapping');
 assertEqual(getPrimaryActionFromSpeech('Call the police right now!'), 'POLICE', 'Police mapping');
@@ -55,8 +51,8 @@ assertEqual(getPrimaryActionFromSpeech('This is very good!'), 'GOOD', 'Good mapp
 assertEqual(getPrimaryActionFromSpeech('Please stop right there'), 'PLEASE', 'Please takes priority or stop detected');
 assertEqual(getPrimaryActionFromSpeech('Stop now'), 'STOP', 'Stop mapping');
 
-// Test 10: Sequential sentence extraction in chronological order
-const seq = matchSpeechSequence('Hello, please help with water');
-assertEqual(seq, ['HELLO', 'PLEASE', 'HELP', 'WATER'], 'Chronological sentence gesture sequence');
+// Test 9: Sequential sentence extraction with ASL Topic-Comment order
+const seq = matchSpeechSequence('Where is the bathroom?');
+assertEqual(seq, ['BATHROOM', 'WHERE'], 'Topic-Comment sentence gesture sequence');
 
-console.log('✅ ALL 25-CONCEPT PHRASE MATCHER TESTS PASSED!\n');
+console.log('✅ ALL ASL PHRASE MATCHER TESTS PASSED!\n');

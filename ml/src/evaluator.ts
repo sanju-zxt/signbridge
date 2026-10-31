@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { MLBenchmarkMetrics, MLClassMetric, ConfusionMatrixEntry } from '@signbridge2vision/types';
+import { MLBenchmarkMetrics, MLClassMetric, ConfusionMatrixEntry } from '@signbridge/types';
 import { classifyTemporalSequence, SIGN_FEATURE_TEMPLATES } from './temporalClassifier';
 import { generateFullBenchmarkDataset, BenchmarkSample } from './datasetGenerator';
 

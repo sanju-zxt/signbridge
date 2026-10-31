@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AlertCircle, Check, RefreshCw } from 'lucide-react';
-import { AlternativeCandidate } from '@signbridge2vision/types';
+import { AlternativeCandidate } from '@signbridge/types';
 
 interface ConfidenceGateProps {
   provisionalSign: string;

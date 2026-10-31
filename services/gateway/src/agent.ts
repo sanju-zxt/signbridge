@@ -3,7 +3,7 @@ import {
   AgentResponseEvent,
   SupportedLanguage,
   ISL_VOCABULARY
-} from '@signbridge2vision/types';
+} from '@signbridge/types';
 
 export interface AgentInput {
   sessionId: string;
@@ -24,7 +24,7 @@ export class ConversationalAgent {
     const { replyToMessage, conversationHistory } = input;
 
     if (replyToMessage.confidence < 0.65 && replyToMessage.modality === 'isl') {
-      const altNames = replyToMessage.alternatives?.map(a => a.label).join(' or ') || '';
+      const altNames = replyToMessage.alternatives?.map((a: any) => a.label).join(' or ') || '';
       const clarificationText = `I noticed you may have signed "${replyToMessage.text}". Did you mean ${replyToMessage.text}${altNames ? ` or perhaps ${altNames}` : ''}?`;
 
       return {

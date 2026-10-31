@@ -1,466 +1,4574 @@
-import { ISLSignDefinition, DemoScenarioPreset } from './index';
+import { ASLSignDefinition, DemoScenarioPreset } from './index';
 
-export const ISL_VOCABULARY: ISLSignDefinition[] = [
+export const ASL_VOCABULARY: ASLSignDefinition[] = [
   {
-    id: 'HELLO',
-    sign: 'HELLO',
-    label: 'Hello / Namaste',
-    category: 'greetings',
-    gloss: 'HELLO',
-    canonicalSentence: 'Hello, nice to meet you.',
-    translations: {
-      en: 'Hello, nice to meet you.',
-      hi: 'नमस्ते, आपसे मिलकर अच्छा लगा।',
-      kn: 'ನಮಸ್ಕಾರ, ನಿಮ್ಮನ್ನು ಭೇಟಿಯಾಗಿದ್ದು ಸಂತೋಷವಾಯಿತು.',
-      te: 'నమస్కారం, మిమ్మల్ని కలవడం ఆనందంగా ఉంది.'
+    "id": "HELLO",
+    "sign": "HELLO",
+    "label": "Hello / Greeting",
+    "category": "personal_introduction",
+    "gloss": "HELLO",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Hello, nice to meet you.",
+    "translations": {
+      "en": "Hello, nice to meet you.",
+      "hi": "नमस्ते, आपसे मिलकर अच्छा लगा।",
+      "kn": "ನಮಸ್ಕಾರ, ನಿಮ್ಮನ್ನು ಭೇಟಿಯಾಗಿದ್ದು ಸಂತೋಷವಾಯಿತು.",
+      "te": "నమస్కారం, మిమ్మల్ని కలవడం ఆనందంగా ఉంది."
     },
-    description: 'Open dominant hand raised to forehead/temple and extended outward in a waving salute or folded palms in Namaste.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'linear',
-      location: 'head'
+    "description": "Open B-hand raised to temple/forehead and extended outward in a welcoming salute.",
+    "nonManualMarkers": "Slight head nod, friendly smile",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
     }
   },
   {
-    id: 'THANK_YOU',
-    sign: 'THANK_YOU',
-    label: 'Thank You / Dhanyavad',
-    category: 'greetings',
-    gloss: 'THANK-YOU',
-    canonicalSentence: 'Thank you very much.',
-    translations: {
-      en: 'Thank you very much.',
-      hi: 'आपका बहुत-बहुत धन्यवाद।',
-      kn: 'ತುಂಬಾ ಧನ್ಯವಾದಗಳು.',
-      te: 'చాలా ధన్యవాదాలు.'
+    "id": "NAME",
+    "sign": "NAME",
+    "label": "Name",
+    "category": "personal_introduction",
+    "gloss": "NAME",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "What is your name?",
+    "translations": {
+      "en": "What is your name?",
+      "hi": "आपका नाम क्या है?",
+      "kn": "ನಿಮ್ಮ ಹೆಸರು ಏನು?",
+      "te": "మీ పేరు ఏమిటి?"
     },
-    description: 'Flat open hand touching chin/lips and gently extending forward towards the conversational partner.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'linear',
-      location: 'chin'
+    "description": "Both H-hands (index and middle fingers extended together) tap across each other twice at a 90-degree angle.",
+    "nonManualMarkers": "wh-q: furrowed eyebrows, head tilted forward",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
     }
   },
   {
-    id: 'PLEASE',
-    sign: 'PLEASE',
-    label: 'Please / Kripya',
-    category: 'greetings',
-    gloss: 'PLEASE',
-    canonicalSentence: 'Please help me with this.',
-    translations: {
-      en: 'Please help me with this.',
-      hi: 'कृपया मेरी इसमें मदद करें।',
-      kn: 'ದಯವಿಟ್ಟು ನನಗೆ ಸಹಾಯ ಮಾಡಿ.',
-      te: 'దయచేసి నాకు సహాయం చేయండి.'
+    "id": "NICE_TO_MEET_YOU",
+    "sign": "NICE_TO_MEET_YOU",
+    "label": "Nice to meet you",
+    "category": "personal_introduction",
+    "gloss": "NICE MEET YOU",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Nice to meet you.",
+    "translations": {
+      "en": "Nice to meet you.",
+      "hi": "आपसे मिलकर बहुत खुशी हुई।",
+      "kn": "ನಿಮ್ಮನ್ನು ಭೇಟಿಯಾಗಿದ್ದು ತುಂಬಾ ಸಂತೋಷವಾಯಿತು.",
+      "te": "మిమ్మల్ని కలవడం చాలా సంతోషంగా ఉంది."
     },
-    description: 'Flat palm placed on chest rubbing in a gentle clockwise circular motion.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'circular',
-      location: 'chest'
+    "description": "Dominant palm sweeps horizontally across non-dominant palm (NICE), followed by index fingers meeting in front of chest (MEET YOU).",
+    "nonManualMarkers": "Warm smile, direct eye contact",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chest"
     }
   },
   {
-    id: 'GOODBYE',
-    sign: 'GOODBYE',
-    label: 'Goodbye / Alvida',
-    category: 'greetings',
-    gloss: 'GOODBYE',
-    canonicalSentence: 'Goodbye, have a good day.',
-    translations: {
-      en: 'Goodbye, have a good day.',
-      hi: 'अलविदा, आपका दिन शुभ हो।',
-      kn: 'ವಿದಾಯ, ಶುಭ ದಿನ.',
-      te: 'వీడ్కోలు, మంచి రోజు.'
+    "id": "YOU",
+    "sign": "YOU",
+    "label": "You",
+    "category": "personal_introduction",
+    "gloss": "YOU",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "You.",
+    "translations": {
+      "en": "You.",
+      "hi": "आप / तुम।",
+      "kn": "ನೀವು / ನೀನು.",
+      "te": "మీరు / నువ్వు."
     },
-    description: 'Open hand raised above chest, fingers flexing or hand waving side-to-side.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'repetitive',
-      location: 'neutral_space'
+    "description": "Dominant index finger deictic point directed toward the conversational partner.",
+    "nonManualMarkers": "Direct eye contact",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
     }
   },
   {
-    id: 'HELP',
-    sign: 'HELP',
-    label: 'Help / I Need Help',
-    category: 'needs',
-    gloss: 'HELP',
-    canonicalSentence: 'I need help, please.',
-    translations: {
-      en: 'I need help, please.',
-      hi: 'मुझे मदद की ज़रूरत है, कृपया सहायता करें।',
-      kn: 'ನನಗೆ ಸಹಾಯ ಬೇಕು, ದಯವಿಟ್ಟು ಸಹಾಯ ಮಾಡಿ.',
-      te: 'నాకు సహాయం కావాలి, దయచేసి సహాయం చేయండి.'
+    "id": "I_ME",
+    "sign": "I_ME",
+    "label": "I / Me",
+    "category": "personal_introduction",
+    "gloss": "I",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I / Me.",
+    "translations": {
+      "en": "I / Me.",
+      "hi": "मैं / मुझे।",
+      "kn": "ನಾನು / ನನಗೆ.",
+      "te": "నేను / నాకు."
     },
-    description: 'Closed fist with thumb up placed on the flat palm of non-dominant hand, lifting upward together.',
-    keyFeatures: {
-      hands: 'both',
-      dominantHand: 'right',
-      primaryMotion: 'linear',
-      location: 'chest'
+    "description": "Dominant index finger points directly to the center of signer’s own chest.",
+    "nonManualMarkers": "Neutral expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chest"
     }
   },
   {
-    id: 'WATER',
-    sign: 'WATER',
-    label: 'Water / Paani',
-    category: 'needs',
-    gloss: 'WATER',
-    canonicalSentence: 'I need drinking water.',
-    translations: {
-      en: 'I need drinking water.',
-      hi: 'मुझे पीने का पानी चाहिए।',
-      kn: 'ನನಗೆ ಕುಡಿಯಲು ನೀರು ಬೇಕು.',
-      te: 'నాకు త్రాగే నీరు కావాలి.'
+    "id": "MY",
+    "sign": "MY",
+    "label": "My / Mine",
+    "category": "personal_introduction",
+    "gloss": "MY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "My / Mine.",
+    "translations": {
+      "en": "My / Mine.",
+      "hi": "मेरा / मेरी।",
+      "kn": "ನನ್ನ / ನನ್ನದು.",
+      "te": "నా / నాది."
     },
-    description: 'W-shaped three fingers or cupped hand brought near mouth/chin with tapping or tilting motion.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'repetitive',
-      location: 'chin'
+    "description": "Dominant flat open palm placed flatly against center of signer’s chest.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "chest"
     }
   },
   {
-    id: 'FOOD',
-    sign: 'FOOD',
-    label: 'Food / Khana',
-    category: 'needs',
-    gloss: 'FOOD',
-    canonicalSentence: 'I am hungry, where can I get food?',
-    translations: {
-      en: 'I am hungry, where can I get food?',
-      hi: 'मुझे भूख लगी है, खाना कहाँ मिलेगा?',
-      kn: 'ನನಗೆ ಹಸಿವಾಗಿದೆ, ಊಟ ಎಲ್ಲಿ ಸಿಗುತ್ತದೆ?',
-      te: 'నాకు ఆకలిగా ఉంది, ఆహారం ఎక్కడ దొరుకుతుంది?'
+    "id": "YOUR",
+    "sign": "YOUR",
+    "label": "Your / Yours",
+    "category": "personal_introduction",
+    "gloss": "YOUR",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Your / Yours.",
+    "translations": {
+      "en": "Your / Yours.",
+      "hi": "आपका / तुम्हारा।",
+      "kn": "ನಿಮ್ಮ / ನಿನ್ನ.",
+      "te": "మీ / నీ."
     },
-    description: 'Fingertips clustered together brought to mouth repeatedly in an eating gesture.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'repetitive',
-      location: 'chin'
+    "description": "Dominant flat open palm pushed outward toward listener.",
+    "nonManualMarkers": "Direct eye contact",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
     }
   },
   {
-    id: 'HOSPITAL',
-    sign: 'HOSPITAL',
-    label: 'Hospital / Doctor',
-    category: 'needs',
-    gloss: 'HOSPITAL',
-    canonicalSentence: 'Where is the nearest hospital or clinic?',
-    translations: {
-      en: 'Where is the nearest hospital or clinic?',
-      hi: 'निकटतम अस्पताल या डॉक्टर कहाँ है?',
-      kn: 'ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆ ಅಥವಾ ಕ್ಲಿನಿಕ್ ಎಲ್ಲಿದೆ?',
-      te: 'సమీపంలోని ఆసుపತ್ರಿ లేదా క్లినిక్ ఎక్కడ ఉంది?'
+    "id": "WE_US",
+    "sign": "WE_US",
+    "label": "We / Us",
+    "category": "personal_introduction",
+    "gloss": "WE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "We / Us.",
+    "translations": {
+      "en": "We / Us.",
+      "hi": "हम / हमें।",
+      "kn": "ನಾವು / ನಮಗೆ.",
+      "te": "మేము / మనము."
     },
-    description: 'Index finger traces a medical cross sign on upper arm or two fingers tap pulse at wrist.',
-    keyFeatures: {
-      hands: 'both',
-      dominantHand: 'right',
-      primaryMotion: 'linear',
-      location: 'chest'
+    "description": "Dominant index finger touches right shoulder, arcs across chest, and touches left shoulder.",
+    "nonManualMarkers": "Inclusive eye gaze",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "chest"
     }
   },
   {
-    id: 'BATHROOM',
-    sign: 'BATHROOM',
-    label: 'Bathroom / Washroom',
-    category: 'needs',
-    gloss: 'BATHROOM',
-    canonicalSentence: 'Where is the restroom / bathroom?',
-    translations: {
-      en: 'Where is the restroom / bathroom?',
-      hi: 'शौचालय / बाथरूम कहाँ है?',
-      kn: 'ವಾಶ್‌ರೂಮ್ / ಶೌಚಾಲಯ ಎಲ್ಲಿದೆ?',
-      te: 'వాష్‌రూమ్ / బాత్‌రూమ్ ఎక్కడ ఉంది?'
+    "id": "THEY",
+    "sign": "THEY",
+    "label": "They / Them",
+    "category": "personal_introduction",
+    "gloss": "THEY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "They / Them.",
+    "translations": {
+      "en": "They / Them.",
+      "hi": "वे / उन्हें।",
+      "kn": "ಅವರು / ಅವರಿಗೆ.",
+      "te": "వారు / వారికి."
     },
-    description: 'T-handshape (thumb between index and middle fingers) shaken side to side, or washing hands motion.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'repetitive',
-      location: 'neutral_space'
+    "description": "Dominant index finger points sideways and sweeps across peripheral space.",
+    "nonManualMarkers": "Glance toward referent space",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
     }
   },
   {
-    id: 'WHERE',
-    sign: 'WHERE',
-    label: 'Where / Kahan',
-    category: 'navigation',
-    gloss: 'WHERE',
-    canonicalSentence: 'Where is this located?',
-    translations: {
-      en: 'Where is this located?',
-      hi: 'यह कहाँ स्थित है?',
-      kn: 'ಇದು ಎಲ್ಲಿ ಇದೆ?',
-      te: 'ఇది ఎక్కడ ఉంది?'
+    "id": "MEET",
+    "sign": "MEET",
+    "label": "Meet",
+    "category": "personal_introduction",
+    "gloss": "MEET",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Meet each other.",
+    "translations": {
+      "en": "Meet each other.",
+      "hi": "मिलना।",
+      "kn": "ಭೇಟಿಯಾಗುವುದು.",
+      "te": "కలవడం."
     },
-    description: 'Both open palms face upward in neutral space, swaying gently side to side with questioning posture.',
-    keyFeatures: {
-      hands: 'both',
-      dominantHand: 'either',
-      primaryMotion: 'repetitive',
-      location: 'neutral_space'
+    "description": "Both index fingers upright facing each other, brought together until knuckles meet.",
+    "nonManualMarkers": "Affirmative nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
     }
   },
   {
-    id: 'HERE',
-    sign: 'HERE',
-    label: 'Here / Yahan',
-    category: 'navigation',
-    gloss: 'HERE',
-    canonicalSentence: 'Right here at this spot.',
-    translations: {
-      en: 'Right here at this spot.',
-      hi: 'ठीक यहाँ इस स्थान पर।',
-      kn: 'ಇಲ್ಲಿಯೇ ಈ ಸ್ಥಳದಲ್ಲಿ.',
-      te: 'ఇక్కడే ఈ ప్రదేశంలో.'
+    "id": "FRIEND",
+    "sign": "FRIEND",
+    "label": "Friend",
+    "category": "personal_introduction",
+    "gloss": "FRIEND",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Friend.",
+    "translations": {
+      "en": "Friend.",
+      "hi": "मित्र / दोस्त।",
+      "kn": "ಸ್ನೇಹಿತ.",
+      "te": "స్నేహితుడు."
     },
-    description: 'Both index fingers or open palms pointing downward into immediate front space.',
-    keyFeatures: {
-      hands: 'both',
-      dominantHand: 'either',
-      primaryMotion: 'static',
-      location: 'neutral_space'
+    "description": "Hooked X-index fingers link together, flip, and interlock in reverse.",
+    "nonManualMarkers": "Friendly smile",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
     }
   },
   {
-    id: 'LEFT',
-    sign: 'LEFT',
-    label: 'Turn Left / Baayein',
-    category: 'navigation',
-    gloss: 'LEFT',
-    canonicalSentence: 'Turn to the left side.',
-    translations: {
-      en: 'Turn to the left side.',
-      hi: 'बाईं ओर मुड़ें।',
-      kn: 'ಎಡಭಾಗಕ್ಕೆ ತಿರುಗಿ.',
-      te: 'ఎడమ వైపు తిరగండి.'
+    "id": "DEAF",
+    "sign": "DEAF",
+    "label": "Deaf",
+    "category": "personal_introduction",
+    "gloss": "DEAF",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Deaf.",
+    "translations": {
+      "en": "Deaf.",
+      "hi": "बधिर।",
+      "kn": "ಕಿವುಡ.",
+      "te": "బధిర."
     },
-    description: 'Index finger pointing firmly towards the left direction.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'linear',
-      location: 'neutral_space'
+    "description": "Dominant index finger touches cheek near ear, then touches cheek near mouth corner.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
     }
   },
   {
-    id: 'RIGHT',
-    sign: 'RIGHT',
-    label: 'Turn Right / Daayein',
-    category: 'navigation',
-    gloss: 'RIGHT',
-    canonicalSentence: 'Turn to the right side.',
-    translations: {
-      en: 'Turn to the right side.',
-      hi: 'दाईं ओर मुड़ें।',
-      kn: 'ಬಲಭಾಗಕ್ಕೆ ತಿರುಗಿ.',
-      te: 'కుడి వైపు తిరగండి.'
+    "id": "PLEASE",
+    "sign": "PLEASE",
+    "label": "Please",
+    "category": "daily_conversation",
+    "gloss": "PLEASE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please.",
+    "translations": {
+      "en": "Please.",
+      "hi": "कृपया।",
+      "kn": "ದಯವಿಟ್ಟು.",
+      "te": "దయచేసి."
     },
-    description: 'Index finger pointing firmly towards the right direction.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'linear',
-      location: 'neutral_space'
+    "description": "Flat open hand rubs gently in a clockwise circular motion over the center of chest.",
+    "nonManualMarkers": "Gentle, polite expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "chest"
     }
   },
   {
-    id: 'YES',
-    sign: 'YES',
-    label: 'Yes / Haan',
-    category: 'clarification',
-    gloss: 'YES',
-    canonicalSentence: 'Yes, that is correct.',
-    translations: {
-      en: 'Yes, that is correct.',
-      hi: 'हाँ, यह बिल्कुल सही है।',
-      kn: 'ಹೌದು, ಅದು ಸರಿ.',
-      te: 'అవును, అది సరైనది.'
+    "id": "THANK_YOU",
+    "sign": "THANK_YOU",
+    "label": "Thank you",
+    "category": "daily_conversation",
+    "gloss": "THANK YOU",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Thank you very much.",
+    "translations": {
+      "en": "Thank you very much.",
+      "hi": "बहुत-बहुत धन्यवाद।",
+      "kn": "ತುಂಬಾ ಧನ್ಯವಾದಗಳು.",
+      "te": "చాలా ధన్యవాదాలు."
     },
-    description: 'Closed fist nodding up and down like a head nod.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'repetitive',
-      location: 'neutral_space'
+    "description": "Fingertips of flat open hand touch chin or lips and extend outward and slightly downward toward recipient.",
+    "nonManualMarkers": "Appreciative smile, respectful nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
     }
   },
   {
-    id: 'NO',
-    sign: 'NO',
-    label: 'No / Nahi',
-    category: 'clarification',
-    gloss: 'NO',
-    canonicalSentence: 'No, that is not what I meant.',
-    translations: {
-      en: 'No, that is not what I meant.',
-      hi: 'नहीं, मेरा यह मतलब नहीं था।',
-      kn: 'ಇಲ್ಲ, ನನ್ನ ಉದ್ದೇಶ ಅದಲ್ಲ.',
-      te: 'కాదు, నా ఉద్దేశం అది కాదు.'
+    "id": "WELCOME",
+    "sign": "WELCOME",
+    "label": "Welcome",
+    "category": "daily_conversation",
+    "gloss": "WELCOME",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "You are welcome.",
+    "translations": {
+      "en": "You are welcome.",
+      "hi": "आपका स्वागत है।",
+      "kn": "ನಿಮಗೆ ಸುಸ್ವಾಗತ.",
+      "te": "స్వాగతం."
     },
-    description: 'Index and middle fingers snapping down against thumb repeatedly in a firm negation.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'repetitive',
-      location: 'neutral_space'
+    "description": "Open flat hand held palm up sweeps inward toward waist/torso.",
+    "nonManualMarkers": "Warm smile",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
     }
   },
   {
-    id: 'DONT_UNDERSTAND',
-    sign: 'DONT_UNDERSTAND',
-    label: "Don't Understand / Samajh Nahi Aaya",
-    category: 'clarification',
-    gloss: 'DONT-UNDERSTAND',
-    canonicalSentence: 'I do not understand, could you clarify?',
-    translations: {
-      en: 'I do not understand, could you clarify?',
-      hi: 'मुझे समझ नहीं आया, क्या आप स्पष्ट कर सकते हैं?',
-      kn: 'ನನಗೆ ಅರ್ಥವಾಗುತ್ತಿಲ್ಲ, ದಯವಿಟ್ಟು ಸ್ಪಷ್ಟಪಡಿಸಬಹುದೇ?',
-      te: 'నాకు అర్థం కాలేదు, మీరు స్పష్టం చేయగలరా?'
+    "id": "YES",
+    "sign": "YES",
+    "label": "Yes",
+    "category": "daily_conversation",
+    "gloss": "YES",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Yes, that is correct.",
+    "translations": {
+      "en": "Yes, that is correct.",
+      "hi": "हाँ, यह सही है।",
+      "kn": "ಹೌದು, ಇದು ಸರಿ.",
+      "te": "అవును, అది సరైనది."
     },
-    description: 'Index finger touches forehead with slight frown and flicks outward, expressing incomprehension.',
-    keyFeatures: {
-      hands: 'single',
-      dominantHand: 'right',
-      primaryMotion: 'linear',
-      location: 'head'
+    "description": "Dominant fist (S-hand) nods up and down at the wrist twice, mimicking a nodding head.",
+    "nonManualMarkers": "Affirmative head nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
     }
   },
   {
-    id: 'REPEAT',
-    sign: 'REPEAT',
-    label: 'Please Repeat / Phir Se Bolein',
-    category: 'clarification',
-    gloss: 'REPEAT',
-    canonicalSentence: 'Could you please repeat that again?',
-    translations: {
-      en: 'Could you please repeat that again?',
-      hi: 'क्या आप कृपया इसे दोबारा दोहरा सकते हैं?',
-      kn: 'ದಯವಿಟ್ಟು ಅದನ್ನು ಇನ್ನೊಮ್ಮೆ ಪುನರಾವರ್ತಿಸಬಹುದೇ?',
-      te: 'దయచేసి దాన్ని మళ్ళీ పునరావృతం చేయగలరా?'
+    "id": "NO",
+    "sign": "NO",
+    "label": "No",
+    "category": "daily_conversation",
+    "gloss": "NO",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "No, that is not correct.",
+    "translations": {
+      "en": "No, that is not correct.",
+      "hi": "नहीं, यह सही नहीं है।",
+      "kn": "ಇಲ್ಲ, ಇದು ಸರಿಯಲ್ಲ.",
+      "te": "కాదు, అది తప్పు."
     },
-    description: 'Curved right hand turning in a forward rolling circular loop over the left hand.',
-    keyFeatures: {
-      hands: 'both',
-      dominantHand: 'right',
-      primaryMotion: 'circular',
-      location: 'neutral_space'
+    "description": "Index and middle fingers snap shut against thumb twice in a crisp pinching motion.",
+    "nonManualMarkers": "Negative head shake, firm expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "FINE",
+    "sign": "FINE",
+    "label": "Fine / Okay",
+    "category": "daily_conversation",
+    "gloss": "FINE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am fine, everything is okay.",
+    "translations": {
+      "en": "I am fine, everything is okay.",
+      "hi": "मैं ठीक हूँ, सब कुछ ठीक है।",
+      "kn": "ನಾನು ಚೆನ್ನಾಗಿದ್ದೇನೆ, ಎಲ್ಲವೂ ಸರಿಯಾಗಿದೆ.",
+      "te": "నేను బాగానే ఉన్నాను, అంతా సరిగ్గా ఉంది."
+    },
+    "description": "Dominant 5-hand with thumb touching center of chest moves outward slightly twice.",
+    "nonManualMarkers": "Relaxed, calm smile",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "SORRY",
+    "sign": "SORRY",
+    "label": "Sorry / Apology",
+    "category": "daily_conversation",
+    "gloss": "SORRY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am sorry, please excuse me.",
+    "translations": {
+      "en": "I am sorry, please excuse me.",
+      "hi": "मुझे खेद है, कृपया क्षमा करें।",
+      "kn": "ನನ್ನನ್ನು ಕ್ಷಮಿಸಿ, ದಯವಿಟ್ಟು ಮನ್ನಿಸಿ.",
+      "te": "నన్ను క్షమించండి."
+    },
+    "description": "Dominant fist (A-hand) rubs in a clockwise circle over chest.",
+    "nonManualMarkers": "Apologetic frown, slightly bowed head",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "EXCUSE_ME",
+    "sign": "EXCUSE_ME",
+    "label": "Excuse me",
+    "category": "daily_conversation",
+    "gloss": "EXCUSE ME",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Excuse me, pardon me.",
+    "translations": {
+      "en": "Excuse me, pardon me.",
+      "hi": "माफ़ कीजिए।",
+      "kn": "ಕ್ಷಮಿಸಿ.",
+      "te": "క్షమించండి."
+    },
+    "description": "Dominant curved fingers brush twice across non-dominant upward palm.",
+    "nonManualMarkers": "Polite attention-getter",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "GOOD",
+    "sign": "GOOD",
+    "label": "Good / Well",
+    "category": "daily_conversation",
+    "gloss": "GOOD",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That is very good.",
+    "translations": {
+      "en": "That is very good.",
+      "hi": "यह बहुत अच्छा है।",
+      "kn": "ಇದು ತುಂಬಾ ಒಳ್ಳೆಯದು.",
+      "te": "ఇది చాలా మంచిది."
+    },
+    "description": "Fingertips of dominant hand touch chin, then move downward into the upward palm of non-dominant hand.",
+    "nonManualMarkers": "Approving head nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "BAD",
+    "sign": "BAD",
+    "label": "Bad",
+    "category": "daily_conversation",
+    "gloss": "BAD",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That is bad.",
+    "translations": {
+      "en": "That is bad.",
+      "hi": "यह खराब है।",
+      "kn": "ಇದು ಕೆಟ್ಟದು.",
+      "te": "ఇది చెడ్డది."
+    },
+    "description": "Fingertips touch chin, then hand flips palm down and pushes outward/downward.",
+    "nonManualMarkers": "Disapproving head shake, slight grimace",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "MAYBE",
+    "sign": "MAYBE",
+    "label": "Maybe / Perhaps",
+    "category": "daily_conversation",
+    "gloss": "MAYBE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Maybe, perhaps.",
+    "translations": {
+      "en": "Maybe, perhaps.",
+      "hi": "शायद।",
+      "kn": "ಬಹುಶಃ.",
+      "te": "బహుశా."
+    },
+    "description": "Both flat palms face upward and alternate up and down like balancing scales.",
+    "nonManualMarkers": "Shrugged shoulders, tilted head",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "LIKE",
+    "sign": "LIKE",
+    "label": "Like",
+    "category": "daily_conversation",
+    "gloss": "LIKE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I like this.",
+    "translations": {
+      "en": "I like this.",
+      "hi": "मुझे यह पसंद है।",
+      "kn": "ನನಗೆ ಇದು ಇಷ್ಟ.",
+      "te": "నాకు ఇది ఇష్టం."
+    },
+    "description": "Thumb and middle finger touch chest and pull outward while pinching together.",
+    "nonManualMarkers": "Pleasant expression, head nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "DONT_LIKE",
+    "sign": "DONT_LIKE",
+    "label": "Don't like",
+    "category": "daily_conversation",
+    "gloss": "DONT LIKE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I do not like this.",
+    "translations": {
+      "en": "I do not like this.",
+      "hi": "मुझे यह पसंद नहीं है।",
+      "kn": "ನನಗೆ ಇದು ಇಷ್ಟವಿಲ್ಲ.",
+      "te": "నాకు ఇది ఇష్టం లేదు."
+    },
+    "description": "Thumb and middle pull from chest and flick outward/away as if throwing something away.",
+    "nonManualMarkers": "Head shake, slight crinkle of nose",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "AGAIN",
+    "sign": "AGAIN",
+    "label": "Again / Repeat",
+    "category": "daily_conversation",
+    "gloss": "AGAIN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please do that again.",
+    "translations": {
+      "en": "Please do that again.",
+      "hi": "कृपया इसे फिर से करें।",
+      "kn": "ದಯವಿಟ್ಟು ಅದನ್ನು ಮತ್ತೆ ಮಾಡಿ.",
+      "te": "దయచేసి దాన్ని మళ్ళీ చేయండి."
+    },
+    "description": "Dominant bent-hand arcs upward and lands into the upward palm of non-dominant hand.",
+    "nonManualMarkers": "Inquiring look",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WAIT",
+    "sign": "WAIT",
+    "label": "Wait",
+    "category": "daily_conversation",
+    "gloss": "WAIT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please wait a moment.",
+    "translations": {
+      "en": "Please wait a moment.",
+      "hi": "कृपया एक क्षण प्रतीक्षा करें।",
+      "kn": "ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ನಿರೀಕ್ಷಿಸಿ.",
+      "te": "దయచేసి కాసేపు వేచి ఉండండి."
+    },
+    "description": "Both hands held palm-up with fingers wiggling gently toward the body.",
+    "nonManualMarkers": "Attentive expression, patient posture",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "FINISHED",
+    "sign": "FINISHED",
+    "label": "Finished / Done",
+    "category": "daily_conversation",
+    "gloss": "FINISHED",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Finished, all done.",
+    "translations": {
+      "en": "Finished, all done.",
+      "hi": "समाप्त, पूरा हो गया।",
+      "kn": "ಮುಗಿದಿದೆ.",
+      "te": "పూర్తయింది."
+    },
+    "description": "Both 5-hands held palm-in in front of chest flip sharply outward to palm-down.",
+    "nonManualMarkers": "Mouth morpheme \"fish\" or affirmative nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "HOW_ARE_YOU",
+    "sign": "HOW_ARE_YOU",
+    "label": "How are you?",
+    "category": "greetings",
+    "gloss": "HOW ARE YOU",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "How are you doing?",
+    "translations": {
+      "en": "How are you doing?",
+      "hi": "आप कैसे हैं?",
+      "kn": "ನೀವು ಹೇಗಿದ್ದೀರಿ?",
+      "te": "మీరు ఎలా ఉన్నారు?"
+    },
+    "description": "Both curved hands start knuckles together rolling outward (HOW), then point toward listener (YOU).",
+    "nonManualMarkers": "wh-q: furrowed brows, head tilted slightly",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "GOOD_MORNING",
+    "sign": "GOOD_MORNING",
+    "label": "Good morning",
+    "category": "greetings",
+    "gloss": "GOOD MORNING",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Good morning!",
+    "translations": {
+      "en": "Good morning!",
+      "hi": "शुभ प्रभात!",
+      "kn": "ಶುಭೋದಯ!",
+      "te": "శుభోదయం!"
+    },
+    "description": "Sign GOOD (chin to palm), then dominant arm rises like sun from crook of non-dominant arm.",
+    "nonManualMarkers": "Bright cheerful smile",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "GOOD_AFTERNOON",
+    "sign": "GOOD_AFTERNOON",
+    "label": "Good afternoon",
+    "category": "greetings",
+    "gloss": "GOOD AFTERNOON",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Good afternoon!",
+    "translations": {
+      "en": "Good afternoon!",
+      "hi": "शुभ दोपहर!",
+      "kn": "ಶುಭ ಮಧ್ಯಾಹ್ನ!",
+      "te": "శుభ మధ్యాహ్నం!"
+    },
+    "description": "Sign GOOD, then dominant flat hand rests angled on non-dominant arm pointing slightly down.",
+    "nonManualMarkers": "Pleasant smile",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "GOOD_NIGHT",
+    "sign": "GOOD_NIGHT",
+    "label": "Good night",
+    "category": "greetings",
+    "gloss": "GOOD NIGHT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Good night, sleep well.",
+    "translations": {
+      "en": "Good night, sleep well.",
+      "hi": "शुभ रात्रि, अच्छे से सोएं।",
+      "kn": "ಶುಭ ರಾತ್ರಿ.",
+      "te": "శుభ రాత్రి."
+    },
+    "description": "Sign GOOD, then dominant bent hand cups over edge of horizontal non-dominant wrist like sunset.",
+    "nonManualMarkers": "Gentle, soothing expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "SEE_YOU_LATER",
+    "sign": "SEE_YOU_LATER",
+    "label": "See you later",
+    "category": "greetings",
+    "gloss": "SEE YOU LATER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "See you later!",
+    "translations": {
+      "en": "See you later!",
+      "hi": "बाद में मिलते हैं!",
+      "kn": "ಮತ್ತೆ ಭೇಟಿಯಾಗೋಣ!",
+      "te": "తర్వాత కలుద్దాం!"
+    },
+    "description": "V-hand points to eyes then outward (SEE), followed by L-hand rotating forward (LATER).",
+    "nonManualMarkers": "Friendly parting smile",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "head"
+    }
+  },
+  {
+    "id": "GOODBYE",
+    "sign": "GOODBYE",
+    "label": "Goodbye / Farewell",
+    "category": "greetings",
+    "gloss": "GOODBYE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Goodbye, take care.",
+    "translations": {
+      "en": "Goodbye, take care.",
+      "hi": "अलविदा, अपना ध्यान रखें।",
+      "kn": "ವಿದಾಯ, ಕಾಳಜಿ ವಹಿಸಿ.",
+      "te": "వీడ్కోలు, జాగ్రత్త."
+    },
+    "description": "Open palm raised at chest height waving fingers open and closed.",
+    "nonManualMarkers": "Warm parting expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WELCOME_HOME",
+    "sign": "WELCOME_HOME",
+    "label": "Welcome home",
+    "category": "greetings",
+    "gloss": "WELCOME HOME",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Welcome home.",
+    "translations": {
+      "en": "Welcome home.",
+      "hi": "घर में स्वागत है।",
+      "kn": "ಮನೆಗೆ ಸುಸ್ವಾಗತ.",
+      "te": "ఇంటికి స్వాగతం."
+    },
+    "description": "Sign WELCOME sweeping inward, followed by flat O-hand touching chin then cheek (HOME).",
+    "nonManualMarkers": "Warm, hospitable expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "HAVE_A_GOOD_DAY",
+    "sign": "HAVE_A_GOOD_DAY",
+    "label": "Have a good day",
+    "category": "greetings",
+    "gloss": "HAVE GOOD DAY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Have a wonderful day!",
+    "translations": {
+      "en": "Have a wonderful day!",
+      "hi": "आपका दिन शुभ हो!",
+      "kn": "ನಿಮ್ಮ ದಿನ ಶುಭವಾಗಿರಲಿ!",
+      "te": "ఈ రోజు మీకు మంచి రోజు కావాలి!"
+    },
+    "description": "Fingers touch chest (HAVE), sign GOOD, then dominant arm lowers onto non-dominant arm (DAY).",
+    "nonManualMarkers": "Warm, cheerful expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "TAKE_CARE",
+    "sign": "TAKE_CARE",
+    "label": "Take care",
+    "category": "greetings",
+    "gloss": "TAKE CARE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Take care of yourself.",
+    "translations": {
+      "en": "Take care of yourself.",
+      "hi": "अपना ख्याल रखें।",
+      "kn": "ನಿಮ್ಮ ಬಗ್ಗೆ ಕಾಳಜಿ ವಹಿಸಿ.",
+      "te": "జాగ్రత్తగా చూసుకోండి."
+    },
+    "description": "Both K-hands tap wrists together twice in front of chest.",
+    "nonManualMarkers": "Caring, affectionate smile",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "PEACE",
+    "sign": "PEACE",
+    "label": "Peace",
+    "category": "greetings",
+    "gloss": "PEACE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Peace be with you.",
+    "translations": {
+      "en": "Peace be with you.",
+      "hi": "शांति।",
+      "kn": "ಶಾಂತಿ.",
+      "te": "శాంతి."
+    },
+    "description": "Palms clasp together, twist, and smooth flatly downward and outward.",
+    "nonManualMarkers": "Serene, calm expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "HELP",
+    "sign": "HELP",
+    "label": "Help",
+    "category": "emergency_communication",
+    "gloss": "HELP",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I need help, please.",
+    "translations": {
+      "en": "I need help, please.",
+      "hi": "मुझे मदद चाहिए, कृपया।",
+      "kn": "ನನಗೆ ಸಹಾಯ ಬೇಕು, ದಯವಿಟ್ಟು.",
+      "te": "నాకు సహాయం కావాలి, దయచేసి."
+    },
+    "description": "Dominant fist with thumb up rests upon flat upward palm of non-dominant hand; both lift upward together.",
+    "nonManualMarkers": "Earnest or urgent expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "EMERGENCY",
+    "sign": "EMERGENCY",
+    "label": "Emergency",
+    "category": "emergency_communication",
+    "gloss": "EMERGENCY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "This is an emergency situation!",
+    "translations": {
+      "en": "This is an emergency situation!",
+      "hi": "यह एक आपातकालीन स्थिति है!",
+      "kn": "ಇದು ತುರ್ತು ಪರಿಸ್ಥಿತಿ!",
+      "te": "ఇది అత్యవసర పరిస్థితి!"
+    },
+    "description": "Dominant E-hand shakes back and forth rapidly in neutral space.",
+    "nonManualMarkers": "Wide eyes, alarmed expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "POLICE",
+    "sign": "POLICE",
+    "label": "Police",
+    "category": "emergency_communication",
+    "gloss": "POLICE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please call the police immediately.",
+    "translations": {
+      "en": "Please call the police immediately.",
+      "hi": "कृपया तुरंत पुलिस को बुलाएं।",
+      "kn": "ದಯವಿಟ್ಟು ತಕ್ಷಣ ಪೊಲೀಸರನ್ನು ಕರೆಯಿರಿ.",
+      "te": "దయచేసి వెంటనే పోలీసులను పిలవండి."
+    },
+    "description": "Dominant C-hand taps twice against upper left chest where a police badge would be worn.",
+    "nonManualMarkers": "Serious, urgent expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "DANGER",
+    "sign": "DANGER",
+    "label": "Danger / Dangerous",
+    "category": "emergency_communication",
+    "gloss": "DANGER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Warning: danger ahead!",
+    "translations": {
+      "en": "Warning: danger ahead!",
+      "hi": "चेतावनी: आगे खतरा है!",
+      "kn": "ಎಚ್ಚರಿಕೆ: ಮುಂದೆ ಅಪಾಯವಿದೆ!",
+      "te": "హెచ్చరిక: ముందు ప్రమాదం ఉంది!"
+    },
+    "description": "Dominant thumbs-up sweeps upward brushing the back of non-dominant fist twice.",
+    "nonManualMarkers": "Alarmed look, furrowed brow",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "STOP",
+    "sign": "STOP",
+    "label": "Stop",
+    "category": "emergency_communication",
+    "gloss": "STOP",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Stop right now.",
+    "translations": {
+      "en": "Stop right now.",
+      "hi": "अभी रुकिए।",
+      "kn": "ಈಗಲೇ ನಿಲ್ಲಿಸಿ.",
+      "te": "ఇప్పుడే ఆపండి."
+    },
+    "description": "Dominant open flat hand chops down sharply into open palm of non-dominant hand at a right angle.",
+    "nonManualMarkers": "Firm, imperative expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "CALL",
+    "sign": "CALL",
+    "label": "Call / Phone",
+    "category": "emergency_communication",
+    "gloss": "CALL",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please call on the phone.",
+    "translations": {
+      "en": "Please call on the phone.",
+      "hi": "कृपया फोन करें।",
+      "kn": "ದಯವಿಟ್ಟು ಕರೆ ಮಾಡಿ.",
+      "te": "దయచేసి కాల్ చేయండి."
+    },
+    "description": "Y-hand held to ear and mouth like a telephone handset.",
+    "nonManualMarkers": "Urgent gaze",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "head"
+    }
+  },
+  {
+    "id": "FIRE",
+    "sign": "FIRE",
+    "label": "Fire",
+    "category": "emergency_communication",
+    "gloss": "FIRE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Fire! Evacuate immediately.",
+    "translations": {
+      "en": "Fire! Evacuate immediately.",
+      "hi": "आग! तुरंत बाहर निकलें।",
+      "kn": "ಬೆಂಕಿ! ತಕ್ಷಣ ಹೊರಬನ್ನಿ.",
+      "te": "మంటలు! వెంటనే బయటకు రండి."
+    },
+    "description": "Both open 5-hands alternate wiggling upward like flickering flames.",
+    "nonManualMarkers": "Wide alarmed eyes",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "ACCIDENT",
+    "sign": "ACCIDENT",
+    "label": "Accident / Crash",
+    "category": "emergency_communication",
+    "gloss": "ACCIDENT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "There was a vehicle accident.",
+    "translations": {
+      "en": "There was a vehicle accident.",
+      "hi": "दुर्घटना हुई है।",
+      "kn": "ಅಪಘಾತ ಸಂಭವಿಸಿದೆ.",
+      "te": "ప్రమాదం జరిగింది."
+    },
+    "description": "Both 3-hands (vehicles) crash together head-on in neutral space.",
+    "nonManualMarkers": "Shocked expression, teeth clenched",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "SAFE",
+    "sign": "SAFE",
+    "label": "Safe / Security",
+    "category": "emergency_communication",
+    "gloss": "SAFE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "It is safe now.",
+    "translations": {
+      "en": "It is safe now.",
+      "hi": "अब सब सुरक्षित है।",
+      "kn": "ಈಗ ಸುರಕ್ಷಿತವಾಗಿದೆ.",
+      "te": "ఇప్పుడు సురక్షితంగా ఉంది."
+    },
+    "description": "S-hands crossed at wrists break apart outward into open palms.",
+    "nonManualMarkers": "Relieved exhale, relaxed posture",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "WARNING",
+    "sign": "WARNING",
+    "label": "Warning / Caution",
+    "category": "emergency_communication",
+    "gloss": "WARNING",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Caution: take care.",
+    "translations": {
+      "en": "Caution: take care.",
+      "hi": "चेतावनी: सावधानी बरतें।",
+      "kn": "ಎಚ್ಚರಿಕೆ: ಜಾಗರೂಕರಾಗಿರಿ.",
+      "te": "హెచ్చరిక: జాగ్రత్త వహించండి."
+    },
+    "description": "Dominant curved hand pats back of non-dominant hand repeatedly with caution.",
+    "nonManualMarkers": "Serious warning look",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "URGENT",
+    "sign": "URGENT",
+    "label": "Urgent / Immediate",
+    "category": "emergency_communication",
+    "gloss": "URGENT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "This is urgent and cannot wait.",
+    "translations": {
+      "en": "This is urgent and cannot wait.",
+      "hi": "यह जरूरी है और इंतजार नहीं कर सकता।",
+      "kn": "ಇದು ತುರ್ತಾಗಿದೆ ಮತ್ತು ಕಾಯಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+      "te": "ఇది అత్యవసరం."
+    },
+    "description": "Bent V-hands pull sharply into chest with rapid movement.",
+    "nonManualMarkers": "Tense facial muscles, urgent brow",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "ESCAPE",
+    "sign": "ESCAPE",
+    "label": "Escape / Run away",
+    "category": "emergency_communication",
+    "gloss": "ESCAPE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Escape quickly!",
+    "translations": {
+      "en": "Escape quickly!",
+      "hi": "जल्दी से बाहर निकलें!",
+      "kn": "ಬೇಗನೆ ತಪ್ಪಿಸಿಕೊಳ್ಳಿ!",
+      "te": "త్వరగా తప్పించుకోండి!"
+    },
+    "description": "Dominant index finger shoots outward from between index and middle fingers of non-dominant hand.",
+    "nonManualMarkers": "Wide eyes, rapid breathing",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "ALARM",
+    "sign": "ALARM",
+    "label": "Alarm / Siren",
+    "category": "emergency_communication",
+    "gloss": "ALARM",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The emergency alarm is sounding.",
+    "translations": {
+      "en": "The emergency alarm is sounding.",
+      "hi": "आपातकालीन अलार्म बज रहा है।",
+      "kn": "ತುರ್ತು ಎಚ್ಚರಿಕೆಯ ಗಂಟೆ ಬಾರಿಸುತ್ತಿದೆ.",
+      "te": "అత్యవసర అలారం మోగుతోంది."
+    },
+    "description": "Dominant index finger circles overhead like a rotating flashing emergency beacon.",
+    "nonManualMarkers": "Alarmed gaze directed upward",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "head"
+    }
+  },
+  {
+    "id": "LOCK",
+    "sign": "LOCK",
+    "label": "Lock / Secure",
+    "category": "emergency_communication",
+    "gloss": "LOCK",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Lock the door securely.",
+    "translations": {
+      "en": "Lock the door securely.",
+      "hi": "दरवाजे को ठीक से बंद करें।",
+      "kn": "ಬಾಗಿಲನ್ನು ಸರಿಯಾಗಿ ಲಾಕ್ ಮಾಡಿ.",
+      "te": "తలుపును గట్టిగా లాక్ చేయండి."
+    },
+    "description": "Dominant fist rotates firmly downward onto back of non-dominant fist like turning a key.",
+    "nonManualMarkers": "Determined expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "HOSPITAL",
+    "sign": "HOSPITAL",
+    "label": "Hospital",
+    "category": "medical_assistance",
+    "gloss": "HOSPITAL",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Where is the nearest hospital?",
+    "translations": {
+      "en": "Where is the nearest hospital?",
+      "hi": "निकटतम अस्पताल कहाँ है?",
+      "kn": "ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆ ಎಲ್ಲಿದೆ?",
+      "te": "సమీప ఆసుపత్రి ఎక్కడ ఉంది?"
+    },
+    "description": "Dominant H-hand (index and middle fingers extended) draws a cross on the upper left arm/shoulder.",
+    "nonManualMarkers": "Direct, focused expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "DOCTOR",
+    "sign": "DOCTOR",
+    "label": "Doctor",
+    "category": "medical_assistance",
+    "gloss": "DOCTOR",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I need to see a doctor.",
+    "translations": {
+      "en": "I need to see a doctor.",
+      "hi": "मुझे डॉक्टर से मिलना है।",
+      "kn": "ನಾನು ವೈದ್ಯರನ್ನು ಭೇಟಿಯಾಗಬೇಕು.",
+      "te": "నేను వైద్యుడిని కలవాలి."
+    },
+    "description": "Dominant bent-hand (M-hand or bent fingertips) taps the inner wrist of non-dominant hand twice, feeling for a pulse.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "NURSE",
+    "sign": "NURSE",
+    "label": "Nurse",
+    "category": "medical_assistance",
+    "gloss": "NURSE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The nurse is here to assist.",
+    "translations": {
+      "en": "The nurse is here to assist.",
+      "hi": "नर्स सहायता के लिए यहाँ हैं।",
+      "kn": "ದಾದಿ ಸಹಾಯಕ್ಕಾಗಿ ಇಲ್ಲಿದ್ದಾರೆ.",
+      "te": "నర్సు సహాయం చేయడానికి ఇక్కడ ఉన్నారు."
+    },
+    "description": "Dominant N-hand (index and middle over thumb) taps inner wrist twice.",
+    "nonManualMarkers": "Calm, receptive posture",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "SICK",
+    "sign": "SICK",
+    "label": "Sick / Illness",
+    "category": "medical_assistance",
+    "gloss": "SICK",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am feeling sick.",
+    "translations": {
+      "en": "I am feeling sick.",
+      "hi": "मेरी तबीयत ठीक नहीं है।",
+      "kn": "ನನಗೆ ಹುಷಾರಿಲ್ಲ.",
+      "te": "నా ఆరోగ్యం బాగాలేదు."
+    },
+    "description": "Middle finger of dominant hand touches forehead while middle finger of non-dominant hand touches stomach simultaneously.",
+    "nonManualMarkers": "Pained facial expression, slight wince",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "head"
+    }
+  },
+  {
+    "id": "PAIN",
+    "sign": "PAIN",
+    "label": "Pain / Hurt",
+    "category": "medical_assistance",
+    "gloss": "PAIN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I have severe pain here.",
+    "translations": {
+      "en": "I have severe pain here.",
+      "hi": "मुझे यहाँ बहुत दर्द हो रहा है।",
+      "kn": "ನನಗೆ ಇಲ್ಲಿ ತುಂಬಾ ನೋವಾಗುತ್ತಿದೆ.",
+      "te": "నాకు ఇక్కడ తీవ్రమైన నొప్పిగా ఉంది."
+    },
+    "description": "Both index fingers point toward each other and twist in opposite directions near the site of pain.",
+    "nonManualMarkers": "Pained squint, furrowed brow",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "MEDICINE",
+    "sign": "MEDICINE",
+    "label": "Medicine",
+    "category": "medical_assistance",
+    "gloss": "MEDICINE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I need to take my medicine.",
+    "translations": {
+      "en": "I need to take my medicine.",
+      "hi": "मुझे अपनी दवाई लेनी है।",
+      "kn": "ನಾನು ನನ್ನ ಔಷಧಿಯನ್ನು ತೆಗೆದುಕೊಳ್ಳಬೇಕು.",
+      "te": "నేను నా మందులు తీసుకోవాలి."
+    },
+    "description": "Dominant middle finger pivots back and forth inside upward palm of non-dominant hand, as if crushing a tablet.",
+    "nonManualMarkers": "Neutral focused expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "AMBULANCE",
+    "sign": "AMBULANCE",
+    "label": "Ambulance",
+    "category": "medical_assistance",
+    "gloss": "AMBULANCE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please call an ambulance right away.",
+    "translations": {
+      "en": "Please call an ambulance right away.",
+      "hi": "कृपया तुरंत एम्बुलेंस बुलाएं।",
+      "kn": "ದಯವಿಟ್ಟು ತಕ್ಷಣ ಆಂಬ್ಯುಲೆನ್ಸ್ ಕರೆಯಿರಿ.",
+      "te": "దయచేసి వెంటనే అంబులెన్స్‌ని పిలవండి."
+    },
+    "description": "Both open hands held near temples twist outward repeatedly mimicking emergency vehicle flashing lights.",
+    "nonManualMarkers": "Urgent alarmed expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "head"
+    }
+  },
+  {
+    "id": "HURT",
+    "sign": "HURT",
+    "label": "Hurt / Injured",
+    "category": "medical_assistance",
+    "gloss": "HURT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am hurt and need help.",
+    "translations": {
+      "en": "I am hurt and need help.",
+      "hi": "मुझे चोट लगी है।",
+      "kn": "ನನಗೆ ಗಾಯವಾಗಿದೆ.",
+      "te": "నాకు గాయమైంది."
+    },
+    "description": "Both index fingers poke inward toward each other with a twist.",
+    "nonManualMarkers": "Wincing grimace",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "BLEEDING",
+    "sign": "BLEEDING",
+    "label": "Bleeding / Blood",
+    "category": "medical_assistance",
+    "gloss": "BLEEDING",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "There is bleeding that needs care.",
+    "translations": {
+      "en": "There is bleeding that needs care.",
+      "hi": "खून बह रहा है।",
+      "kn": "ರಕ್ತಸ್ರಾವವಾಗುತ್ತಿದೆ.",
+      "te": "రక్తం కారుతోంది."
+    },
+    "description": "Index finger touches lower lip (RED), then fingers trickle downward over back of non-dominant hand.",
+    "nonManualMarkers": "Concerned look",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "HEADACHE",
+    "sign": "HEADACHE",
+    "label": "Headache",
+    "category": "medical_assistance",
+    "gloss": "HEADACHE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I have a painful headache.",
+    "translations": {
+      "en": "I have a painful headache.",
+      "hi": "मेरे सिर में दर्द हो रहा है।",
+      "kn": "ನನಗೆ ತಲೆನೋವು ಇದೆ.",
+      "te": "నాకు తలనొప్పిగా ఉంది."
+    },
+    "description": "Sign PAIN (two twisting index fingers) executed beside the temples.",
+    "nonManualMarkers": "Eyes squinted shut, furrowed forehead",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "head"
+    }
+  },
+  {
+    "id": "FEVER",
+    "sign": "FEVER",
+    "label": "Fever / Temperature",
+    "category": "medical_assistance",
+    "gloss": "FEVER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I have a high fever.",
+    "translations": {
+      "en": "I have a fever.",
+      "hi": "मुझे बुखार है।",
+      "kn": "ನನಗೆ ಜ್ವರ ಬಂದಿದೆ.",
+      "te": "నాకు జ్వరం వచ్చింది."
+    },
+    "description": "Back of dominant hand placed against forehead checking temperature.",
+    "nonManualMarkers": "Lethargic expression, tired gaze",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "head"
+    }
+  },
+  {
+    "id": "BREATHE",
+    "sign": "BREATHE",
+    "label": "Breathe / Lungs",
+    "category": "medical_assistance",
+    "gloss": "BREATHE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Breathe deeply and slowly.",
+    "translations": {
+      "en": "Breathe deeply and slowly.",
+      "hi": "गहरी सांस लें।",
+      "kn": "ಉಸಿರಾಡಿ.",
+      "te": "ఊపిరి పీల్చుకోండి."
+    },
+    "description": "Both flat palms move toward and away from chest in sync with inhalation and exhalation.",
+    "nonManualMarkers": "Deep breath mouth gesture",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "ALLERGY",
+    "sign": "ALLERGY",
+    "label": "Allergy / Reaction",
+    "category": "medical_assistance",
+    "gloss": "ALLERGY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I have a medical allergy.",
+    "translations": {
+      "en": "I have a medical allergy.",
+      "hi": "मुझे एलर्जी है।",
+      "kn": "ನನಗೆ ಅಲರ್ಜಿ ಇದೆ.",
+      "te": "నాకు అలెర్జీ ఉంది."
+    },
+    "description": "Dominant index finger touches nose, then turns back-to-back with non-dominant index finger pulling away.",
+    "nonManualMarkers": "Uncomfortable twitch",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "APPOINTMENT",
+    "sign": "APPOINTMENT",
+    "label": "Appointment",
+    "category": "medical_assistance",
+    "gloss": "APPOINTMENT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I have a clinic appointment.",
+    "translations": {
+      "en": "I have a clinic appointment.",
+      "hi": "मेरी अपॉइंटमेंट है।",
+      "kn": "ನನ್ನ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಇದೆ.",
+      "te": "నాకు అపాయింట్‌మెంట్ ఉంది."
+    },
+    "description": "Dominant A-hand circles horizontally above non-dominant wrist and lands firmly upon it.",
+    "nonManualMarkers": "Attentive nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WATER",
+    "sign": "WATER",
+    "label": "Water",
+    "category": "food_and_shopping",
+    "gloss": "WATER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "May I please have some water?",
+    "translations": {
+      "en": "May I please have some water?",
+      "hi": "क्या मुझे थोड़ा पानी मिल सकता है?",
+      "kn": "ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ನೀರು ಸಿಗಬಹುದೇ?",
+      "te": "దయచేసి నాకు కొంచెం నీరు దొరుకుతుందా?"
+    },
+    "description": "Dominant W-hand (three middle fingers extended in a W) taps the index finger against lower lip twice.",
+    "nonManualMarkers": "Polite inquiry expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "FOOD",
+    "sign": "FOOD",
+    "label": "Food / Eat",
+    "category": "food_and_shopping",
+    "gloss": "FOOD",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I need some food to eat.",
+    "translations": {
+      "en": "I need some food to eat.",
+      "hi": "मुझे खाने के लिए भोजन चाहिए।",
+      "kn": "ನನಗೆ ಊಟ ಬೇಕು.",
+      "te": "నాకు తినడానికి ఆహారం కావాలి."
+    },
+    "description": "Dominant flattened O-hand taps fingertips against lips twice.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "EAT",
+    "sign": "EAT",
+    "label": "Eat",
+    "category": "food_and_shopping",
+    "gloss": "EAT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Let us eat.",
+    "translations": {
+      "en": "Let us eat.",
+      "hi": "खाना खाएं।",
+      "kn": "ಊಟ ಮಾಡೋಣ.",
+      "te": "తిందాం."
+    },
+    "description": "Flat O-hand moves to mouth once in a single feeding motion.",
+    "nonManualMarkers": "Pleasant smile",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "DRINK",
+    "sign": "DRINK",
+    "label": "Drink",
+    "category": "food_and_shopping",
+    "gloss": "DRINK",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Have a drink.",
+    "translations": {
+      "en": "Have a drink.",
+      "hi": "पानी या पेय पिएं।",
+      "kn": "ಕುಡಿಯಿರಿ.",
+      "te": "త్రాగండి."
+    },
+    "description": "C-hand tips toward mouth like holding and tilting a drinking cup.",
+    "nonManualMarkers": "Slight head tilt",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "HUNGRY",
+    "sign": "HUNGRY",
+    "label": "Hungry",
+    "category": "food_and_shopping",
+    "gloss": "HUNGRY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am hungry and need food.",
+    "translations": {
+      "en": "I am hungry and need food.",
+      "hi": "मुझे भूख लगी है।",
+      "kn": "ನನಗೆ ಹಸಿವಾಗಿದೆ.",
+      "te": "నాకు ఆకలిగా ఉంది."
+    },
+    "description": "Dominant C-hand traces downward along center of chest from throat to stomach.",
+    "nonManualMarkers": "Longing expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "THIRSTY",
+    "sign": "THIRSTY",
+    "label": "Thirsty",
+    "category": "food_and_shopping",
+    "gloss": "THIRSTY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am thirsty for water.",
+    "translations": {
+      "en": "I am thirsty for water.",
+      "hi": "मुझे प्यास लगी है।",
+      "kn": "ನನಗೆ ಬಾಯಾರಿಕೆಯಾಗಿದೆ.",
+      "te": "నాకు దాహంగా ఉంది."
+    },
+    "description": "Index finger traces down throat to upper chest.",
+    "nonManualMarkers": "Dry lips mouth gesture",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "WANT",
+    "sign": "WANT",
+    "label": "Want",
+    "category": "food_and_shopping",
+    "gloss": "WANT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I want this.",
+    "translations": {
+      "en": "I want this.",
+      "hi": "मुझे यह चाहिए।",
+      "kn": "ನನಗೆ ಇದು ಬೇಕು.",
+      "te": "నాకు ఇది కావాలి."
+    },
+    "description": "Both open palms face upward with fingers slightly clawed, pulling inward toward the chest.",
+    "nonManualMarkers": "Affirmative head nod, expressive eyes",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "DONT_WANT",
+    "sign": "DONT_WANT",
+    "label": "Don't want",
+    "category": "food_and_shopping",
+    "gloss": "DONT WANT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I do not want that.",
+    "translations": {
+      "en": "I do not want that.",
+      "hi": "मुझे यह नहीं चाहिए।",
+      "kn": "ನನಗೆ ಇದು ಬೇಡ.",
+      "te": "నాకు ఇది వద్దు."
+    },
+    "description": "Clawed hands start toward chest and flip downward away from body.",
+    "nonManualMarkers": "Head shake, rejecting expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "BUY",
+    "sign": "BUY",
+    "label": "Buy / Purchase",
+    "category": "food_and_shopping",
+    "gloss": "BUY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I want to buy this item.",
+    "translations": {
+      "en": "I want to buy this item.",
+      "hi": "मैं इस वस्तु को खरीदना चाहता हूँ।",
+      "kn": "ನಾನು ಈ ವಸ್ತುವನ್ನು ಖರೀದಿಸಲು ಬಯಸುತ್ತೇನೆ.",
+      "te": "నేను ఈ వస్తువును కొనాలనుకుంటున్నాను."
+    },
+    "description": "Dominant flattened O-hand rests in upward palm of non-dominant hand, then moves outward as if handing money.",
+    "nonManualMarkers": "Neutral purchasing intention",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "SELL",
+    "sign": "SELL",
+    "label": "Sell / Store",
+    "category": "food_and_shopping",
+    "gloss": "SELL",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Is this for sale?",
+    "translations": {
+      "en": "Is this for sale?",
+      "hi": "क्या यह बिक्री के लिए है?",
+      "kn": "ಇದು ಮಾರಾಟಕ್ಕಿದೆಯೇ?",
+      "te": "ఇది అమ్మకానికి ఉందా?"
+    },
+    "description": "Both flat O-hands with fingertips pointing down hinge outward repeatedly from wrists.",
+    "nonManualMarkers": "Inquiring brow",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "MONEY",
+    "sign": "MONEY",
+    "label": "Money / Cash",
+    "category": "food_and_shopping",
+    "gloss": "MONEY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "How much money is needed?",
+    "translations": {
+      "en": "How much money is needed?",
+      "hi": "कितने पैसे चाहिए?",
+      "kn": "ಎಷ್ಟು ಹಣ ಬೇಕು?",
+      "te": "ఎంత డబ్బు కావాలి?"
+    },
+    "description": "Dominant flattened O-hand taps back of fingers twice against upward palm of non-dominant hand.",
+    "nonManualMarkers": "Focused inquiry",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "HOW_MUCH",
+    "sign": "HOW_MUCH",
+    "label": "How much / Price",
+    "category": "food_and_shopping",
+    "gloss": "HOW MUCH",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "How much does this cost?",
+    "translations": {
+      "en": "How much does this cost?",
+      "hi": "इसकी कीमत कितनी है?",
+      "kn": "ಇದರ ಬೆಲೆ ಎಷ್ಟು?",
+      "te": "దీని ధర ఎంత?"
+    },
+    "description": "Both hands held palm-up with fingers fluttering upward as hands rise, or S-hands bursting open upward.",
+    "nonManualMarkers": "wh-q: furrowed brow, questioning gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "COST",
+    "sign": "COST",
+    "label": "Cost / Price",
+    "category": "food_and_shopping",
+    "gloss": "COST",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "What is the price?",
+    "translations": {
+      "en": "What is the price?",
+      "hi": "कीमत क्या है?",
+      "kn": "ಬೆಲೆ ಏನು?",
+      "te": "ధర ఎంత?"
+    },
+    "description": "Curved dominant index finger brushes down across upward palm of non-dominant hand.",
+    "nonManualMarkers": "wh-q: furrowed eyebrows",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "STORE",
+    "sign": "STORE",
+    "label": "Store / Shop",
+    "category": "food_and_shopping",
+    "gloss": "STORE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am going to the store.",
+    "translations": {
+      "en": "I am going to the store.",
+      "hi": "मैं दुकान जा रहा हूँ।",
+      "kn": "ನಾನು ಅಂಗಡಿಗೆ ಹೋಗುತ್ತಿದ್ದೇನೆ.",
+      "te": "నేను దుకాణానికి వెళ్తున్నాను."
+    },
+    "description": "Both flat O-hands with fingertips down pivot forward twice at the wrists.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "RESTAURANT",
+    "sign": "RESTAURANT",
+    "label": "Restaurant",
+    "category": "food_and_shopping",
+    "gloss": "RESTAURANT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Where is the restaurant?",
+    "translations": {
+      "en": "Where is the restaurant?",
+      "hi": "रेस्तरां कहाँ है?",
+      "kn": "ರೆಸ್ಟೋರೆಂಟ್ ಎಲ್ಲಿದೆ?",
+      "te": "రెస్టారెంట్ ఎక్కడ ఉంది?"
+    },
+    "description": "R-hand brushes down right side of mouth, then down left side of mouth.",
+    "nonManualMarkers": "Directional inquiry",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "PAY",
+    "sign": "PAY",
+    "label": "Pay",
+    "category": "food_and_shopping",
+    "gloss": "PAY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I will pay now.",
+    "translations": {
+      "en": "I will pay now.",
+      "hi": "मैं भुगतान करूँगा।",
+      "kn": "ನಾನು ಪಾವತಿಸುತ್ತೇನೆ.",
+      "te": "నేను చెల్లిస్తాను."
+    },
+    "description": "Dominant index finger slides forward across upward palm of non-dominant hand toward cashier.",
+    "nonManualMarkers": "Affirmative nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WHERE",
+    "sign": "WHERE",
+    "label": "Where / Location",
+    "category": "travel_and_navigation",
+    "gloss": "WHERE",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "Where is that located?",
+    "translations": {
+      "en": "Where is that located?",
+      "hi": "वह स्थान कहाँ है?",
+      "kn": "ಆ ಸ್ಥಳ ಎಲ್ಲಿದೆ?",
+      "te": "ఆ ప్రదేశం ఎక్కడ ఉంది?"
+    },
+    "description": "Dominant index finger held upright oscillates side to side in a small arc.",
+    "nonManualMarkers": "wh-q: furrowed eyebrows, head tilted forward",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "GO",
+    "sign": "GO",
+    "label": "Go",
+    "category": "travel_and_navigation",
+    "gloss": "GO",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Go in that direction.",
+    "translations": {
+      "en": "Go in that direction.",
+      "hi": "उस दिशा में जाएं।",
+      "kn": "ಆ ದಿಕ್ಕಿನಲ್ಲಿ ಹೋಗಿ.",
+      "te": "ఆ దిశలో వెళ్ళండి."
+    },
+    "description": "Both index fingers point forward and arc smoothly away from the body in the direction of travel.",
+    "nonManualMarkers": "Eye gaze follows direction of motion",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "COME",
+    "sign": "COME",
+    "label": "Come",
+    "category": "travel_and_navigation",
+    "gloss": "COME",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Come over here.",
+    "translations": {
+      "en": "Come over here.",
+      "hi": "यहाँ आइए।",
+      "kn": "ಇಲ್ಲಿಗೆ ಬನ್ನಿ.",
+      "te": "ఇక్కడికి రండి."
+    },
+    "description": "Both index fingers point outward and roll smoothly inward toward the chest.",
+    "nonManualMarkers": "Welcoming head nod, inviting gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "HERE",
+    "sign": "HERE",
+    "label": "Here",
+    "category": "travel_and_navigation",
+    "gloss": "HERE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Right here in this place.",
+    "translations": {
+      "en": "Right here in this place.",
+      "hi": "इसी स्थान पर।",
+      "kn": "ಇಲ್ಲಿಯೇ ಈ ಜಾಗದಲ್ಲಿ.",
+      "te": "ఇక్కడే ఈ ప్రదేశంలో."
+    },
+    "description": "Both hands held flat palm-up in front of waist move in small simultaneous circles or dip downward.",
+    "nonManualMarkers": "Head tilts down toward hands",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "THERE",
+    "sign": "THERE",
+    "label": "There",
+    "category": "travel_and_navigation",
+    "gloss": "THERE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Over there in that spot.",
+    "translations": {
+      "en": "Over there in that spot.",
+      "hi": "वहाँ उस स्थान पर।",
+      "kn": "ಅಲ್ಲಿ ಆ ಜಾಗದಲ್ಲಿ.",
+      "te": "అక్కడ ఆ ప్రదేశంలో."
+    },
+    "description": "Dominant index finger points directly toward the referenced remote location.",
+    "nonManualMarkers": "Gaze directs toward the pointed spot",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "BATHROOM",
+    "sign": "BATHROOM",
+    "label": "Bathroom / Restroom",
+    "category": "travel_and_navigation",
+    "gloss": "BATHROOM",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "Where is the restroom?",
+    "translations": {
+      "en": "Where is the restroom?",
+      "hi": "शौचालय कहाँ है?",
+      "kn": "ಶೌಚಾಲಯ ಎಲ್ಲಿದೆ?",
+      "te": "మరుగుదొడ్డి ఎక్కడ ఉంది?"
+    },
+    "description": "Dominant T-hand (thumb between index and middle fingers) shakes side-to-side at chest/shoulder level.",
+    "nonManualMarkers": "wh-q: furrowed eyebrows if asking",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "BUS",
+    "sign": "BUS",
+    "label": "Bus",
+    "category": "travel_and_navigation",
+    "gloss": "BUS",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Where is the bus stop?",
+    "translations": {
+      "en": "Where is the bus stop?",
+      "hi": "बस कहाँ है?",
+      "kn": "ಬಸ್ ಎಲ್ಲಿದೆ?",
+      "te": "బస్సు ఎక్కడ ఉంది?"
+    },
+    "description": "Fingerspell B-U-S in quick fluid motion, or mimic steering large horizontal wheel.",
+    "nonManualMarkers": "Inquiring expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TRAIN",
+    "sign": "TRAIN",
+    "label": "Train",
+    "category": "travel_and_navigation",
+    "gloss": "TRAIN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The train is arriving.",
+    "translations": {
+      "en": "The train is arriving.",
+      "hi": "ट्रेन आ रही है।",
+      "kn": "ರೈಲು ಬರುತ್ತಿದೆ.",
+      "te": "రైలు వస్తోంది."
+    },
+    "description": "Dominant H-fingers slide back and forth across back of non-dominant H-fingers like tracks.",
+    "nonManualMarkers": "Rhythmic nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "AIRPLANE",
+    "sign": "AIRPLANE",
+    "label": "Airplane / Airport",
+    "category": "travel_and_navigation",
+    "gloss": "AIRPLANE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The airplane is boarding.",
+    "translations": {
+      "en": "The airplane is boarding.",
+      "hi": "हवाई जहाज तैयार है।",
+      "kn": "ವಿಮಾನ ಸಿದ್ಧವಾಗಿದೆ.",
+      "te": "విమానం సిద్ధంగా ఉంది."
+    },
+    "description": "ILY hand (thumb, index, pinky extended) glides smoothly forward and upward through air.",
+    "nonManualMarkers": "Eyes track ascending path",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "CAR",
+    "sign": "CAR",
+    "label": "Car / Drive",
+    "category": "travel_and_navigation",
+    "gloss": "CAR",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Drive the car carefully.",
+    "translations": {
+      "en": "Drive the car carefully.",
+      "hi": "गाड़ी ध्यान से चलाएं।",
+      "kn": "ಕಾರನ್ನು ಎಚ್ಚರಿಕೆಯಿಂದ ಚಲಾಯಿಸಿ.",
+      "te": "కారును జాగ్రత్తగా నడపండి."
+    },
+    "description": "Both S-fists grip imaginary steering wheel and steer side to side.",
+    "nonManualMarkers": "Focused driving gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "LEFT",
+    "sign": "LEFT",
+    "label": "Left",
+    "category": "travel_and_navigation",
+    "gloss": "LEFT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Turn to the left.",
+    "translations": {
+      "en": "Turn to the left.",
+      "hi": "बाएं मुड़ें।",
+      "kn": "ಎಡಕ್ಕೆ ತಿರುಗಿ.",
+      "te": "ఎడమవైపు తిరగండి."
+    },
+    "description": "Dominant L-hand moves directly toward the left side of space.",
+    "nonManualMarkers": "Gaze turns left",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "RIGHT",
+    "sign": "RIGHT",
+    "label": "Right (Direction)",
+    "category": "travel_and_navigation",
+    "gloss": "RIGHT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Turn to the right.",
+    "translations": {
+      "en": "Turn to the right.",
+      "hi": "दाएं मुड़ें।",
+      "kn": "ಬಲಕ್ಕೆ ತಿರುಗಿ.",
+      "te": "కుడివైపు తిరగండి."
+    },
+    "description": "Dominant R-hand moves directly toward the right side of space.",
+    "nonManualMarkers": "Gaze turns right",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "STRAIGHT",
+    "sign": "STRAIGHT",
+    "label": "Straight",
+    "category": "travel_and_navigation",
+    "gloss": "STRAIGHT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Go straight ahead.",
+    "translations": {
+      "en": "Go straight ahead.",
+      "hi": "सीधे आगे बढ़ें।",
+      "kn": "ನೇರವಾಗಿ ಮುಂದೆ ಹೋಗಿ.",
+      "te": "నేరుగా ముందుకు వెళ్లండి."
+    },
+    "description": "Dominant open B-hand cuts straight forward through center space.",
+    "nonManualMarkers": "Direct forward gaze",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "NEAR",
+    "sign": "NEAR",
+    "label": "Near / Close",
+    "category": "travel_and_navigation",
+    "gloss": "NEAR",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "It is near this location.",
+    "translations": {
+      "en": "It is near this location.",
+      "hi": "यह पास में है।",
+      "kn": "ಇದು ಹತ್ತಿರದಲ್ಲಿದೆ.",
+      "te": "ఇది సమీపంలో ఉంది."
+    },
+    "description": "Bent dominant palm approaches the back of non-dominant hand without touching.",
+    "nonManualMarkers": "Head tilts forward, cheek tensed",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WORK",
+    "sign": "WORK",
+    "label": "Work / Job",
+    "category": "workplace_communication",
+    "gloss": "WORK",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I have work to finish.",
+    "translations": {
+      "en": "I have work to finish.",
+      "hi": "मुझे काम पूरा करना है।",
+      "kn": "ನನಗೆ ಮುಗಿಸಲು ಕೆಲಸವಿದೆ.",
+      "te": "నేను పని పూర్తి చేయాలి."
+    },
+    "description": "Dominant fist taps the heel of dominant hand against the back of non-dominant wrist twice.",
+    "nonManualMarkers": "Focused, steady expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "MEETING",
+    "sign": "MEETING",
+    "label": "Meeting / Sync",
+    "category": "workplace_communication",
+    "gloss": "MEETING",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "We have a team meeting scheduled.",
+    "translations": {
+      "en": "We have a team meeting scheduled.",
+      "hi": "हमारी टीम की बैठक तय है।",
+      "kn": "ನಮ್ಮ ಸಭೆ ನಿಗದಿಯಾಗಿದೆ.",
+      "te": "మా సమావేశం షెడ్యూల్ చేయబడింది."
+    },
+    "description": "Both flat O-hands come together in front of chest twice.",
+    "nonManualMarkers": "Collaborative gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "OFFICE",
+    "sign": "OFFICE",
+    "label": "Office",
+    "category": "workplace_communication",
+    "gloss": "OFFICE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am at the office.",
+    "translations": {
+      "en": "I am at the office.",
+      "hi": "मैं कार्यालय में हूँ।",
+      "kn": "ನಾನು ಕಚೇರಿಯಲ್ಲಿದ್ದೇನೆ.",
+      "te": "నేను కార్యాలయంలో ఉన్నాను."
+    },
+    "description": "Both O-hands outline the walls of a room (O-ROOM) or fingerspell O-F-F-I-C-E.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "COMPUTER",
+    "sign": "COMPUTER",
+    "label": "Computer",
+    "category": "workplace_communication",
+    "gloss": "COMPUTER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Log in to your computer.",
+    "translations": {
+      "en": "Log in to your computer.",
+      "hi": "कंप्यूटर पर काम करें।",
+      "kn": "ಕಂಪ್ಯೂಟರ್‌ನಲ್ಲಿ ಕೆಲಸ ಮಾಡಿ.",
+      "te": "కంప్యూటర్‌లో లాగిన్ అవ్వండి."
+    },
+    "description": "Dominant C-hand arcs upward along the forearm of horizontal non-dominant arm.",
+    "nonManualMarkers": "Focused look",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "EMAIL",
+    "sign": "EMAIL",
+    "label": "Email",
+    "category": "workplace_communication",
+    "gloss": "EMAIL",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Send me an email.",
+    "translations": {
+      "en": "Send me an email.",
+      "hi": "मुझे ईमेल भेजें।",
+      "kn": "ನನಗೆ ಇಮೇಲ್ ಕಳುಹಿಸಿ.",
+      "te": "నాకు ఇమెయిల్ పంపండి."
+    },
+    "description": "Dominant index finger shoots through the curved C-hand of non-dominant hand like an envelope passing.",
+    "nonManualMarkers": "Direct gaze toward recipient",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "PROJECT",
+    "sign": "PROJECT",
+    "label": "Project",
+    "category": "workplace_communication",
+    "gloss": "PROJECT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The engineering project is progressing.",
+    "translations": {
+      "en": "The engineering project is progressing.",
+      "hi": "परियोजना आगे बढ़ रही है।",
+      "kn": "ಯೋಜನೆ ಮುಂದುವರಿಯುತ್ತಿದೆ.",
+      "te": "ప్రాజెక్ట్ ముందుకు సాగుతోంది."
+    },
+    "description": "P-hand slides downward along the flat upward palm of non-dominant hand.",
+    "nonManualMarkers": "Attentive nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TEAM",
+    "sign": "TEAM",
+    "label": "Team / Group",
+    "category": "workplace_communication",
+    "gloss": "TEAM",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Our team is working together.",
+    "translations": {
+      "en": "Our team is working together.",
+      "hi": "हमारी टीम साथ काम कर रही है।",
+      "kn": "ನಮ್ಮ ತಂಡ ಒಟ್ಟಾಗಿ ಕೆಲಸ ಮಾಡುತ್ತಿದೆ.",
+      "te": "మా బృందం కలిసి పనిచేస్తోంది."
+    },
+    "description": "Both T-hands start thumbs facing and sweep in horizontal circles until pinky edges meet.",
+    "nonManualMarkers": "Inclusive warm smile",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "START",
+    "sign": "START",
+    "label": "Start / Begin",
+    "category": "workplace_communication",
+    "gloss": "START",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Let us start now.",
+    "translations": {
+      "en": "Let us start now.",
+      "hi": "आइए अब शुरू करें।",
+      "kn": "ಈಗ ಪ್ರಾರಂಭಿಸೋಣ.",
+      "te": "ఇప్పుడు ప్రారంభిద్దాం."
+    },
+    "description": "Dominant index finger twists like an ignition key between index and middle fingers of non-dominant hand.",
+    "nonManualMarkers": "Alert, energetic nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "FINISH",
+    "sign": "FINISH",
+    "label": "Finish / Complete",
+    "category": "workplace_communication",
+    "gloss": "FINISH",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The task is finished.",
+    "translations": {
+      "en": "The task is finished.",
+      "hi": "काम पूरा हो गया है।",
+      "kn": "ಕಾರ್ಯ ಮುಗಿದಿದೆ.",
+      "te": "పని పూర్తయింది."
+    },
+    "description": "Both 5-hands flip outward sharply with palms turning from in to out.",
+    "nonManualMarkers": "Affirmative head nod, \"fish\" mouth",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "BUSY",
+    "sign": "BUSY",
+    "label": "Busy",
+    "category": "workplace_communication",
+    "gloss": "BUSY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am currently very busy.",
+    "translations": {
+      "en": "I am currently very busy.",
+      "hi": "मैं अभी बहुत व्यस्त हूँ।",
+      "kn": "ನಾನು ಪ್ರಸ್ತುತ ತುಂಬಾ ಕಾರ್ಯನಿರತನಾಗಿದ್ದೇನೆ.",
+      "te": "నేను ప్రస్తుతం చాలా బిజీగా ఉన్నాను."
+    },
+    "description": "Dominant B-hand rubs rapidly back and forth across wrist of non-dominant hand.",
+    "nonManualMarkers": "Focused furrowed gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TIRED",
+    "sign": "TIRED",
+    "label": "Tired / Exhausted",
+    "category": "workplace_communication",
+    "gloss": "TIRED",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am feeling tired.",
+    "translations": {
+      "en": "I am feeling tired.",
+      "hi": "मैं थका हुआ महसूस कर रहा हूँ।",
+      "kn": "ನನಗೆ ಆಯಾಸವಾಗಿದೆ.",
+      "te": "నాకు అలసటగా ఉంది."
+    },
+    "description": "Bent fingertips rest on chest and droop downward as shoulders sink.",
+    "nonManualMarkers": "Weary exhale, drooping eyelids",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "READY",
+    "sign": "READY",
+    "label": "Ready / Prepared",
+    "category": "workplace_communication",
+    "gloss": "READY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "We are ready to proceed.",
+    "translations": {
+      "en": "We are ready to proceed.",
+      "hi": "हम आगे बढ़ने के लिए तैयार हैं।",
+      "kn": "ನಾವು ಸಿದ್ಧರಾಗಿದ್ದೇವೆ.",
+      "te": "మేము సిద్ధంగా ఉన్నాము."
+    },
+    "description": "Both R-hands sweep simultaneously across chest from non-dominant to dominant side.",
+    "nonManualMarkers": "Confident alert nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "AGREE",
+    "sign": "AGREE",
+    "label": "Agree",
+    "category": "workplace_communication",
+    "gloss": "AGREE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I agree with your proposal.",
+    "translations": {
+      "en": "I agree with your proposal.",
+      "hi": "मैं आपसे सहमत हूँ।",
+      "kn": "ನಾನು ಒಪ್ಪುತ್ತೇನೆ.",
+      "te": "నేను అంగీకరిస్తున్నాను."
+    },
+    "description": "Dominant index touches forehead (THINK), then both index fingers come together parallel (SAME).",
+    "nonManualMarkers": "Strong affirmative nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "DISAGREE",
+    "sign": "DISAGREE",
+    "label": "Disagree",
+    "category": "workplace_communication",
+    "gloss": "DISAGREE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I respectfully disagree.",
+    "translations": {
+      "en": "I respectfully disagree.",
+      "hi": "मैं असहमत हूँ।",
+      "kn": "ನಾನು ಒಪ್ಪುವುದಿಲ್ಲ.",
+      "te": "నేను అంగీకరించను."
+    },
+    "description": "Dominant index touches forehead (THINK), then both index fingers pull away from opposite sides.",
+    "nonManualMarkers": "Negative head shake",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "LEARN",
+    "sign": "LEARN",
+    "label": "Learn",
+    "category": "education",
+    "gloss": "LEARN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I want to learn American Sign Language.",
+    "translations": {
+      "en": "I want to learn American Sign Language.",
+      "hi": "मैं सांकेतिक भाषा सीखना चाहता हूँ।",
+      "kn": "ನಾನು ಸಂಕೇತ ಭಾಷೆಯನ್ನು ಕಲಿಯಲು ಬಯಸುತ್ತೇನೆ.",
+      "te": "నేను సైన్ లాంగ్వేజ్ నేర్చుకోవాలనుకుంటున్నాను."
+    },
+    "description": "Fingertips take information from the flat palm of non-dominant hand and pull up into forehead.",
+    "nonManualMarkers": "Curious, eager expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "SCHOOL",
+    "sign": "SCHOOL",
+    "label": "School",
+    "category": "education",
+    "gloss": "SCHOOL",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The school opens early in the morning.",
+    "translations": {
+      "en": "The school opens early in the morning.",
+      "hi": "स्कूल सुबह जल्दी खुलता है।",
+      "kn": "ಶಾಲೆ ಬೆಳಿಗ್ಗೆ ಬೇಗನೆ ತೆರೆಯುತ್ತದೆ.",
+      "te": "పాఠశాల ఉదయం త్వరగా తెరుచుకుంటుంది."
+    },
+    "description": "Dominant flat open palm claps down onto horizontal non-dominant palm twice.",
+    "nonManualMarkers": "Attentive posture",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TEACHER",
+    "sign": "TEACHER",
+    "label": "Teacher / Instructor",
+    "category": "education",
+    "gloss": "TEACHER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The teacher explains the lesson clearly.",
+    "translations": {
+      "en": "The teacher explains the lesson clearly.",
+      "hi": "शिक्षक पाठ समझा रहे हैं।",
+      "kn": "ಶಿಕ್ಷಕರು ಪಾಠವನ್ನು ವಿವರಿಸುತ್ತಿದ್ದಾರೆ.",
+      "te": "ఉపాధ్యాయుడు పాఠాన్ని వివరిస్తున్నారు."
+    },
+    "description": "Both flat O-hands move outward from temples twice (TEACH), then drop flatly downward (PERSON).",
+    "nonManualMarkers": "Respectful attentive expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "STUDENT",
+    "sign": "STUDENT",
+    "label": "Student / Learner",
+    "category": "education",
+    "gloss": "STUDENT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The student is studying.",
+    "translations": {
+      "en": "The student is studying.",
+      "hi": "छात्र पढ़ाई कर रहा है।",
+      "kn": "ವಿದ್ಯಾರ್ಥಿ ಅಧ್ಯಯನ ಮಾಡುತ್ತಿದ್ದಾನೆ.",
+      "te": "విద్యార్థి చదువుకుంటున్నాడు."
+    },
+    "description": "Sign LEARN (palm to forehead), then drop flat hands down sides (PERSON).",
+    "nonManualMarkers": "Attentive eager posture",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "BOOK",
+    "sign": "BOOK",
+    "label": "Book",
+    "category": "education",
+    "gloss": "BOOK",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Open the book to study.",
+    "translations": {
+      "en": "Open the book to study.",
+      "hi": "किताब खोलें।",
+      "kn": "ಪುಸ್ತಕವನ್ನು ತೆರೆಯಿರಿ.",
+      "te": "పుస్తకాన్ని తెరవండి."
+    },
+    "description": "Both flat hands with palms touching open up like a book hinging at the pinkies.",
+    "nonManualMarkers": "Attentive look down at book",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "READ",
+    "sign": "READ",
+    "label": "Read",
+    "category": "education",
+    "gloss": "READ",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Read the instructions carefully.",
+    "translations": {
+      "en": "Read the instructions carefully.",
+      "hi": "निर्देश ध्यान से पढ़ें।",
+      "kn": "ಸೂಚನೆಗಳನ್ನು ಗಮನವಿಟ್ಟು ಓದಿ.",
+      "te": "సూచనలను జాగ్రత్తగా చదవండి."
+    },
+    "description": "Dominant V-fingers scan down the upward flat palm of non-dominant hand like eyes scanning lines of text.",
+    "nonManualMarkers": "Focused scanning eye gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WRITE",
+    "sign": "WRITE",
+    "label": "Write",
+    "category": "education",
+    "gloss": "WRITE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Write down your answer.",
+    "translations": {
+      "en": "Write down your answer.",
+      "hi": "अपना उत्तर लिखें।",
+      "kn": "ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಬರೆಯಿರಿ.",
+      "te": "మీ సమాధానం రాయండి."
+    },
+    "description": "Dominant pinched fingers pretend to hold pen and scribble across flat non-dominant palm.",
+    "nonManualMarkers": "Concentrated look",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "PRACTICE",
+    "sign": "PRACTICE",
+    "label": "Practice",
+    "category": "education",
+    "gloss": "PRACTICE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Practice makes perfect.",
+    "translations": {
+      "en": "Practice makes perfect.",
+      "hi": "अभ्यास करें।",
+      "kn": "ಅಭ್ಯಾಸ ಮಾಡಿ.",
+      "te": "సాధన చేయండి."
+    },
+    "description": "Dominant A-fist rubs back and forth over extended horizontal non-dominant index finger.",
+    "nonManualMarkers": "Determined expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "STUDY",
+    "sign": "STUDY",
+    "label": "Study",
+    "category": "education",
+    "gloss": "STUDY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Study for the upcoming test.",
+    "translations": {
+      "en": "Study for the upcoming test.",
+      "hi": "अध्ययन करें।",
+      "kn": "ಅಧ್ಯಯನ ಮಾಡಿ.",
+      "te": "చదువుకోండి."
+    },
+    "description": "Dominant 5-fingers flutter toward and away from flat non-dominant palm.",
+    "nonManualMarkers": "Engaged gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "CLASS",
+    "sign": "CLASS",
+    "label": "Class / Course",
+    "category": "education",
+    "gloss": "CLASS",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The class starts soon.",
+    "translations": {
+      "en": "The class starts soon.",
+      "hi": "कक्षा शुरू हो रही है।",
+      "kn": "ತರಗತಿ ಶೀಘ್ರದಲ್ಲೇ ಪ್ರಾರಂಭವಾಗುತ್ತದೆ.",
+      "te": "తరగతి త్వరలో ప్రారంభమవుతుంది."
+    },
+    "description": "Both C-hands circle outward and meet pinky-to-pinky in a complete circle.",
+    "nonManualMarkers": "Inclusive look",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TEST",
+    "sign": "TEST",
+    "label": "Test / Exam",
+    "category": "education",
+    "gloss": "TEST",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Prepare for the test.",
+    "translations": {
+      "en": "Prepare for the test.",
+      "hi": "परीक्षा की तैयारी करें।",
+      "kn": "ಪರೀಕ್ಷೆಗೆ ಸಿದ್ಧರಾಗಿ.",
+      "te": "పరీక్షకు సిద్ధం కావాలి."
+    },
+    "description": "Both index fingers point forward, curl into X-shapes, and open into flat downward hands.",
+    "nonManualMarkers": "Focused serious expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "QUESTION",
+    "sign": "QUESTION",
+    "label": "Question / Inquire",
+    "category": "education",
+    "gloss": "QUESTION",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "Do you have a question?",
+    "translations": {
+      "en": "Do you have a question?",
+      "hi": "क्या आपका कोई सवाल है?",
+      "kn": "ನಿಮಗೆ ಏನಾದರೂ ಪ್ರಶ್ನೆ ಇದೆಯೇ?",
+      "te": "మీకు ఏదైనా ప్రశ్న ఉందా?"
+    },
+    "description": "Dominant index finger draws a question mark in the air and curls into an X-hook.",
+    "nonManualMarkers": "wh-q: brow lowered or raised inquiringly",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WHAT",
+    "sign": "WHAT",
+    "label": "What",
+    "category": "questions_and_responses",
+    "gloss": "WHAT",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "What is happening?",
+    "translations": {
+      "en": "What is happening?",
+      "hi": "क्या हो रहा है?",
+      "kn": "ಏನು ನಡೆಯುತ್ತಿದೆ?",
+      "te": "ఏమి జరుగుతోంది?"
+    },
+    "description": "Both hands held open palm-up in neutral space shake side to side.",
+    "nonManualMarkers": "wh-q: furrowed brows, head tilted",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WHY",
+    "sign": "WHY",
+    "label": "Why",
+    "category": "questions_and_responses",
+    "gloss": "WHY",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "Why did that happen?",
+    "translations": {
+      "en": "Why did that happen?",
+      "hi": "ऐसा क्यों हुआ?",
+      "kn": "ಅದು ಏಕೆ ಸಂಭವಿಸಿತು?",
+      "te": "ఎందుకు అలా జరిగింది?"
+    },
+    "description": "Dominant hand touches forehead, pulls away and drops into a Y-hand.",
+    "nonManualMarkers": "wh-q: furrowed brows, head tilted forward",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "WHEN",
+    "sign": "WHEN",
+    "label": "When",
+    "category": "questions_and_responses",
+    "gloss": "WHEN",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "When will we start?",
+    "translations": {
+      "en": "When will we start?",
+      "hi": "हम कब शुरू करेंगे?",
+      "kn": "ನಾವು ಯಾವಾಗ ಪ್ರಾರಂಭಿಸುತ್ತೇವೆ?",
+      "te": "మనం ఎప్పుడు ప్రారంభిస్తాం?"
+    },
+    "description": "Dominant index finger circles around upright non-dominant index finger and lands on fingertip.",
+    "nonManualMarkers": "wh-q: furrowed brows",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "WHO",
+    "sign": "WHO",
+    "label": "Who",
+    "category": "questions_and_responses",
+    "gloss": "WHO",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "Who is that person?",
+    "translations": {
+      "en": "Who is that person?",
+      "hi": "वह व्यक्ति कौन है?",
+      "kn": "ಆ ವ್ಯಕ್ತಿ ಯಾರು?",
+      "te": "ఆ వ్యక్తి ఎవరు?"
+    },
+    "description": "Dominant thumb rests on chin while index finger wiggles up and down.",
+    "nonManualMarkers": "wh-q: pursed lips, furrowed brows",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "WHICH",
+    "sign": "WHICH",
+    "label": "Which",
+    "category": "questions_and_responses",
+    "gloss": "WHICH",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "Which one do you prefer?",
+    "translations": {
+      "en": "Which one do you prefer?",
+      "hi": "आप कौन सा पसंद करते हैं?",
+      "kn": "ನೀವು ಯಾವುದನ್ನು ಬಯಸುತ್ತೀರಿ?",
+      "te": "మీరు ఏది ఇష్టపడతారు?"
+    },
+    "description": "Both A-fists with thumbs upright alternate up and down.",
+    "nonManualMarkers": "wh-q: furrowed brows, head tilted",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "HOW",
+    "sign": "HOW",
+    "label": "How",
+    "category": "questions_and_responses",
+    "gloss": "HOW",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "How does this work?",
+    "translations": {
+      "en": "How does this work?",
+      "hi": "यह कैसे काम करता है?",
+      "kn": "ಇದು ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ?",
+      "te": "ఇది ఎలా పనిచేస్తుంది?"
+    },
+    "description": "Both curved hands start knuckles together rolling outward until palms face up.",
+    "nonManualMarkers": "wh-q: furrowed brows, head tilted forward",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "UNDERSTAND",
+    "sign": "UNDERSTAND",
+    "label": "Understand",
+    "category": "questions_and_responses",
+    "gloss": "UNDERSTAND",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I understand clearly now.",
+    "translations": {
+      "en": "I understand clearly now.",
+      "hi": "मैं अब समझ गया हूँ।",
+      "kn": "ನನಗೆ ಈಗ ಅರ್ಥವಾಗಿದೆ.",
+      "te": "నాకు ఇప్పుడు అర్థమైంది."
+    },
+    "description": "Dominant fist held beside forehead flicks index finger up like an illuminating lightbulb.",
+    "nonManualMarkers": "Firm affirmative head nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "DONT_UNDERSTAND",
+    "sign": "DONT_UNDERSTAND",
+    "label": "Don't understand",
+    "category": "questions_and_responses",
+    "gloss": "DONT UNDERSTAND",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I do not understand, please clarify.",
+    "translations": {
+      "en": "I do not understand, please clarify.",
+      "hi": "मुझे समझ नहीं आया, कृपया स्पष्ट करें।",
+      "kn": "ನನಗೆ ಅರ್ಥವಾಗುತ್ತಿಲ್ಲ, ದಯವಿಟ್ಟು ವಿವರಿಸಿ.",
+      "te": "నాకు అర్థం కాలేదు, దయచేసి వివరించండి."
+    },
+    "description": "Dominant index finger flicks upward beside forehead accompanied by a head shake.",
+    "nonManualMarkers": "Negative head shake, puzzled expression",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "KNOW",
+    "sign": "KNOW",
+    "label": "Know",
+    "category": "questions_and_responses",
+    "gloss": "KNOW",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I know the answer.",
+    "translations": {
+      "en": "I know the answer.",
+      "hi": "मुझे पता है।",
+      "kn": "ನನಗೆ ಗೊತ್ತು.",
+      "te": "నాకు తెలుసు."
+    },
+    "description": "Dominant flat hand taps fingertips against temple twice.",
+    "nonManualMarkers": "Affirmative head nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "head"
+    }
+  },
+  {
+    "id": "DONT_KNOW",
+    "sign": "DONT_KNOW",
+    "label": "Don't know",
+    "category": "questions_and_responses",
+    "gloss": "DONT KNOW",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I do not know.",
+    "translations": {
+      "en": "I do not know.",
+      "hi": "मुझे नहीं पता।",
+      "kn": "ನನಗೆ ಗೊತ್ತಿಲ್ಲ.",
+      "te": "నాకు తెలియదు."
+    },
+    "description": "Fingertips touch temple and flick outward/away with palm flipping out.",
+    "nonManualMarkers": "Head shake, shrug",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "TRUE",
+    "sign": "TRUE",
+    "label": "True / Real",
+    "category": "questions_and_responses",
+    "gloss": "TRUE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That is completely true.",
+    "translations": {
+      "en": "That is completely true.",
+      "hi": "यह सच है।",
+      "kn": "ಅದು ನಿಜ.",
+      "te": "అది నిజం."
+    },
+    "description": "Dominant index finger held vertically against chin pushes straight forward.",
+    "nonManualMarkers": "Affirmative nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "FALSE",
+    "sign": "FALSE",
+    "label": "False / Untrue",
+    "category": "questions_and_responses",
+    "gloss": "FALSE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That statement is false.",
+    "translations": {
+      "en": "That statement is false.",
+      "hi": "यह गलत है।",
+      "kn": "ಅದು ಸುಳ್ಳು.",
+      "te": "అది అబద్ధం."
+    },
+    "description": "Dominant index finger swipes across the tip of the nose from right to left.",
+    "nonManualMarkers": "Negative head shake",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "HAPPY",
+    "sign": "HAPPY",
+    "label": "Happy / Joyful",
+    "category": "emotions",
+    "gloss": "HAPPY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I feel very happy.",
+    "translations": {
+      "en": "I feel very happy.",
+      "hi": "मैं बहुत खुश महसूस कर रहा हूँ।",
+      "kn": "ನಾನು ತುಂಬಾ ಸಂತೋಷವಾಗಿದ್ದೇನೆ.",
+      "te": "నేను చాలా సంతోషంగా ఉన్నాను."
+    },
+    "description": "Open flat hands pat upward repeatedly over chest with an ascending flutter.",
+    "nonManualMarkers": "Wide genuine smile, crinkled eyes",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "SAD",
+    "sign": "SAD",
+    "label": "Sad / Unhappy",
+    "category": "emotions",
+    "gloss": "SAD",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I feel sad.",
+    "translations": {
+      "en": "I feel sad.",
+      "hi": "मुझे दुःख हो रहा है।",
+      "kn": "ನನಗೆ ದುಃಖವಾಗುತ್ತಿದೆ.",
+      "te": "నాకు బాధగా ఉంది."
+    },
+    "description": "Both open 5-hands in front of face slowly drop down as head droops downward.",
+    "nonManualMarkers": "Downturned mouth, sad eyes",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "ANGRY",
+    "sign": "ANGRY",
+    "label": "Angry / Mad",
+    "category": "emotions",
+    "gloss": "ANGRY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am angry about this.",
+    "translations": {
+      "en": "I am angry about this.",
+      "hi": "मुझे बहुत गुस्सा आ रहा है।",
+      "kn": "ನನಗೆ ಕೋಪ ಬಂದಿದೆ.",
+      "te": "నాకు కోపం వచ్చింది."
+    },
+    "description": "Dominant claw hand pulls sharply away from face/forehead.",
+    "nonManualMarkers": "Furrowed brow, tense jaw, glare",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "AFRAID",
+    "sign": "AFRAID",
+    "label": "Afraid / Scared",
+    "category": "emotions",
+    "gloss": "AFRAID",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am afraid and anxious.",
+    "translations": {
+      "en": "I am afraid and anxious.",
+      "hi": "मुझे डर लग रहा है।",
+      "kn": "ನನಗೆ ಭಯವಾಗುತ್ತಿದೆ.",
+      "te": "నాకు భయంగా ఉంది."
+    },
+    "description": "Both open 5-hands pull protectively in toward chest with a slight tremble.",
+    "nonManualMarkers": "Wide fearful eyes, tense posture",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "EXCITED",
+    "sign": "EXCITED",
+    "label": "Excited",
+    "category": "emotions",
+    "gloss": "EXCITED",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am so excited for this!",
+    "translations": {
+      "en": "I am so excited for this!",
+      "hi": "मैं बहुत उत्साहित हूँ!",
+      "kn": "ನಾನು ತುಂಬಾ ಉತ್ಸುಕನಾಗಿದ್ದೇನೆ!",
+      "te": "నేను చాలా ఉత్సాహంగా ఉన్నాను!"
+    },
+    "description": "Both middle fingers stroke upward alternatively over chest in energetic circles.",
+    "nonManualMarkers": "Beaming smile, wide energetic eyes",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "CALM",
+    "sign": "CALM",
+    "label": "Calm / Peaceful",
+    "category": "emotions",
+    "gloss": "CALM",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Stay calm and breathe.",
+    "translations": {
+      "en": "Stay calm and breathe.",
+      "hi": "शांत रहें।",
+      "kn": "ಶಾಂತವಾಗಿರಿ.",
+      "te": "శాంతంగా ఉండండి."
+    },
+    "description": "Both flat hands with palms down gently press downward through space.",
+    "nonManualMarkers": "Serene relaxed face",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "NERVOUS",
+    "sign": "NERVOUS",
+    "label": "Nervous / Anxious",
+    "category": "emotions",
+    "gloss": "NERVOUS",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am feeling nervous.",
+    "translations": {
+      "en": "I am feeling nervous.",
+      "hi": "मैं घबराया हुआ हूँ।",
+      "kn": "ನನಗೆ ಆತಂಕವಾಗಿದೆ.",
+      "te": "నాకు ఆందోళనగా ఉంది."
+    },
+    "description": "Both hands held palm-down in front of waist tremble and shake gently.",
+    "nonManualMarkers": "Biting lip, darting eyes",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "CONFUSED",
+    "sign": "CONFUSED",
+    "label": "Confused / Puzzled",
+    "category": "emotions",
+    "gloss": "CONFUSED",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am confused by this.",
+    "translations": {
+      "en": "I am confused by this.",
+      "hi": "मैं भ्रमित हूँ।",
+      "kn": "ನನಗೆ ಗೊಂದಲವಾಗಿದೆ.",
+      "te": "నాకు గందరగోళంగా ఉంది."
+    },
+    "description": "Dominant index touches forehead (THINK), then both claw hands twist in opposite directions.",
+    "nonManualMarkers": "Furrowed eyebrows, tilted head, pursed lips",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "head"
+    }
+  },
+  {
+    "id": "PROUD",
+    "sign": "PROUD",
+    "label": "Proud",
+    "category": "emotions",
+    "gloss": "PROUD",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I am very proud of you.",
+    "translations": {
+      "en": "I am very proud of you.",
+      "hi": "मुझे आप पर गर्व है।",
+      "kn": "ನನಗೆ ನಿಮ್ಮ ಬಗ್ಗೆ ಹೆಮ್ಮೆಯಿದೆ.",
+      "te": "నాకు మీ పట్ల గర్వంగా ఉంది."
+    },
+    "description": "Dominant A-hand with thumb extended strokes upward along center of chest.",
+    "nonManualMarkers": "Erect posture, proud smile",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "SURPRISED",
+    "sign": "SURPRISED",
+    "label": "Surprised / Amazed",
+    "category": "emotions",
+    "gloss": "SURPRISED",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I was pleasantly surprised!",
+    "translations": {
+      "en": "I was pleasantly surprised!",
+      "hi": "मैं हैरान रह गया!",
+      "kn": "ನನಗೆ ಆಶ್ಚರ್ಯವಾಯಿತು!",
+      "te": "నేను ఆశ్చర్యపోయాను!"
+    },
+    "description": "Both pinched fingers beside eyes snap open into wide L-shapes.",
+    "nonManualMarkers": "Wide eyes, open mouth",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "LOVE",
+    "sign": "LOVE",
+    "label": "Love",
+    "category": "emotions",
+    "gloss": "LOVE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "With love and kindness.",
+    "translations": {
+      "en": "With love and kindness.",
+      "hi": "प्यार और स्नेह से।",
+      "kn": "ಪ್ರೀತಿಯಿಂದ.",
+      "te": "ప్రేమతో."
+    },
+    "description": "Both arms crossed at wrists hugging tightly against the chest.",
+    "nonManualMarkers": "Warm gentle smile, head tilted",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "static",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "HOPE",
+    "sign": "HOPE",
+    "label": "Hope",
+    "category": "emotions",
+    "gloss": "HOPE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "I hope everything goes well.",
+    "translations": {
+      "en": "I hope everything goes well.",
+      "hi": "मुझे आशा है कि सब अच्छा होगा।",
+      "kn": "ಎಲ್ಲವೂ ಚೆನ್ನಾಗಿರುತ್ತದೆ ಎಂದು ನಾನು ಭಾವಿಸುತ್ತೇನೆ.",
+      "te": "అంతా మంచి జరుగుతుందని ఆశిస్తున్నాను."
+    },
+    "description": "Both bent hands hinge downward twice from wrists toward each other.",
+    "nonManualMarkers": "Hopeful upward gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "ONE",
+    "sign": "ONE",
+    "label": "One (1)",
+    "category": "numbers_and_time",
+    "gloss": "ONE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "One.",
+    "translations": {
+      "en": "One.",
+      "hi": "एक।",
+      "kn": "ಒಂದು.",
+      "te": "ఒకటి."
+    },
+    "description": "Dominant index finger extended upright with palm facing inward/forward.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TWO",
+    "sign": "TWO",
+    "label": "Two (2)",
+    "category": "numbers_and_time",
+    "gloss": "TWO",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Two.",
+    "translations": {
+      "en": "Two.",
+      "hi": "दो।",
+      "kn": "ಎರಡು.",
+      "te": "రెండు."
+    },
+    "description": "Dominant index and middle fingers extended upright (V-hand).",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "THREE",
+    "sign": "THREE",
+    "label": "Three (3)",
+    "category": "numbers_and_time",
+    "gloss": "THREE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Three.",
+    "translations": {
+      "en": "Three.",
+      "hi": "तीन।",
+      "kn": "ಮೂರು.",
+      "te": "మూడు."
+    },
+    "description": "Thumb, index, and middle finger extended (ASL 3-hand).",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "FOUR",
+    "sign": "FOUR",
+    "label": "Four (4)",
+    "category": "numbers_and_time",
+    "gloss": "FOUR",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Four.",
+    "translations": {
+      "en": "Four.",
+      "hi": "चार।",
+      "kn": "ನಾಲ್ಕು.",
+      "te": "నాలుగు."
+    },
+    "description": "Four fingers extended upright with thumb folded across palm.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "FIVE",
+    "sign": "FIVE",
+    "label": "Five (5)",
+    "category": "numbers_and_time",
+    "gloss": "FIVE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Five.",
+    "translations": {
+      "en": "Five.",
+      "hi": "पांच।",
+      "kn": "ಐದು.",
+      "te": "ఐదు."
+    },
+    "description": "All five fingers spread and extended upright (5-hand).",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "SIX",
+    "sign": "SIX",
+    "label": "Six (6)",
+    "category": "numbers_and_time",
+    "gloss": "SIX",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Six.",
+    "translations": {
+      "en": "Six.",
+      "hi": "छह।",
+      "kn": "ಆರು.",
+      "te": "ఆరు."
+    },
+    "description": "Pinky finger touches thumb with index, middle, ring fingers extended upright.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "SEVEN",
+    "sign": "SEVEN",
+    "label": "Seven (7)",
+    "category": "numbers_and_time",
+    "gloss": "SEVEN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Seven.",
+    "translations": {
+      "en": "Seven.",
+      "hi": "सात।",
+      "kn": "ಏಳು.",
+      "te": "ఏడు."
+    },
+    "description": "Ring finger touches thumb with index, middle, pinky fingers extended.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "EIGHT",
+    "sign": "EIGHT",
+    "label": "Eight (8)",
+    "category": "numbers_and_time",
+    "gloss": "EIGHT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Eight.",
+    "translations": {
+      "en": "Eight.",
+      "hi": "आठ।",
+      "kn": "ಎಂಟು.",
+      "te": "ఎనిమిది."
+    },
+    "description": "Middle finger touches thumb with index, ring, pinky fingers extended.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "NINE",
+    "sign": "NINE",
+    "label": "Nine (9)",
+    "category": "numbers_and_time",
+    "gloss": "NINE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Nine.",
+    "translations": {
+      "en": "Nine.",
+      "hi": "नौ।",
+      "kn": "ಒಂಬತ್ತು.",
+      "te": "తొమ్మిది."
+    },
+    "description": "Index finger touches thumb with middle, ring, pinky fingers extended.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TEN",
+    "sign": "TEN",
+    "label": "Ten (10)",
+    "category": "numbers_and_time",
+    "gloss": "TEN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Ten.",
+    "translations": {
+      "en": "Ten.",
+      "hi": "दस।",
+      "kn": "ಹತ್ತು.",
+      "te": "పది."
+    },
+    "description": "Dominant A-hand with thumb up wiggles side to side.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TODAY",
+    "sign": "TODAY",
+    "label": "Today",
+    "category": "numbers_and_time",
+    "gloss": "TODAY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Today is the scheduled day.",
+    "translations": {
+      "en": "Today is the scheduled day.",
+      "hi": "आज का दिन तय है।",
+      "kn": "ಇಂದು ನಿಗದಿತ ದಿನ.",
+      "te": "ఈ రోజు షెడ్యూల్ చేయబడిన రోజు."
+    },
+    "description": "Both Y-hands drop downward together twice in front of waist (NOW NOW).",
+    "nonManualMarkers": "Affirmative nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TOMORROW",
+    "sign": "TOMORROW",
+    "label": "Tomorrow",
+    "category": "numbers_and_time",
+    "gloss": "TOMORROW",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "See you tomorrow.",
+    "translations": {
+      "en": "See you tomorrow.",
+      "hi": "कल मिलेंगे।",
+      "kn": "ನಾಳೆ ಭೇಟಿಯಾಗೋಣ.",
+      "te": "రేపు కలుద్దాం."
+    },
+    "description": "Dominant A-thumb touches cheek and arcs forward in space.",
+    "nonManualMarkers": "Forward looking gaze",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "YESTERDAY",
+    "sign": "YESTERDAY",
+    "label": "Yesterday",
+    "category": "numbers_and_time",
+    "gloss": "YESTERDAY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That happened yesterday.",
+    "translations": {
+      "en": "That happened yesterday.",
+      "hi": "यह कल हुआ था।",
+      "kn": "ಅದು ನಿನ್ನೆ ಸಂಭವಿಸಿತು.",
+      "te": "అది నిన్న జరిగింది."
+    },
+    "description": "Dominant A-thumb touches jaw near mouth and arcs backward toward ear.",
+    "nonManualMarkers": "Backward tilt of head",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "NOW",
+    "sign": "NOW",
+    "label": "Now / Present",
+    "category": "numbers_and_time",
+    "gloss": "NOW",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Right now at this moment.",
+    "translations": {
+      "en": "Right now at this moment.",
+      "hi": "अभी इसी क्षण।",
+      "kn": "ಈಗ ಈ ಕ್ಷಣದಲ್ಲಿ.",
+      "te": "ఇప్పుడే ఈ క్షణంలో."
+    },
+    "description": "Both Y-hands drop downward firmly once in front of waist.",
+    "nonManualMarkers": "Firm nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "LATER",
+    "sign": "LATER",
+    "label": "Later / After",
+    "category": "numbers_and_time",
+    "gloss": "LATER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "We can discuss later.",
+    "translations": {
+      "en": "We can discuss later.",
+      "hi": "हम बाद में चर्चा कर सकते हैं।",
+      "kn": "ನಾವು ನಂತರ ಚರ್ಚಿಸಬಹುದು.",
+      "te": "మనం తర్వాత చర్చించవచ్చు."
+    },
+    "description": "Dominant L-hand with index finger pointing forward tilts down at the wrist like a clock hand moving forward.",
+    "nonManualMarkers": "Casual nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "circular",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TIME",
+    "sign": "TIME",
+    "label": "Time / Clock",
+    "category": "numbers_and_time",
+    "gloss": "TIME",
+    "aslGrammarType": "wh_question",
+    "canonicalSentence": "What time is it?",
+    "translations": {
+      "en": "What time is it?",
+      "hi": "क्या समय हुआ है?",
+      "kn": "ಸಮಯ ಎಷ್ಟು?",
+      "te": "సమయం ఎంతైంది?"
+    },
+    "description": "Dominant index finger taps the wrist of non-dominant hand twice where a watch is worn.",
+    "nonManualMarkers": "wh-q: furrowed brows if asking time",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "MOTHER",
+    "sign": "MOTHER",
+    "label": "Mother / Mom",
+    "category": "family_and_relationships",
+    "gloss": "MOTHER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Mother is caring.",
+    "translations": {
+      "en": "Mother is caring.",
+      "hi": "माता जी।",
+      "kn": "ತಾಯಿ.",
+      "te": "తల్లి."
+    },
+    "description": "Dominant 5-hand with thumb touching chin taps twice.",
+    "nonManualMarkers": "Affectionate smile",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "FATHER",
+    "sign": "FATHER",
+    "label": "Father / Dad",
+    "category": "family_and_relationships",
+    "gloss": "FATHER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Father is supportive.",
+    "translations": {
+      "en": "Father is supportive.",
+      "hi": "पिता जी।",
+      "kn": "ತಂದೆ.",
+      "te": "తండ్రి."
+    },
+    "description": "Dominant 5-hand with thumb touching forehead taps twice.",
+    "nonManualMarkers": "Respectful nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "head"
+    }
+  },
+  {
+    "id": "BROTHER",
+    "sign": "BROTHER",
+    "label": "Brother",
+    "category": "family_and_relationships",
+    "gloss": "BROTHER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "My brother.",
+    "translations": {
+      "en": "My brother.",
+      "hi": "मेरा भाई।",
+      "kn": "ನನ್ನ ಸಹೋದರ.",
+      "te": "నా సోదరుడు."
+    },
+    "description": "L-hand at forehead (MALE) drops down to rest upon non-dominant L-hand (SAME).",
+    "nonManualMarkers": "Friendly look",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "SISTER",
+    "sign": "SISTER",
+    "label": "Sister",
+    "category": "family_and_relationships",
+    "gloss": "SISTER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "My sister.",
+    "translations": {
+      "en": "My sister.",
+      "hi": "मेरी बहन।",
+      "kn": "ನನ್ನ ಸಹೋದರಿ.",
+      "te": "నా సోదరి."
+    },
+    "description": "L-hand at jaw (FEMALE) drops down to rest upon non-dominant L-hand (SAME).",
+    "nonManualMarkers": "Warm smile",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "FAMILY",
+    "sign": "FAMILY",
+    "label": "Family",
+    "category": "family_and_relationships",
+    "gloss": "FAMILY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Our family is united.",
+    "translations": {
+      "en": "Our family is united.",
+      "hi": "हमारा परिवार।",
+      "kn": "ನಮ್ಮ ಕುಟುಂಬ.",
+      "te": "మా కుటుంబం."
+    },
+    "description": "Both F-hands with index and thumb touching start in front of chest and circle around until pinkies touch.",
+    "nonManualMarkers": "Warm inclusive smile",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "circular",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "CHILD",
+    "sign": "CHILD",
+    "label": "Child / Kid",
+    "category": "family_and_relationships",
+    "gloss": "CHILD",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The child is playing happily.",
+    "translations": {
+      "en": "The child is playing happily.",
+      "hi": "बच्चा खेल रहा है।",
+      "kn": "ಮಗು ಆಟವಾಡುತ್ತಿದೆ.",
+      "te": "పిల్లవాడు ఆడుకుంటున్నాడు."
+    },
+    "description": "Dominant palm pats down twice in space at the height of a child’s head.",
+    "nonManualMarkers": "Affectionate downward look",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "PARENT",
+    "sign": "PARENT",
+    "label": "Parent",
+    "category": "family_and_relationships",
+    "gloss": "PARENT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The parents are present.",
+    "translations": {
+      "en": "The parents are present.",
+      "hi": "माता-पिता।",
+      "kn": "ಪೋಷಕರು.",
+      "te": "తల్లిదండ్రులు."
+    },
+    "description": "P-hand touches forehead then touches chin (combining Father + Mother).",
+    "nonManualMarkers": "Respectful nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "BABY",
+    "sign": "BABY",
+    "label": "Baby / Infant",
+    "category": "family_and_relationships",
+    "gloss": "BABY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "The baby is resting.",
+    "translations": {
+      "en": "The baby is resting.",
+      "hi": "छोटा बच्चा सो रहा है।",
+      "kn": "ಮಗು ಮಲಗಿದೆ.",
+      "te": "చిన్నారి విశ్రాంతి తీసుకుంటోంది."
+    },
+    "description": "Both arms crossed at forearms cradle and rock gently as if holding an infant.",
+    "nonManualMarkers": "Tender soothing expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "repetitive",
+      "location": "chest"
+    }
+  },
+  {
+    "id": "MAN",
+    "sign": "MAN",
+    "label": "Man",
+    "category": "family_and_relationships",
+    "gloss": "MAN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That man.",
+    "translations": {
+      "en": "That man.",
+      "hi": "वह पुरुष।",
+      "kn": "ಆ ವ್ಯಕ್ತಿ.",
+      "te": "ఆ వ్యక్తి."
+    },
+    "description": "Open 5-hand touches forehead with thumb, then moves down to touch chest with thumb.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "WOMAN",
+    "sign": "WOMAN",
+    "label": "Woman",
+    "category": "family_and_relationships",
+    "gloss": "WOMAN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That woman.",
+    "translations": {
+      "en": "That woman.",
+      "hi": "वह महिला।",
+      "kn": "ಆ ಮಹಿಳೆ.",
+      "te": "ఆ మహిళ."
+    },
+    "description": "Open 5-hand touches chin with thumb, then moves down to touch chest with thumb.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "BOY",
+    "sign": "BOY",
+    "label": "Boy",
+    "category": "family_and_relationships",
+    "gloss": "BOY",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That boy.",
+    "translations": {
+      "en": "That boy.",
+      "hi": "वह लड़का।",
+      "kn": "ಆ ಹುಡುಗ.",
+      "te": "ఆ అబ్బాయి."
+    },
+    "description": "Dominant hand grasps the imaginary brim of a baseball cap at the forehead twice.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "repetitive",
+      "location": "head"
+    }
+  },
+  {
+    "id": "GIRL",
+    "sign": "GIRL",
+    "label": "Girl",
+    "category": "family_and_relationships",
+    "gloss": "GIRL",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "That girl.",
+    "translations": {
+      "en": "That girl.",
+      "hi": "वह लड़की।",
+      "kn": "ಆ ಹುಡುಗಿ.",
+      "te": "ఆ అమ్మాయి."
+    },
+    "description": "Dominant A-hand with thumb extended strokes along the jawline toward the chin.",
+    "nonManualMarkers": "Neutral assertion",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "chin"
+    }
+  },
+  {
+    "id": "LISTEN",
+    "sign": "LISTEN",
+    "label": "Listen / Hear",
+    "category": "common_instructions",
+    "gloss": "LISTEN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please listen carefully.",
+    "translations": {
+      "en": "Please listen carefully.",
+      "hi": "कृपया ध्यान से सुनें।",
+      "kn": "ದಯವಿಟ್ಟು ಗಮನವಿಟ್ಟು ಕೇಳಿ.",
+      "te": "దయచేసి జాగ్రత్తగా వినండి."
+    },
+    "description": "Dominant C-hand cupped behind ear.",
+    "nonManualMarkers": "Attentive listening posture",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "static",
+      "location": "head"
+    }
+  },
+  {
+    "id": "LOOK",
+    "sign": "LOOK",
+    "label": "Look / Watch",
+    "category": "common_instructions",
+    "gloss": "LOOK",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Look over here.",
+    "translations": {
+      "en": "Look over here.",
+      "hi": "इधर देखें।",
+      "kn": "ಇಲ್ಲಿ ನೋಡಿ.",
+      "te": "ఇక్కడ చూడండి."
+    },
+    "description": "Dominant V-hand starts near eyes pointing in direction of target gaze.",
+    "nonManualMarkers": "Direct sharp eye gaze",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
+    }
+  },
+  {
+    "id": "OPEN",
+    "sign": "OPEN",
+    "label": "Open",
+    "category": "common_instructions",
+    "gloss": "OPEN",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Open the entrance.",
+    "translations": {
+      "en": "Open the entrance.",
+      "hi": "दरवाजा खोलें।",
+      "kn": "ತೆರೆಯಿರಿ.",
+      "te": "తెరవండి."
+    },
+    "description": "Both flat B-hands start with index edges touching and swing open like doors.",
+    "nonManualMarkers": "Inviting expression",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "CLOSE",
+    "sign": "CLOSE",
+    "label": "Close",
+    "category": "common_instructions",
+    "gloss": "CLOSE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Close the door.",
+    "translations": {
+      "en": "Close the door.",
+      "hi": "दरवाजा बंद करें।",
+      "kn": "ಮುಚ್ಚಿ.",
+      "te": "మూసివేయండి."
+    },
+    "description": "Both open B-hands start apart and swing shut until index edges meet.",
+    "nonManualMarkers": "Firm nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "either",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "SIT",
+    "sign": "SIT",
+    "label": "Sit down",
+    "category": "common_instructions",
+    "gloss": "SIT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please sit down.",
+    "translations": {
+      "en": "Please sit down.",
+      "hi": "कृपया बैठ जाएं।",
+      "kn": "ದಯವಿಟ್ಟು ಕುಳಿತುಕೊಳ್ಳಿ.",
+      "te": "దయచేసి కూర్చోండి."
+    },
+    "description": "Dominant curved H-fingers hook over the extended horizontal non-dominant H-fingers once.",
+    "nonManualMarkers": "Polite inviting nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "STAND",
+    "sign": "STAND",
+    "label": "Stand up",
+    "category": "common_instructions",
+    "gloss": "STAND",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please stand up.",
+    "translations": {
+      "en": "Please stand up.",
+      "hi": "कृपया खड़े हो जाएं।",
+      "kn": "ದಯವಿಟ್ಟು ಎದ್ದುನಿಲ್ಲಿ.",
+      "te": "దయచేసి నిలబడండి."
+    },
+    "description": "Dominant upside-down V-fingers stand upright upon the upward flat palm of non-dominant hand.",
+    "nonManualMarkers": "Upward glance",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "FOLLOW",
+    "sign": "FOLLOW",
+    "label": "Follow",
+    "category": "common_instructions",
+    "gloss": "FOLLOW",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please follow me.",
+    "translations": {
+      "en": "Please follow me.",
+      "hi": "कृपया मेरे पीछे आएं।",
+      "kn": "ದಯವಿಟ್ಟು ನನ್ನನ್ನು ಹಿಂಬಾಲಿಸಿ.",
+      "te": "దయచేసి నన్ను అనుసరించండి."
+    },
+    "description": "Dominant A-hand follows closely behind non-dominant A-hand as both move forward.",
+    "nonManualMarkers": "Inviting head nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "GIVE",
+    "sign": "GIVE",
+    "label": "Give",
+    "category": "common_instructions",
+    "gloss": "GIVE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Give this to them.",
+    "translations": {
+      "en": "Give this to them.",
+      "hi": "यह उन्हें दें।",
+      "kn": "ಇದನ್ನು ಅವರಿಗೆ ಕೊಡಿ.",
+      "te": "దీన్ని వారికి ఇవ్వండి."
+    },
+    "description": "Flattened O-hand moves forward and opens into flat upward palm toward recipient.",
+    "nonManualMarkers": "Friendly offering gesture",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "TAKE",
+    "sign": "TAKE",
+    "label": "Take / Accept",
+    "category": "common_instructions",
+    "gloss": "TAKE",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Take this.",
+    "translations": {
+      "en": "Take this.",
+      "hi": "यह लें।",
+      "kn": "ಇದನ್ನು ತೆಗೆದುಕೊಳ್ಳಿ.",
+      "te": "దీన్ని తీసుకోండి."
+    },
+    "description": "Open 5-hand reaches out, grasps into an S-fist, and pulls in toward the chest.",
+    "nonManualMarkers": "Affirmative nod",
+    "keyFeatures": {
+      "hands": "single",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "SHOW",
+    "sign": "SHOW",
+    "label": "Show / Demonstrate",
+    "category": "common_instructions",
+    "gloss": "SHOW",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please show me.",
+    "translations": {
+      "en": "Please show me.",
+      "hi": "कृपया मुझे दिखाएं।",
+      "kn": "ದಯವಿಟ್ಟು ನನಗೆ ತೋರಿಸಿ.",
+      "te": "దయచేసి నాకు చూపించండి."
+    },
+    "description": "Dominant index finger presses into the center of flat non-dominant palm, and both hands push forward toward viewer.",
+    "nonManualMarkers": "Direct focused gaze",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "REPEAT",
+    "sign": "REPEAT",
+    "label": "Repeat / Say again",
+    "category": "common_instructions",
+    "gloss": "REPEAT",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Please repeat that once more.",
+    "translations": {
+      "en": "Please repeat that once more.",
+      "hi": "कृपया इसे एक बार फिर दोहराएं।",
+      "kn": "ದಯವಿಟ್ಟು ಅದನ್ನು ಮತ್ತೊಮ್ಮೆ ಪುನರಾವರ್ತಿಸಿ.",
+      "te": "దయచేసి దాన్ని మరోసారి పునరావృతం చేయండి."
+    },
+    "description": "Dominant bent hand arcs into the upward palm of non-dominant hand (AGAIN).",
+    "nonManualMarkers": "Questioning nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "neutral_space"
+    }
+  },
+  {
+    "id": "REMEMBER",
+    "sign": "REMEMBER",
+    "label": "Remember / Recall",
+    "category": "common_instructions",
+    "gloss": "REMEMBER",
+    "aslGrammarType": "standard",
+    "canonicalSentence": "Remember this important rule.",
+    "translations": {
+      "en": "Remember this important rule.",
+      "hi": "इसे याद रखें।",
+      "kn": "ಇದನ್ನು ನೆನಪಿಡಿ.",
+      "te": "దీన్ని గుర్తుంచుకోండి."
+    },
+    "description": "Dominant A-thumb touches forehead and moves down to touch thumbnail of non-dominant A-fist.",
+    "nonManualMarkers": "Thoughtful affirmative nod",
+    "keyFeatures": {
+      "hands": "both",
+      "dominantHand": "right",
+      "primaryMotion": "linear",
+      "location": "head"
     }
   }
 ];
 
-export const DEMO_SCENARIO_PRESETS: DemoScenarioPreset[] = [
+export interface ASLGrammarRule {
+  pattern: RegExp;
+  aslGlosses: string[];
+  aslGlossString: string;
+  canonicalEnglish: string;
+}
+
+export const ASL_GRAMMAR_RULES: ASLGrammarRule[] = [
+  // 14 Mandatory User Verification Sentences & Core Idioms
   {
-    id: 'hospital_helpdesk',
-    title: 'Hospital Help Desk & Emergency',
-    description: 'An ISL user needs urgent navigation to the clinic emergency department.',
-    context: 'At the front reception desk of a multi-specialty hospital.',
-    initialRole: 'isl_signer',
-    suggestedSignSequence: ['HELLO', 'HELP', 'HOSPITAL', 'WHERE', 'THANK_YOU'],
+    pattern: /\b(what\s+is\s+your\s+name|what('s| is)\s+your\s+name|your\s+name\s+what)\b/i,
+    aslGlosses: ['NAME', 'YOU', 'WHAT'],
+    aslGlossString: 'NAME YOU WHAT',
+    canonicalEnglish: 'What is your name?',
+  },
+  {
+    pattern: /\b(how\s+can\s+i\s+help\s+you|how\s+may\s+i\s+help\s+you|can\s+i\s+help\s+you)\b/i,
+    aslGlosses: ['I_ME', 'HELP', 'YOU', 'HOW'],
+    aslGlossString: 'I HELP YOU HOW',
+    canonicalEnglish: 'How can I help you?',
+  },
+  {
+    pattern: /\b(what\s+can\s+i\s+do\s+for\s+you|what\s+can\s+i\s+help\s+you\s+with)\b/i,
+    aslGlosses: ['I_ME', 'HELP', 'YOU', 'WHAT'],
+    aslGlossString: 'I HELP YOU WHAT',
+    canonicalEnglish: 'What can I do for you?',
+  },
+  {
+    pattern: /\b(what\s+is\s+your\s+emergency|what('s| is)\s+the\s+emergency)\b/i,
+    aslGlosses: ['EMERGENCY', 'WHAT'],
+    aslGlossString: 'EMERGENCY WHAT',
+    canonicalEnglish: 'What is your emergency?',
+  },
+  {
+    pattern: /\b(can\s+you\s+call\s+the\s+police|please\s+call\s+(the\s+)?police|call\s+police)\b/i,
+    aslGlosses: ['PLEASE', 'CALL', 'POLICE'],
+    aslGlossString: 'PLEASE CALL POLICE',
+    canonicalEnglish: 'Can you call the police?',
+  },
+  {
+    pattern: /\b(please\s+call\s+an\s+ambulance|call\s+(an\s+)?ambulance|need\s+ambulance)\b/i,
+    aslGlosses: ['PLEASE', 'CALL', 'AMBULANCE'],
+    aslGlossString: 'PLEASE CALL AMBULANCE',
+    canonicalEnglish: 'Please call an ambulance.',
+  },
+  {
+    pattern: /\b(i\s+need\s+a\s+doctor|need\s+doctor|doctor\s+please)\b/i,
+    aslGlosses: ['I_ME', 'NEED', 'DOCTOR'],
+    aslGlossString: 'I NEED DOCTOR',
+    canonicalEnglish: 'I need a doctor.',
+  },
+  {
+    pattern: /\b(i\s+am\s+in\s+danger|i('m| am)\s+in\s+danger|in\s+danger|danger\s+help)\b/i,
+    aslGlosses: ['I_ME', 'DANGER'],
+    aslGlossString: 'I DANGER',
+    canonicalEnglish: 'I am in danger.',
+  },
+  {
+    pattern: /\b(i\s+am\s+hungry|i('m| am)\s+hungry|need\s+food)\b/i,
+    aslGlosses: ['I_ME', 'HUNGRY'],
+    aslGlossString: 'I HUNGRY',
+    canonicalEnglish: 'I am hungry.',
+  },
+  {
+    pattern: /\b(where\s+are\s+you\s+going|you\s+going\s+where)\b/i,
+    aslGlosses: ['YOU', 'GO', 'WHERE'],
+    aslGlossString: 'YOU GO WHERE',
+    canonicalEnglish: 'Where are you going?',
+  },
+  {
+    pattern: /\b(can\s+you\s+help\s+me|could\s+you\s+help\s+me|help\s+me\s+please)\b/i,
+    aslGlosses: ['YOU', 'HELP', 'I_ME'],
+    aslGlossString: 'YOU HELP ME',
+    canonicalEnglish: 'Can you help me?',
+  },
+  {
+    pattern: /\b(please\s+wait|wait\s+a\s+moment|wait\s+please)\b/i,
+    aslGlosses: ['PLEASE', 'WAIT'],
+    aslGlossString: 'PLEASE WAIT',
+    canonicalEnglish: 'Please wait.',
+  },
+  {
+    pattern: /\b(i\s+do(n't| not)\s+understand|not\s+understanding|i\s+dont\s+understand)\b/i,
+    aslGlosses: ['I_ME', 'DONT_UNDERSTAND'],
+    aslGlossString: 'I DONT_UNDERSTAND',
+    canonicalEnglish: "I don't understand.",
+  },
+  {
+    pattern: /\b(can\s+you\s+repeat\s+that|please\s+repeat|repeat\s+that|say\s+again)\b/i,
+    aslGlosses: ['AGAIN', 'PLEASE'],
+    aslGlossString: 'AGAIN PLEASE',
+    canonicalEnglish: 'Can you repeat that?',
+  },
+  {
+    pattern: /\b(where\s+is\s+the\s+bathroom|bathroom\s+where|where\s+is\s+the\s+restroom)\b/i,
+    aslGlosses: ['BATHROOM', 'WHERE'],
+    aslGlossString: 'BATHROOM WHERE',
+    canonicalEnglish: 'Where is the bathroom?',
+  },
+  {
+    pattern: /\b(where\s+is\s+the\s+hospital|hospital\s+where)\b/i,
+    aslGlosses: ['HOSPITAL', 'WHERE'],
+    aslGlossString: 'HOSPITAL WHERE',
+    canonicalEnglish: 'Where is the hospital?',
+  },
+  {
+    pattern: /\b(nice\s+to\s+meet\s+you|pleased\s+to\s+meet\s+you)\b/i,
+    aslGlosses: ['NICE_TO_MEET_YOU'],
+    aslGlossString: 'NICE_TO_MEET_YOU',
+    canonicalEnglish: 'Nice to meet you.',
+  },
+];
+
+/**
+ * Translates an English spoken or typed text into an ordered ASL gloss sequence
+ * adhering to ASL grammar (Topic-Comment / Wh-question at end).
+ */
+export function translateEnglishToASLGloss(englishText: string): { glosses: string[]; glossString: string } {
+  if (!englishText || !englishText.trim()) {
+    return { glosses: [], glossString: '' };
+  }
+  const text = englishText.trim();
+
+  // 1. Check for specific grammatical phrase rules first
+  for (const rule of ASL_GRAMMAR_RULES) {
+    if (rule.pattern.test(text)) {
+      return {
+        glosses: rule.aslGlosses,
+        glossString: rule.aslGlossString,
+      };
+    }
+  }
+
+  // 2. Keyword-based gloss extraction with multi-word idiom preservation
+  let normalized = text.toUpperCase();
+  normalized = normalized.replace(/\bTHANK\s+YOU\b/g, 'THANK_YOU');
+  normalized = normalized.replace(/\bHOW\s+ARE\s+YOU\b/g, 'HOW_ARE_YOU');
+  normalized = normalized.replace(/\bNICE\s+TO\s+MEET\s+YOU\b/g, 'NICE_TO_MEET_YOU');
+  normalized = normalized.replace(/\bDO(N'T| NOT)\s+UNDERSTAND\b/g, 'DONT_UNDERSTAND');
+  normalized = normalized.replace(/\bHOW\s+MUCH\b/g, 'HOW_MUCH');
+  normalized = normalized.replace(/\bGOOD\s+MORNING\b/g, 'GOOD_MORNING');
+  normalized = normalized.replace(/\bGOOD\s+AFTERNOON\b/g, 'GOOD_AFTERNOON');
+  normalized = normalized.replace(/\bGOOD\s+NIGHT\b/g, 'GOOD_NIGHT');
+  normalized = normalized.replace(/\bSEE\s+YOU\s+LATER\b/g, 'SEE_YOU_LATER');
+
+  const matchedGlosses: string[] = [];
+  const words = normalized.replace(/[^A-Z\s_]/g, ' ').split(/\s+/).filter(Boolean);
+
+  for (const word of words) {
+    const vocabMatch = ASL_VOCABULARY.find(
+      (v) => v.sign === word || v.gloss === word || v.id === word
+    );
+    if (vocabMatch && !matchedGlosses.includes(vocabMatch.sign)) {
+      matchedGlosses.push(vocabMatch.sign);
+    }
+  }
+
+  return {
+    glosses: matchedGlosses,
+    glossString: matchedGlosses.join(' '),
+  };
+}
+
+/**
+ * Translates an accumulated sequence of ASL glosses into an English sentence.
+ */
+export function translateASLGlossSequenceToEnglish(glosses: string[]): string {
+  if (!glosses || glosses.length === 0) return '';
+  const cleanGlosses = glosses.map((g) => g.toUpperCase().replace(/\s+/g, '_'));
+  const joined = cleanGlosses.join(' ');
+
+  // 14 Mandatory User Sentences mappings
+  if (joined === 'NAME YOU WHAT' || joined === 'YOU NAME WHAT' || joined === 'NAME WHAT' || joined === 'NAME YOU') {
+    return 'What is your name?';
+  }
+  if (joined === 'I_ME HELP YOU HOW' || joined === 'HELP YOU HOW' || joined === 'I HELP YOU HOW') {
+    return 'How can I help you?';
+  }
+  if (joined === 'I_ME HELP YOU WHAT' || joined === 'HELP YOU WHAT' || joined === 'I HELP YOU WHAT') {
+    return 'What can I do for you?';
+  }
+  if (joined === 'EMERGENCY WHAT' || joined === 'YOUR EMERGENCY WHAT') {
+    return 'What is your emergency?';
+  }
+  if (joined === 'PLEASE CALL POLICE' || joined === 'CALL POLICE' || joined === 'POLICE PLEASE') {
+    return 'Can you call the police?';
+  }
+  if (joined === 'PLEASE CALL AMBULANCE' || joined === 'CALL AMBULANCE' || joined === 'AMBULANCE PLEASE') {
+    return 'Please call an ambulance.';
+  }
+  if (joined === 'I_ME NEED DOCTOR' || joined === 'I NEED DOCTOR' || joined === 'NEED DOCTOR') {
+    return 'I need a doctor.';
+  }
+  if (joined === 'I_ME DANGER' || joined === 'I DANGER' || joined === 'DANGER') {
+    return 'I am in danger.';
+  }
+  if (joined === 'I_ME HUNGRY' || joined === 'I HUNGRY' || joined === 'HUNGRY') {
+    return 'I am hungry.';
+  }
+  if (joined === 'YOU GO WHERE' || joined === 'GO WHERE') {
+    return 'Where are you going?';
+  }
+  if (joined === 'YOU HELP I_ME' || joined === 'HELP I_ME' || joined === 'HELP ME') {
+    return 'Can you help me?';
+  }
+  if (joined === 'PLEASE WAIT' || joined === 'WAIT PLEASE' || joined === 'WAIT') {
+    return 'Please wait.';
+  }
+  if (joined === 'I_ME DONT_UNDERSTAND' || joined === 'DONT_UNDERSTAND' || joined === 'I DONT_UNDERSTAND') {
+    return "I don't understand.";
+  }
+  if (joined === 'AGAIN PLEASE' || joined === 'REPEAT PLEASE' || joined === 'PLEASE AGAIN') {
+    return 'Can you repeat that?';
+  }
+
+  // Multi-sign sequence: HELLO -> HOW ARE YOU -> THANK YOU
+  if (joined === 'HELLO HOW_ARE_YOU THANK_YOU' || joined === 'HELLO HOW ARE YOU THANK YOU') {
+    return 'Hello, how are you? Thank you very much.';
+  }
+  if (joined === 'BATHROOM WHERE' || joined === 'WHERE BATHROOM') {
+    return 'Where is the bathroom?';
+  }
+  if (joined === 'HOSPITAL WHERE' || joined === 'WHERE HOSPITAL') {
+    return 'Where is the nearest hospital?';
+  }
+  if (joined === 'HELLO HOW_ARE_YOU' || joined === 'HELLO HOW YOU') {
+    return 'Hello, how are you?';
+  }
+
+  // Fallback: lookup canonical sentences or concatenate labels
+  const sentenceParts: string[] = [];
+  for (const gloss of cleanGlosses) {
+    const item = ASL_VOCABULARY.find((v) => v.sign === gloss || v.id === gloss);
+    if (item) {
+      sentenceParts.push(item.canonicalSentence);
+    }
+  }
+
+  return sentenceParts.join(' ');
+}
+
+export const DEMO_PRESETS: DemoScenarioPreset[] = [
+  {
+    id: 'asl_emergency_hospital',
+    title: 'Hospital Emergency Room Triage',
+    description: 'An ASL user arrives at the emergency room seeking urgent medical care and direction to triage.',
+    context: 'At the central triage reception desk in a metropolitan hospital.',
+    initialRole: 'asl_signer',
+    suggestedSignSequence: ['HELP', 'EMERGENCY', 'PAIN', 'HOSPITAL', 'THANK_YOU'],
     sampleDialogue: [
-      {
-        speaker: 'isl',
-        sign: 'HELLO',
-        text: 'Hello, nice to meet you.'
-      },
-      {
-        speaker: 'speech',
-        text: 'Hello! Welcome to Apollo Hospital. How can I help you today?'
-      },
-      {
-        speaker: 'isl',
-        sign: 'HOSPITAL',
-        text: 'Where is the nearest hospital or clinic?'
-      },
-      {
-        speaker: 'speech',
-        text: 'The emergency wing is immediately on the first floor to your right. Follow the red corridor line.'
-      },
-      {
-        speaker: 'isl',
-        sign: 'THANK_YOU',
-        text: 'Thank you very much.'
-      }
-    ]
+      { speaker: 'isl', sign: 'HELP', text: 'I need help, please.' },
+      { speaker: 'speech', text: 'Hello, what seems to be the medical emergency? Are you in pain?' },
+      { speaker: 'isl', sign: 'HOSPITAL', text: 'Where is the nearest emergency doctor or clinic?' },
+      { speaker: 'speech', text: 'The emergency wing is immediately on the first floor to your right. A doctor will assist you right away.' },
+      { speaker: 'isl', sign: 'THANK_YOU', text: 'Thank you very much.' },
+    ],
   },
   {
     id: 'college_registration',
-    title: 'College Admissions & Student Services',
-    description: 'A deaf student inquires about the admission counter and documents submission.',
+    title: 'University Services & Student Registration',
+    description: 'A deaf student inquires about the admission counter and documents submission in ASL.',
     context: 'At the student services administrative center.',
-    initialRole: 'isl_signer',
+    initialRole: 'asl_signer',
     suggestedSignSequence: ['HELLO', 'PLEASE', 'HELP', 'WHERE', 'BATHROOM'],
     sampleDialogue: [
-      {
-        speaker: 'isl',
-        sign: 'HELLO',
-        text: 'Hello, nice to meet you.'
-      },
-      {
-        speaker: 'speech',
-        text: 'Good morning! Welcome to the University Admissions Office.'
-      },
-      {
-        speaker: 'isl',
-        sign: 'HELP',
-        text: 'I need help, please.'
-      },
-      {
-        speaker: 'speech',
-        text: 'Sure! For verification, please take Counter 4 on the left side.'
-      },
-      {
-        speaker: 'isl',
-        sign: 'LEFT',
-        text: 'Turn to the left side.'
-      },
-      {
-        speaker: 'speech',
-        text: 'Yes, exactly on the left right past the main library.'
-      }
-    ]
+      { speaker: 'isl', sign: 'HELLO', text: 'Hello, nice to meet you.' },
+      { speaker: 'speech', text: 'Good morning! Welcome to the University Admissions Office.' },
+      { speaker: 'isl', sign: 'HELP', text: 'I need help, please.' },
+      { speaker: 'speech', text: 'Sure! For verification, please take Counter 4 on the left side.' },
+      { speaker: 'isl', sign: 'WHERE', text: 'Where is that located?' },
+      { speaker: 'speech', text: 'It is right next to the main hall, right by the library entrance.' },
+    ],
   },
   {
     id: 'workplace_collaboration',
     title: 'Workplace Team Sync & Daily Standup',
-    description: 'Collaborative discussion between hearing team members and an ISL engineer.',
+    description: 'Collaborative discussion between hearing team members and an ASL engineer.',
     context: 'In an agile team meeting room.',
-    initialRole: 'isl_signer',
-    suggestedSignSequence: ['HELLO', 'YES', 'DONT_UNDERSTAND', 'REPEAT', 'THANK_YOU'],
+    initialRole: 'asl_signer',
+    suggestedSignSequence: ['HELLO', 'YES', 'DONT_UNDERSTAND', 'AGAIN', 'THANK_YOU'],
     sampleDialogue: [
-      {
-        speaker: 'speech',
-        text: 'Did we finish the API gateway deployment for the release today?'
-      },
-      {
-        speaker: 'isl',
-        sign: 'YES',
-        text: 'Yes, that is correct.'
-      },
-      {
-        speaker: 'speech',
-        text: 'Great. Let us review the latency benchmarks next.'
-      },
-      {
-        speaker: 'isl',
-        sign: 'DONT_UNDERSTAND',
-        text: 'I do not understand, could you clarify?'
-      },
-      {
-        speaker: 'speech',
-        text: 'I will put the benchmark dashboard on the shared screen right now.'
-      }
-    ]
-  }
+      { speaker: 'speech', text: 'Did we finish the API gateway deployment for the release today?' },
+      { speaker: 'isl', sign: 'YES', text: 'Yes, that is correct.' },
+      { speaker: 'speech', text: 'Great. Let us review the latency benchmarks next.' },
+      { speaker: 'isl', sign: 'DONT_UNDERSTAND', text: 'I do not understand, could you clarify?' },
+      { speaker: 'speech', text: 'I will put the benchmark dashboard on the shared screen right now.' },
+    ],
+  },
 ];
+
+export const DEMO_SCENARIO_PRESETS = DEMO_PRESETS;

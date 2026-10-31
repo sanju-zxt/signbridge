@@ -1,4 +1,4 @@
-import { Landmark3D } from '@signbridge2vision/types';
+import { Landmark3D } from '@signbridge/types';
 
 export function normalizeHandLandmarks(landmarks: Landmark3D[]): Landmark3D[] {
   if (!landmarks || landmarks.length !== 21) return [];

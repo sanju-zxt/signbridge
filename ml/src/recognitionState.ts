@@ -1,16 +1,16 @@
-﻿/**
+/**
  * recognitionState.ts
- * ─────────────────────────────────────────────────────────────────────────────
+ * -----------------------------------------------------------------------------
  * State machine for the real-time ISL recognition pipeline.
  *
- *  IDLE  ──► DETECTING ──► CLASSIFYING ──► RECOGNIZED
- *                │                │               │
- *                │                └──► LOW_CONFIDENCE
- *                │
- *                └──► LOST_TRACK ──► IDLE
+ *  IDLE  --? DETECTING --? CLASSIFYING --? RECOGNIZED
+ *                �                �               �
+ *                �                +--? LOW_CONFIDENCE
+ *                �
+ *                +--? LOST_TRACK --? IDLE
  */
 
-import { RecognitionState, PipelineConfig, DEFAULT_PIPELINE_CONFIG } from '@signbridge2vision/types';
+import { RecognitionState, PipelineConfig, DEFAULT_PIPELINE_CONFIG } from '@signbridge/types';
 
 export interface StateTransitionEvent {
   from: RecognitionState;
@@ -138,11 +138,11 @@ export class RecognitionStateMachine {
   get statusLabel(): string {
     switch (this._state) {
       case 'IDLE':         return 'Position hands in frame';
-      case 'DETECTING':    return 'Tracking — hold gesture';
-      case 'CLASSIFYING':  return 'Classifying…';
-      case 'RECOGNIZED':   return 'Sign recognised ✓';
-      case 'LOW_CONFIDENCE': return 'Gesture unclear — try again';
-      case 'LOST_TRACK':   return 'Hands lost — reposition';
+      case 'DETECTING':    return 'Tracking � hold gesture';
+      case 'CLASSIFYING':  return 'Classifying�';
+      case 'RECOGNIZED':   return 'Sign recognised ?';
+      case 'LOW_CONFIDENCE': return 'Gesture unclear � try again';
+      case 'LOST_TRACK':   return 'Hands lost � reposition';
       case 'ERROR':        return 'Pipeline error';
     }
   }

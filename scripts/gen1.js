@@ -13,7 +13,7 @@ save('apps/web/src/components/Header.tsx', `'use client';
 
 import React from 'react';
 import { Activity, Radio, Volume2, ShieldCheck, Languages, BarChart3, Sparkles } from 'lucide-react';
-import { SystemState, SupportedLanguage, LatencySummary } from '@signbridge2vision/types';
+import { SystemState, SupportedLanguage, LatencySummary } from '@signbridge/types';
 
 interface HeaderProps {
   systemState: SystemState;
@@ -137,7 +137,7 @@ save('apps/web/src/components/LiveCameraView.tsx', `'use client';
 
 import React from 'react';
 import { Camera, CameraOff, Sparkles, RefreshCw, Eye, EyeOff, Zap } from 'lucide-react';
-import { ISL_VOCABULARY } from '@signbridge2vision/types';
+import { ISL_VOCABULARY } from '@signbridge/types';
 
 interface LiveCameraViewProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;

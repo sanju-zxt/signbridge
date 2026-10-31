@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Send, Activity } from 'lucide-react';
-import { SupportedLanguage } from '@signbridge2vision/types';
+import { SupportedLanguage } from '@signbridge/types';
 import { StreamingSTTClient } from '../lib/speech/stt';
 
 interface AudioControlsProps {

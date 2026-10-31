@@ -1,11 +1,19 @@
 /**
  * inferenceWorker.ts
- * Real-time ISL Gesture & Action Classifier Web Worker.
+ * Real-time ASL Gesture & Action Classifier Web Worker.
  *
- * Implements 3D landmark geometric invariants (finger extension kinematics,
+ * Implements TensorFlow.js 2-Layer GRU Neural Inference with
+ * 3D landmark geometric invariants (finger extension kinematics,
  * spatial hand orientation, palm normals, and temporal motion trajectories).
  * Distinguishes intentional sign gestures from resting/open hands without false positives.
  */
+
+import * as tf from '@tensorflow/tfjs';
+import '@tensorflow/tfjs-backend-webgl';
+
+let tfModel: tf.LayersModel | null = null;
+let cachedNeuralProbs: Float32Array | null = null;
+let lastNeuralInferenceTime = 0;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -19,6 +27,7 @@ interface ModelMetadata {
   modelVersion?: string;
   version?: string;
   trainedAt?: string;
+  activeBackend?: string;
 }
 
 interface RecognitionResult {
@@ -45,11 +54,13 @@ interface InferenceWorkerRequest {
   metadataUrl?: string;
   features?: Float32Array;
   motionVector?: [number, number, number];
+  nonManualFeatures?: Float32Array | number[];
   windowSize?: number;
   featureDim?: number;
   sentAt?: number;
   tAcq?: number;
   tPrep?: number;
+  preferredBackend?: 'webgpu' | 'webgl' | 'cpu';
 }
 
 interface InferenceWorkerResponse {
@@ -63,33 +74,71 @@ interface InferenceWorkerResponse {
   tAcq?: number;
   tPrep?: number;
   inferDurationMs?: number;
+  activeBackend?: string;
 }
 
 // ---------------------------------------------------------------------------
-// Supported 17 Gestures Definitions & Display Names
+// Supported ISL Gestures Definitions & Display Names
 // ---------------------------------------------------------------------------
 
 const ISL_DISPLAY_NAMES: Record<string, string> = {
-  HELLO: 'Hello / Namaste',
-  THANK_YOU: 'Thank You',
-  PLEASE: 'Please',
-  GOODBYE: 'Goodbye',
-  HELP: 'Help',
-  WATER: 'Water',
-  FOOD: 'Food',
-  HOSPITAL: 'Hospital / Doctor',
-  BATHROOM: 'Bathroom / Washroom',
-  WHERE: 'Where',
-  HERE: 'Here',
-  LEFT: 'Turn Left',
-  RIGHT: 'Turn Right',
-  YES: 'Yes',
-  NO: 'No',
+  AMBULANCE: 'Ambulance',
+  BAD: 'Bad / Unwell',
+  BATHROOM: 'Bathroom / Restroom',
+  CALL: 'Call',
+  COME: 'Come',
+  DANGER: 'Danger',
+  DEAF: 'Deaf',
+  DOCTOR: 'Doctor',
   DONT_UNDERSTAND: "Don't Understand",
-  REPEAT: 'Please Repeat',
+  EMERGENCY: 'Emergency',
+  FOOD: 'Food / Eat',
+  FRIEND: 'Friend',
+  GIVE: 'Give',
+  GO: 'Go',
+  GOOD: 'Good / Fine',
+  GOODBYE: 'Goodbye',
+  HEARING: 'Hearing Person',
+  HELLO: 'Hello / Namaste',
+  HELP: 'Help',
+  HERE: 'Here',
+  HOME: 'Home / House',
+  HOSPITAL: 'Hospital',
+  HOW: 'How',
+  HOW_ARE_YOU: 'How are you?',
+  I_ME: 'I / Me',
+  LEFT: 'Left',
+  MEDICINE: 'Medicine',
+  MY: 'My / Mine',
+  NAME: 'Name',
+  NEED: 'Need / Require',
+  NICE_TO_MEET_YOU: 'Nice to meet you',
+  NO: 'No',
+  PAIN: 'Pain / Hurt',
+  PLEASE: 'Please',
+  POLICE: 'Police',
+  REPEAT: 'Repeat / Again',
+  RIGHT: 'Right',
+  SCHOOL: 'School / College',
+  SORRY: 'Sorry / Apology',
+  STOP: 'Stop',
+  THANK_YOU: 'Thank You',
+  UNDERSTAND: 'Understand',
+  WAIT: 'Wait',
+  WANT: 'Want',
+  WATER: 'Water / Drink',
+  WHAT: 'What',
+  WHERE: 'Where',
+  WORK: 'Work / Job',
+  YES: 'Yes',
+  YOU: 'You',
+  YOUR: 'Your / Yours',
   NONE_RESTING: 'Resting / Neutral',
   UNKNOWN: 'Unknown Gesture',
 };
+
+// Legacy alias for backwards compatibility
+const ASL_DISPLAY_NAMES = ISL_DISPLAY_NAMES;
 
 // ---------------------------------------------------------------------------
 // Worker State
@@ -97,11 +146,11 @@ const ISL_DISPLAY_NAMES: Record<string, string> = {
 
 let classes: string[] = Object.keys(ISL_DISPLAY_NAMES);
 let metadata: ModelMetadata = {
-  id: 'SBV-KINEMATIC-v1',
+  id: 'SIGNBRIDGE-ISL-KINEMATIC-v1',
   classes,
   featureDim: 126,
   windowSize: 30,
-  modelVersion: '1.2.0',
+  modelVersion: '6.0.0',
 };
 
 function postResponse(response: InferenceWorkerResponse): void {
@@ -197,8 +246,42 @@ function computeHandOrientation(frame: Float32Array, handOffset: number) {
 
 async function handleLoadModel(req: InferenceWorkerRequest): Promise<void> {
   const tLoadStart = performance.now();
-  let modelLoadedId = 'SBV-KINEMATIC-v1';
+  let modelLoadedId = 'SBV-GRU-v1-ISL';
   let activeClasses = Object.keys(ISL_DISPLAY_NAMES).filter((c) => c !== 'UNKNOWN');
+  let activeBackend = 'cpu';
+
+  // Return immediately if model is already loaded and ready
+  if (tfModel) {
+    console.log(`[InferenceWorker] Reusing cached neural model (${metadata.activeBackend || 'active'})`);
+    postResponse({
+      type: 'MODEL_LOADED',
+      metadata,
+      modelMetadata: metadata,
+      loadDurationMs: 0,
+      activeBackend: metadata.activeBackend || 'cpu',
+    });
+    return;
+  }
+
+  // Dynamic capability detection: WebGL (Fast GPU acceleration) -> WebGPU -> CPU
+  let backendSet = false;
+  try {
+    await tf.setBackend('webgl');
+    await tf.ready();
+    activeBackend = 'webgl';
+    backendSet = true;
+  } catch {
+    try {
+      await tf.setBackend('cpu');
+      await tf.ready();
+      activeBackend = 'cpu';
+      backendSet = true;
+    } catch {
+      activeBackend = tf.getBackend() || 'cpu';
+    }
+  }
+
+  console.log(`[InferenceWorker] Active backend: ${activeBackend}`);
 
   if (req.metadataUrl) {
     try {
@@ -207,11 +290,27 @@ async function handleLoadModel(req: InferenceWorkerRequest): Promise<void> {
         const meta = await resp.json();
         if (meta.classes && Array.isArray(meta.classes)) {
           activeClasses = meta.classes;
-          modelLoadedId = meta.id || 'SBV-ISL-PROTOTYPE-v1';
+          modelLoadedId = meta.id || 'SBV-GRU-v1-ISL';
         }
       }
     } catch {
       // Graceful fallback to kinematic classifier
+    }
+  }
+
+  // Load TensorFlow.js LayersModel if modelUrl provided
+  if (req.modelUrl) {
+    try {
+      tfModel = await tf.loadLayersModel(req.modelUrl);
+      // Run a 1-sample warmup tensor to initialize GPU / CPU compute pipelines
+      const warmup = tf.zeros([1, req.windowSize ?? 30, req.featureDim ?? 126]);
+      const preds = tfModel.predict(warmup) as tf.Tensor;
+      await preds.data();
+      warmup.dispose();
+      preds.dispose();
+      console.log(`[InferenceWorker] TensorFlow.js 2-layer GRU loaded and warmed up on ${activeBackend}.`);
+    } catch (err) {
+      console.warn('[InferenceWorker] TensorFlow.js model load failed, using kinematic invariants:', err);
     }
   }
 
@@ -221,11 +320,12 @@ async function handleLoadModel(req: InferenceWorkerRequest): Promise<void> {
     classes,
     featureDim: req.featureDim ?? 126,
     windowSize: req.windowSize ?? 30,
-    modelVersion: '1.3.0',
+    modelVersion: '2.0.0',
+    activeBackend,
   };
 
   const loadDurationMs = Math.round((performance.now() - tLoadStart) * 100) / 100;
-  postResponse({ type: 'MODEL_LOADED', metadata, modelMetadata: metadata, loadDurationMs });
+  postResponse({ type: 'MODEL_LOADED', metadata, modelMetadata: metadata, loadDurationMs, activeBackend });
 }
 
 // ---------------------------------------------------------------------------
@@ -241,6 +341,7 @@ async function handleInfer(req: InferenceWorkerRequest): Promise<void> {
   const windowSize = req.windowSize ?? metadata.windowSize ?? 30;
   const featureDim = req.featureDim ?? metadata.featureDim ?? 126;
   const t0 = performance.now();
+  let tfInferDurationMs = 0;
 
   const features = req.features;
 
@@ -270,7 +371,7 @@ async function handleInfer(req: InferenceWorkerRequest): Promise<void> {
       sentAt: req.sentAt,
       tAcq: req.tAcq,
       tPrep: req.tPrep,
-      inferDurationMs: Math.round((performance.now() - t0) * 100) / 100,
+      inferDurationMs: tfInferDurationMs > 0 ? tfInferDurationMs : Math.round((performance.now() - t0) * 100) / 100,
     });
     return;
   }
@@ -282,135 +383,73 @@ async function handleInfer(req: InferenceWorkerRequest): Promise<void> {
   // Physical motion trajectory vector
   const motion = req.motionVector ?? [0, 0, 0];
   const motionMag = Math.sqrt(motion[0] * motion[0] + motion[1] * motion[1] + motion[2] * motion[2]);
-  const isWaving = motionMag >= 0.055;
-  const isResting = motionMag < 0.045;
+  const isResting = motionMag < 0.012;
 
   const scores: Record<string, number> = {};
-
-  // Initialize all to low baseline
   for (const sign of classes) {
-    scores[sign] = 0.05;
+    scores[sign] = 0.001;
   }
 
-  // 1. ALL FINGERS OPEN POSE (Open Palm / Waving)
-  const isOpenHand = iExt > 0.65 && mExt > 0.65 && rExt > 0.65 && pExt > 0.55 && tExt > 0.55;
-  if (isOpenHand) {
-    if (isTwoHanded) {
-      // Two open hands facing up -> WHERE
-      scores['WHERE'] = 0.92;
-      // Two open hands chest rub -> PLEASE
-      scores['PLEASE'] = 0.78;
-    } else {
-      // Single open hand:
-      if (motion[2] > 0.035 || (motion[1] > 0.035 && Math.abs(motion[0]) < 0.035)) {
-        // Moving forward/downward from chest/chin -> THANK_YOU
-        scores['THANK_YOU'] = 0.92;
-        scores['HELLO'] = 0.40;
-      } else if (Math.abs(motion[0]) >= 0.07) {
-        // Broad horizontal waving -> GOODBYE
-        scores['GOODBYE'] = 0.94;
-        scores['HELLO'] = 0.70;
-      } else if (Math.abs(motion[0]) >= 0.035 || (motionMag >= 0.055 && !isResting)) {
-        // Active side-to-side greeting wave -> HELLO
-        scores['HELLO'] = 0.93;
-        scores['GOODBYE'] = 0.65;
-      } else {
-        // CRITICAL PALM DEFENSE:
-        // Plain resting open palm without intentional motion is NOT a gesture!
-        // Suppress HELLO / GOODBYE / THANK_YOU below threshold so it stays in "Detecting" state
-        scores['HELLO'] = 0.42;
-        scores['THANK_YOU'] = 0.38;
-        scores['GOODBYE'] = 0.35;
+  // Pure Neural Model Inference (TensorFlow.js 2-Layer GRU across 50 ISL classes)
+  tfInferDurationMs = 0;
+  if (tfModel && (hasRight || hasLeft)) {
+    const tTf0 = performance.now();
+    try {
+      const tensor = tf.tensor3d(features, [1, windowSize, featureDim]);
+      const preds = tfModel.predict(tensor) as tf.Tensor;
+      const rawProbs = await preds.data();
+      tensor.dispose();
+      preds.dispose();
+
+      for (let i = 0; i < classes.length && i < rawProbs.length; i++) {
+        scores[classes[i]] = rawProbs[i];
       }
+      tfInferDurationMs = Math.round((performance.now() - tTf0) * 100) / 100;
+    } catch (err) {
+      console.warn('[InferenceWorker] tfModel.predict error:', err);
     }
   }
 
-  // 2. WATER (W-Handshape: Index + Middle + Ring extended, Pinky curled)
-  if (iExt > 0.65 && mExt > 0.65 && rExt > 0.65 && pExt < 0.60 && (rExt - pExt > 0.22 || pExt < 0.40)) {
-    scores['WATER'] = 0.95;
-  }
-
-  // 3. POINTING WITH INDEX FINGER (iExt prominently extended while others folded)
-  const isIndexPointing = iExt > 0.65 && (iExt - mExt > 0.30) && (iExt - rExt > 0.25) && (iExt - pExt > 0.25);
-  if (isIndexPointing) {
-    if (vLong.x < -0.30 || motion[0] < -0.05) {
-      // Pointing or moving Left
-      scores['LEFT'] = 0.94;
-    } else if (vLong.x > 0.30 || motion[0] > 0.05) {
-      // Pointing or moving Right
-      scores['RIGHT'] = 0.94;
-    } else if (vLong.y > 0.30) {
-      // Pointing Down
-      scores['HERE'] = 0.93;
-    } else if (vLong.y < -0.45 && (motionMag > 0.04 || vLong.x < -0.15)) {
-      // Pointing near temple / head
-      scores['DONT_UNDERSTAND'] = 0.88;
-    } else {
-      scores['HERE'] = 0.65;
+  // Resting Hand Defense:
+  // When hands are stationary with near-zero motion AND no confident ISL gesture is formed,
+  // suppress ambient background noise below threshold to prevent accidental misclassification.
+  const highestNeuralScore = Math.max(...Object.values(scores));
+  if (isResting && motionMag < 0.008 && highestNeuralScore < 0.60) {
+    for (const sign of classes) {
+      scores[sign] = Math.min(scores[sign], 0.20);
     }
   }
 
-  // 4. CLOSED FIST (All fingers bent into hand: YES / BATHROOM / HELP)
-  const isFist = iExt < 0.55 && mExt < 0.55 && rExt < 0.55 && pExt < 0.60;
-  if (isFist) {
-    if (isTwoHanded) {
-      // Fist supported by other hand -> HELP
-      scores['HELP'] = 0.94;
-    } else if (tExt > 0.65) {
-      // Thumb protruding between fingers -> BATHROOM (T-sign)
-      scores['BATHROOM'] = 0.91;
-    } else {
-      // Fist nodding up/down or firm fist -> YES
-      if (Math.abs(motion[1]) > 0.03 || isResting) {
-        scores['YES'] = 0.92;
-      }
-    }
+  // Build sorted probabilities array (fast numeric sort)
+  const scoredClasses: Array<{ sign: string; label: string; confidence: number }> = [];
+  for (let i = 0; i < classes.length; i++) {
+    const sign = classes[i];
+    const conf = scores[sign] || 0;
+    scoredClasses.push({
+      sign,
+      label: ISL_DISPLAY_NAMES[sign] ?? sign,
+      confidence: Math.round(conf * 1000) / 1000,
+    });
   }
-
-  // 5. NO (Index + Middle extended together, thumb pinching or wagging)
-  if (iExt > 0.65 && mExt > 0.65 && rExt < 0.35 && pExt < 0.35) {
-    if (isTwoHanded) {
-      scores['HOSPITAL'] = 0.92; // Cross / H formation
-    } else {
-      scores['NO'] = 0.91;
-      scores['HOSPITAL'] = 0.68;
-    }
-  }
-
-  // 6. FOOD (Fingertips clustered / pinched together, brought toward mouth)
-  const isPinch = iExt > 0.20 && iExt < 0.55 && mExt > 0.20 && mExt < 0.55 && rExt > 0.20 && rExt < 0.55 && pExt > 0.20 && pExt < 0.55;
-  if (isPinch && (motion[2] < -0.03 || vLong.y < -0.30)) {
-    scores['FOOD'] = 0.90;
-  }
-
-  // 7. REPEAT (Two hands rolling forward)
-  if (isTwoHanded && iExt > 0.50 && mExt > 0.50 && motionMag > 0.05) {
-    scores['REPEAT'] = 0.87;
-  }
-
-  // Build sorted probabilities array
-  const scoredClasses = classes.map((sign) => ({
-    sign,
-    label: ISL_DISPLAY_NAMES[sign] ?? sign,
-    confidence: Number(scores[sign].toFixed(3)),
-  }));
-
   scoredClasses.sort((a, b) => b.confidence - a.confidence);
 
   const topMatch = scoredClasses[0];
+  const top5Probabilities = scoredClasses.slice(0, 5);
   const latencyMs = Math.round((performance.now() - t0) * 10) / 10;
   const isRecognized =
     topMatch &&
-    topMatch.confidence >= 0.60 &&
+    topMatch.confidence >= 0.45 &&
     topMatch.sign !== 'NONE' &&
     topMatch.sign !== 'NONE_RESTING' &&
     topMatch.sign !== 'UNKNOWN';
 
+  const isLowConfidence = Boolean(topMatch && topMatch.confidence < 0.45 && !isResting && (hasRight || hasLeft));
+
   const result: RecognitionResult = {
-    gesture: isRecognized ? topMatch.sign : 'NONE',
-    displayName: isRecognized ? topMatch.label : 'Detecting gesture…',
-    confidence: isRecognized ? topMatch.confidence : 0,
-    probabilities: scoredClasses,
+    gesture: isRecognized ? topMatch.sign : isLowConfidence ? 'UNKNOWN' : 'NONE',
+    displayName: isRecognized ? topMatch.label : isLowConfidence ? 'UNKNOWN (Low confidence)' : 'Detecting gesture…',
+    confidence: isRecognized ? topMatch.confidence : isLowConfidence ? topMatch.confidence : 0,
+    probabilities: top5Probabilities,
     latencyMs,
     timestamp: Date.now(),
     sequenceLength: windowSize,
@@ -423,7 +462,8 @@ async function handleInfer(req: InferenceWorkerRequest): Promise<void> {
     sentAt: req.sentAt,
     tAcq: req.tAcq,
     tPrep: req.tPrep,
-    inferDurationMs: Math.round((performance.now() - t0) * 100) / 100,
+    inferDurationMs: tfInferDurationMs > 0 ? tfInferDurationMs : Math.round((performance.now() - t0) * 100) / 100,
+    activeBackend: metadata.activeBackend || 'cpu',
   });
 }
 

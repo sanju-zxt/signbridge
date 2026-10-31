@@ -13,7 +13,7 @@
  *   - Supported locales: en-IN, hi-IN, kn-IN, te-IN
  */
 
-import { SupportedLanguage } from '@signbridge2vision/types';
+import { SupportedLanguage } from '@signbridge/types';
 import { ttsPlayer } from './tts';
 
 export interface STTOptions {

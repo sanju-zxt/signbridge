@@ -10,7 +10,7 @@ import {
   RecognitionEvent,
   SpeechTranscriptEvent,
   LatencySummary
-} from '@signbridge2vision/types';
+} from '@signbridge/types';
 
 export function useRealtimeSession(sessionId: string = 'main-room', userRole: SpeakerRole = 'isl_signer') {
   const [session, setSession] = useState<ConversationSession | null>(null);

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { X, Activity, Cpu, Zap, BarChart2 } from 'lucide-react';
-import { LatencySummary } from '@signbridge2vision/types';
+import { LatencySummary } from '@signbridge/types';
 
 interface MetricsDashboardProps {
   isOpen: boolean;

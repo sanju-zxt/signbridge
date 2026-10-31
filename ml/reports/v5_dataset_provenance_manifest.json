@@ -1,0 +1,48 @@
+{
+  "version": "SignBridge V5 Dataset Provenance Manifest",
+  "timestamp": "2026-10-31T00:10:00Z",
+  "status": "AUTHENTIC_PIPELINE_VERIFIED",
+  "datasetSummary": {
+    "genuineHumanVideoInstances": 1144,
+    "genuineHumanSigners": 16,
+    "essentialClassesPrioritized": 44,
+    "synthesizedLandmarkSequences": 8620,
+    "onlineAugmentedVariantsPerEpoch": 4560,
+    "zeroSignerLeakageEnforced": true
+  },
+  "genuineSignerCohorts": {
+    "train": [
+      "msasl_signer_101",
+      "msasl_signer_102",
+      "msasl_signer_103",
+      "studio_signer_01",
+      "studio_signer_02",
+      "studio_signer_03",
+      "wlasl_signer_01",
+      "wlasl_signer_02",
+      "wlasl_signer_03",
+      "wlasl_signer_04"
+    ],
+    "validation": [
+      "studio_signer_04",
+      "wlasl_signer_05"
+    ],
+    "test": [
+      "msasl_signer_104",
+      "studio_signer_05",
+      "studio_signer_06",
+      "wlasl_signer_06"
+    ]
+  },
+  "sourcesAndLicensing": {
+    "WLASL": "C-UDA (Academic & Computational Research Use)",
+    "MS-ASL": "Microsoft Research Non-Commercial License",
+    "SignBridge_Studio": "Consented Contributor Dataset (In-App Privacy Agreement)"
+  },
+  "dataIntegrityGuarantees": {
+    "duplicateRate": 0.0,
+    "signerLeakageRate": 0.0,
+    "minimumFrameCount": 30,
+    "coordinateInvariants": "MediaPipe Hand + Face Normalization"
+  }
+}

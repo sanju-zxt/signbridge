@@ -21,7 +21,7 @@ import {
   RecognitionEvent,
   SpeechTranscriptEvent,
   LatencySummary
-} from '@signbridge2vision/types';
+} from '@signbridge/types';
 
 export function useRealtimeSession(sessionId: string = 'main-room', userRole: SpeakerRole = 'isl_signer') {
   const [session, setSession] = useState<ConversationSession | null>(null);
@@ -272,7 +272,7 @@ export function useRealtimeSession(sessionId: string = 'main-room', userRole: Sp
 save('apps/web/src/hooks/useISLPerception.ts', `'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { NormalizedFrame, RecognitionEvent, Landmark3D, AlternativeCandidate } from '@signbridge2vision/types';
+import { NormalizedFrame, RecognitionEvent, Landmark3D, AlternativeCandidate } from '@signbridge/types';
 import { matchTemporalSequence, SIGN_FEATURE_TEMPLATES } from '../lib/vision/temporalMatcher';
 
 export function useISLPerception(onSignFinalized: (event: RecognitionEvent) => void) {
