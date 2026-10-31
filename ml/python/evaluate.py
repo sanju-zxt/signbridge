@@ -29,7 +29,7 @@ def evaluate_model(model_dir="ml/models/sbv-gru-v1"):
         num_layers=2,
         num_classes=len(ISL_CLASSES),
         dropout=0.0
-    )
+    ) 
     model.load_state_dict(torch.load(weights_path, weights_only=True))
     model.eval()
 
